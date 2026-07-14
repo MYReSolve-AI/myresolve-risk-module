@@ -1,8 +1,9 @@
 # MYReSolve Executive Risk & Cost Assessment
 
 **Product ID:** MR-PRD-001  
-**Current baseline:** v0.3  
-**Status:** Locked MVP baseline
+**Release:** v0.3.1  
+**Baseline:** v0.3 locked  
+**Status:** GitHub Pages-ready hotfix
 
 A browser-based executive maturity, operational risk and cost-of-failure assessment for CEOs, COOs and CFOs.
 
@@ -20,19 +21,18 @@ A browser-based executive maturity, operational risk and cost-of-failure assessm
 
 ## Run locally
 
-No installation is required. Open `index.html` in a modern web browser.
+Open `index.html` in a modern browser. No installation is required.
 
-## Repository structure
+## Publish with GitHub Pages
 
-- `index.html` — current working front-end prototype
-- `docs/` — product requirements, scoring model and roadmap
-- `releases/` — locked release snapshots and notes
-- `.github/ISSUE_TEMPLATE/` — structured feature and bug reporting
+1. Open repository **Settings**.
+2. Select **Pages**.
+3. Under **Build and deployment**, choose **Deploy from a branch**.
+4. Select branch `main` and folder `/ (root)`.
+5. Save.
 
-## Versioning
+## Governance
 
-The locked baseline is **v0.3**. All future changes must be developed as v0.4 or later. Do not overwrite v0.3.
-
-## Product principle
+The approved design and feature baseline is v0.3. Release v0.3.1 only corrects repository packaging and deployment readiness. New product features begin in v0.4.
 
 > Leadership is a behaviour, not a job title.
