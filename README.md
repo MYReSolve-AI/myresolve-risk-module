@@ -1,38 +1,77 @@
-# MYReSolve Executive Risk & Cost Assessment
+# MYReSolve
 
 **Product ID:** MR-PRD-001  
-**Release:** v0.3.1  
-**Baseline:** v0.3 locked  
-**Status:** GitHub Pages-ready hotfix
+**Locked assessment:** v0.3.1 (immutable golden baseline)  
+**Platform workspace:** Next.js migration environment (`apps/web`)
 
-A browser-based executive maturity, operational risk and cost-of-failure assessment for CEOs, COOs and CFOs.
+A commercial SaaS platform in progress. The approved executive risk and cost assessment remains the locked v0.3 / v0.3.1 browser prototype until behavioural parity is formally approved.
 
-## Current capabilities
+> Leadership is a behaviour, not a job title.
 
-- Guided executive assessment
-- Five-level maturity model: Critical, Developing, Established, Strong and Leading
-- Confidence scoring for each answer
-- Live executive maturity and risk scoring
-- Department-level results
-- Estimated annual value at risk
-- Priority recommendations
-- Browser-based response persistence
-- CSV export and printable reporting
+## Repository layout
 
-## Run locally
+| Path | Purpose |
+|------|---------|
+| `legacy/v0.3.1/index.html` | Locked golden baseline assessment (do not edit) |
+| `legacy/v0.3.1/archive/` | Official v0.3.1 ZIP snapshot |
+| `apps/web` | Next.js App Router application (migration host) |
+| `docs/GOLDEN_BASELINE.md` | Baseline behaviour contract |
+| `docs/MIGRATION_PLAN.md` | Phased migration plan |
+| `PRODUCT_SPEC.md` / `ROADMAP.md` / `SCORING_MODEL.md` | Product docs |
 
-Open `index.html` in a modern browser. No installation is required.
+## Run the locked legacy prototype
 
-## Publish with GitHub Pages
+No install required.
 
-1. Open repository **Settings**.
-2. Select **Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**.
-4. Select branch `main` and folder `/ (root)`.
-5. Save.
+```bash
+# Option A — open the file directly in a modern browser
+open legacy/v0.3.1/index.html
+# or on Linux: xdg-open legacy/v0.3.1/index.html
+
+# Option B — serve the legacy folder over HTTP (recommended)
+npx --yes serve legacy/v0.3.1
+```
+
+Then open the URL shown by `serve` (typically `http://localhost:3000`).
+
+From the repo root you can also use:
+
+```bash
+npm run legacy
+```
+
+## Run the Next.js application
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). The homepage is a placeholder:
+
+**MYReSolve Platform v1.0 migration environment**
+
+The assessment UI has **not** been ported yet.
+
+Useful scripts (from `apps/web` or via root wrappers):
+
+```bash
+npm run lint    # ESLint
+npm run build   # Production build
+npm run start   # Serve production build
+```
+
+Root convenience scripts:
+
+```bash
+npm run web:dev
+npm run web:lint
+npm run web:build
+```
 
 ## Governance
 
-The approved design and feature baseline is v0.3. Release v0.3.1 only corrects repository packaging and deployment readiness. New product features begin in v0.4.
-
-> Leadership is a behaviour, not a job title.
+- The approved assessment design is **v0.3**. Release **v0.3.1** is packaging only.
+- Do not change wording, styling, scoring, localStorage behaviour, CSV export, print behaviour or UX without instruction.
+- Future migration work must preserve baseline behaviour until parity is formally approved — see `docs/GOLDEN_BASELINE.md`.
