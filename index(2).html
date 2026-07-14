@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MYReSolve Executive Risk & Cost Assessment</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="assets/logo.jpeg" alt="MYReSolve logo" />
+        <div>
+          <div class="brand-name">MYReSolve</div>
+          <div class="brand-line">Leadership is a behaviour, not a job title.</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="label-row"><span>Assessment progress</span><strong id="progressText">0%</strong></div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+      <nav id="sectionNav"></nav>
+      <div class="sidebar-note">
+        <strong>25 minutes to clarity.</strong>
+        <span>Understand risk, cost and the priorities that matter most.</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <div>
+          <div class="eyebrow">MYReSolve</div>
+          <h1>Executive Risk & Cost Assessment</h1>
+          <p>Answer a focused set of questions. See your risks, estimated cost of failure and top priorities instantly.</p>
+        </div>
+        <div class="hero-badge">25 minute assessment</div>
+      </header>
+
+      <section class="content-grid">
+        <div class="form-card">
+          <div class="section-kicker" id="sectionKicker"></div>
+          <h2 id="sectionTitle"></h2>
+          <p id="sectionIntro" class="muted"></p>
+          <div id="questions"></div>
+          <div class="actions">
+            <button id="prevBtn" class="secondary">Previous</button>
+            <button id="nextBtn" class="primary">Next section</button>
+          </div>
+        </div>
+
+        <aside class="snapshot-card">
+          <div class="snapshot-title">Executive snapshot</div>
+          <div class="metric">
+            <span>Overall risk rating</span>
+            <strong id="riskLabel">Not yet scored</strong>
+          </div>
+          <div class="metric">
+            <span>Executive maturity</span>
+            <strong id="maturityLabel">—</strong>
+          </div>
+          <div class="metric">
+            <span>Estimated annual cost of risk</span>
+            <strong id="costLabel">£0</strong>
+          </div>
+          <div class="metric">
+            <span>Top risk area</span>
+            <strong id="topRiskLabel">—</strong>
+          </div>
+          <div class="mini-bars" id="miniBars"></div>
+          <button id="viewResultsBtn" class="primary full">View full results</button>
+        </aside>
+      </section>
+
+      <section id="results" class="results hidden">
+        <div class="results-head">
+          <div>
+            <div class="eyebrow">Your results</div>
+            <h2>Executive risk profile</h2>
+          </div>
+          <div class="results-actions">
+            <button id="printBtn" class="secondary">Print report</button>
+            <button id="exportBtn" class="primary">Export CSV</button>
+          </div>
+        </div>
+        <div class="result-cards">
+          <div class="result-card"><span>Overall score</span><strong id="overallScore">0</strong><small>/100</small></div>
+          <div class="result-card"><span>Risk rating</span><strong id="overallRating">—</strong></div>
+          <div class="result-card"><span>Maturity level</span><strong id="overallMaturity">—</strong></div>
+          <div class="result-card"><span>Annual value at risk</span><strong id="overallCost">£0</strong></div>
+          <div class="result-card"><span>Priority areas</span><strong id="priorityCount">0</strong></div>
+        </div>
+        <div class="result-layout">
+          <div class="panel">
+            <h3>Risk by department</h3>
+            <div id="departmentResults"></div>
+          </div>
+          <div class="panel">
+            <h3>90-day priorities</h3>
+            <ol id="priorities"></ol>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+<script src="app.js"></script>
+</body>
+</html>
