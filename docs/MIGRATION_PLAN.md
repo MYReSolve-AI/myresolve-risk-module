@@ -12,7 +12,7 @@ Branding and user experience must not change unless explicitly instructed.
 |-------|--------|
 | Phase 0 — Freeze & inventory | **Complete** (this change set) |
 | Phase 1 — Scaffold Next.js beside the prototype | **Complete** (placeholder only) |
-| Phase 2 — Extract domain logic + golden tests | Not started |
+| Phase 2 — Extract domain logic + golden tests | **In progress / complete pending review** |
 | Phase 3 — Pixel/behaviour-faithful UI port | Not started |
 | Phase 4 — App structure (still client-side parity) | Not started |
 | Phase 5 — Production hosting hardening | Not started |
