@@ -1,0 +1,14 @@
+{
+  "name": "myresolve",
+  "private": true,
+  "description": "MYReSolve platform monorepo — locked v0.3.1 assessment + Next.js migration workspace",
+  "scripts": {
+    "legacy": "npx --yes serve legacy/v0.3.1",
+    "web:dev": "npm --prefix apps/web run dev",
+    "web:lint": "npm --prefix apps/web run lint",
+    "web:build": "npm --prefix apps/web run build",
+    "web:start": "npm --prefix apps/web run start",
+    "lint": "npm run web:lint",
+    "build": "npm run web:build"
+  }
+}
