@@ -1,9 +1,9 @@
 # Project Legacy Snapshot 001
 
-**Status:** Approved post–Sprint 004 platform baseline  
-**Date:** 2026-07-15  
-**Tag:** `legacy-snapshot-001`  
-**Exact SHA:** `8d9d9ec8b9720a01b2f672563e07dd3125f993a7`  
+**Status:** Approved post–Sprint 004 platform baseline
+**Date:** 2026-07-15
+**Tag:** `legacy-snapshot-001`
+**Exact SHA:** `8d9d9ec8b9720a01b2f672563e07dd3125f993a7`
 **Git message on tag:** Project Legacy Snapshot 001 — post-Sprint 004 approved baseline
 
 This snapshot freezes the MYReSolve platform state on `main` after Phase 0–2 and Sprint 004 were merged. It is the reference point for subsequent delivery. **Sprint 005 (Organisation Profile) remains closed** and is not part of this snapshot.
@@ -18,7 +18,7 @@ This snapshot freezes the MYReSolve platform state on `main` after Phase 0–2 a
 - Next.js App Router platform under `apps/web`
 - Migration and baseline documentation
 
-**Merged as:** [PR #1](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/1)  
+**Merged as:** [PR #1](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/1)
 **Key commit:** `85335ea` — freeze v0.3.1 baseline and scaffold Next.js platform
 
 ### Phase 2 — Assessment domain engine
@@ -27,7 +27,7 @@ This snapshot freezes the MYReSolve platform state on `main` after Phase 0–2 a
 - Golden fixtures and behavioural parity tests
 - Scoring parity documentation
 
-**Merged as:** [PR #2](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/2)  
+**Merged as:** [PR #2](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/2)
 **Key commit:** `cf8c682` — extract assessment domain engine with parity tests
 
 ### Sprint 004 — Executive experience
@@ -37,7 +37,7 @@ This snapshot freezes the MYReSolve platform state on `main` after Phase 0–2 a
 - Shared brand tokens, assessment persistence, test harness updates
 - Visual-correction brief
 
-**Merged as:** [PR #4](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/4)  
+**Merged as:** [PR #4](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/4)
 **Key commit:** `dfff7ccc7d53495b0c2ff2ee53e64dce120ed552` — complete Sprint 004 executive experience
 
 ---
@@ -138,7 +138,7 @@ This snapshot does **not** include:
 
 ## Sprint 005 status
 
-**Sprint 005 — Organisation Profile Engine — remains closed.**  
+**Sprint 005 — Organisation Profile Engine — remains closed.**
 Do not begin Organisation Profile implementation until that sprint is explicitly unlocked. Any Organisation Profile artifacts existing only in a local deferred working tree are **outside** this snapshot and must not be treated as part of `main` or `legacy-snapshot-001`.
 
 ---
