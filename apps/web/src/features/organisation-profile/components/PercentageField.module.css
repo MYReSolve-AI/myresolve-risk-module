@@ -1,0 +1,15 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.input {
+  flex: 1;
+}
+
+.suffix {
+  color: var(--mr-muted);
+  font-size: 0.9rem;
+  font-weight: 650;
+}

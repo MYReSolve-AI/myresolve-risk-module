@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   STORAGE_KEY,
@@ -13,6 +13,8 @@ import {
   loadAssessmentAnswers,
   saveAssessmentAnswers,
 } from "@/src/lib/assessmentPersistence";
+import { completeOrganisationProfile } from "@/src/domain/organisationProfile/__fixtures__/profile";
+import { saveOrganisationProfile } from "@/src/lib/organisationProfilePersistence";
 import { AssessmentApp } from "./AssessmentApp";
 import { buildExecutiveDashboard } from "@/src/features/executive-dashboard";
 import { ExecutiveDashboard } from "@/src/features/executive-dashboard";
@@ -28,15 +30,60 @@ function storage(): Storage {
   return window.localStorage;
 }
 
+function seedCompleteProfile() {
+  saveOrganisationProfile(completeOrganisationProfile());
+}
+
 describe("AssessmentApp", () => {
   beforeEach(() => {
     storage().clear();
     pushMock.mockReset();
+    seedCompleteProfile();
+  });
+
+  it("gates assessment when required fields are filled but not explicitly completed", async () => {
+    storage().clear();
+    const { fillRequiredOrganisationProfile } = await import(
+      "@/src/domain/organisationProfile/__fixtures__/profile"
+    );
+    saveOrganisationProfile(fillRequiredOrganisationProfile());
+    render(<AssessmentApp />);
+    expect(
+      await screen.findByTestId("assessment-profile-gate"),
+    ).toBeTruthy();
+  });
+
+  it("gates assessment when organisation profile is incomplete", async () => {
+    storage().clear();
+    render(<AssessmentApp />);
+    expect(
+      await screen.findByTestId("assessment-profile-gate"),
+    ).toBeTruthy();
+    expect(screen.getByTestId("assessment-profile-gate-link")).toHaveAttribute(
+      "href",
+      "/organisation-profile",
+    );
+    expect(screen.queryByTestId("question-text")).toBeNull();
+  });
+
+  it("preserves assessment answers when showing the profile gate", async () => {
+    storage().clear();
+    saveAssessmentAnswers({
+      answers: { "0-0": 4 },
+      confidence: { "0-0": "high" },
+    });
+    render(<AssessmentApp />);
+    expect(await screen.findByTestId("assessment-profile-gate")).toBeTruthy();
+    expect(loadAssessmentAnswers().answers["0-0"]).toBe(4);
+    expect(loadAssessmentAnswers().confidence["0-0"]).toBe("high");
   });
 
   it("renders all 24 questions in correct domain order via navigation", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
+    await waitFor(() =>
+      expect(screen.getByTestId("question-text")).toBeTruthy(),
+    );
     const expected = allQuestions();
 
     for (let i = 0; i < expected.length; i++) {
@@ -59,6 +106,7 @@ describe("AssessmentApp", () => {
   it("selects maturity and confidence and autosaves to locked storage", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("maturity-3")).toBeTruthy());
 
     await user.click(screen.getByTestId("maturity-3"));
     await user.click(screen.getByTestId("confidence-high"));
@@ -76,6 +124,7 @@ describe("AssessmentApp", () => {
   it("defaults confidence to medium when maturity is chosen first", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("maturity-4")).toBeTruthy());
     await user.click(screen.getByTestId("maturity-4"));
     const stored = JSON.parse(storage().getItem(STORAGE_KEY) || "{}");
     expect(stored.answers["0-0"]).toBe(4);
@@ -85,6 +134,9 @@ describe("AssessmentApp", () => {
   it("supports next/previous navigation", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
+    await waitFor(() =>
+      expect(screen.getByTestId("nav-previous")).toBeTruthy(),
+    );
     expect(screen.getByTestId("nav-previous")).toBeDisabled();
     await user.click(screen.getByTestId("nav-next"));
     expect(screen.getByTestId("question-text")).toHaveTextContent(
@@ -102,6 +154,7 @@ describe("AssessmentApp", () => {
       confidence: { "0-0": "low", "1-0": "high" },
     });
     render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("maturity-2")).toBeTruthy());
     expect(screen.getByTestId("maturity-2")).toHaveAttribute(
       "aria-checked",
       "true",
@@ -121,6 +174,7 @@ describe("AssessmentApp", () => {
   it("handles incomplete completion with unanswered review", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("nav-review")).toBeTruthy());
     await user.click(screen.getByTestId("nav-review"));
     expect(screen.getByTestId("review-answers")).toBeTruthy();
     await user.click(screen.getByTestId("review-complete"));
@@ -144,6 +198,7 @@ describe("AssessmentApp", () => {
     saveAssessmentAnswers({ answers, confidence });
 
     render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("nav-review")).toBeTruthy());
     await user.click(screen.getByTestId("nav-review"));
     await user.click(screen.getByTestId("review-complete"));
 
@@ -154,7 +209,6 @@ describe("AssessmentApp", () => {
     expect(model.executiveHealth.score).toBe(overallScore(saved.answers));
     expect(model.departments).toHaveLength(6);
 
-    // Dashboard consumes domain-backed answers without UI-side scoring
     render(<ExecutiveDashboard state={saved} />);
     expect(screen.getByTestId("metric-health")).toHaveTextContent(
       `${model.executiveHealth.score}/100`,
@@ -164,6 +218,7 @@ describe("AssessmentApp", () => {
   it("save and exit keeps answers and returns home", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("maturity-1")).toBeTruthy());
     await user.click(screen.getByTestId("maturity-1"));
     await user.click(screen.getByTestId("nav-save-exit"));
     expect(pushMock).toHaveBeenCalledWith("/");
@@ -171,8 +226,6 @@ describe("AssessmentApp", () => {
   });
 
   it("does not duplicate scoring logic in the assessment UI", async () => {
-    // Assessment feature must not import or redefine score helpers beyond domain usage.
-    // This smoke check ensures finishing uses domain overallScore via shared saved state.
     const answers: Record<string, number> = {};
     const confidence: Record<string, string> = {};
     allQuestions().forEach((q) => {

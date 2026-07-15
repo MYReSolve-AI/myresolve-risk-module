@@ -1,0 +1,23 @@
+.privacy {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(198, 139, 53, 0.45);
+  border-radius: 0.65rem;
+  background: rgba(247, 243, 236, 0.85);
+}
+
+.privacyTitle {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: var(--mr-gold, #c68b35);
+}
+
+.privacyCopy {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--mr-muted, #5c6b66);
+}

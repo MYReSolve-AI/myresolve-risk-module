@@ -30,18 +30,19 @@ Throughout this manual, statements are marked or organised as:
 1. [`docs/PROJECT_LEGACY_SNAPSHOT_001.md`](./PROJECT_LEGACY_SNAPSHOT_001.md) and tag `legacy-snapshot-001`
 2. [`docs/GOLDEN_BASELINE.md`](./GOLDEN_BASELINE.md) and `legacy/v0.3.1/index.html`
 3. [`docs/SCORING_PARITY.md`](./SCORING_PARITY.md) with `apps/web/src/domain/assessment/` and its tests
-4. Live product surfaces `/assessment` and `/dashboard`
-5. [Issue #5](https://github.com/MYReSolve-AI/myresolve-risk-module/issues/5) for the open PostCSS dependency risk
+4. Live product surfaces `/`, `/organisation-profile`, `/assessment` and `/dashboard`
+5. [`docs/ORGANISATION_PROFILE_ENGINE.md`](./ORGANISATION_PROFILE_ENGINE.md) for Organisation Profile context (MR-ENG-004-A1)
+6. [Issue #5](https://github.com/MYReSolve-AI/myresolve-risk-module/issues/5) for the open PostCSS dependency risk
 
 **Do not** treat root aspirational documents (for example `PRODUCT_SPEC.md`, `SCORING_MODEL.md`, or the product version `ROADMAP.md`) as descriptions of shipped functionality.
 
 **Historical note:** [`docs/SPRINT_004_CORRECTION_BRIEF.md`](./SPRINT_004_CORRECTION_BRIEF.md) is a **historical implementation record**. Its recommended visual corrections were completed by merged PR #4. Its header status line may still read as pre-approval; do not treat that header as current work instruction. A separate documentation-alignment task should refresh stale headers in migration and correction docs without rewriting history.
 
-### Organisation Profile isolation
+### Organisation Profile (Sprint 005)
 
-Organisation Profile is excluded from the approved baseline. Sprint 005 remains closed and requires separate authorisation.
+The Organisation Profile is the **pre-assessment context step**. It stores business context in a separate browser-local key and must not change Health Score, maturity, confidence, Risk Score, risk rating, prioritisation or Estimated Annual Value at Risk.
 
-Deferred local Organisation Profile paths are **not** approved sources and must not be used when operating or explaining this baseline.
+See [`docs/ORGANISATION_PROFILE_ENGINE.md`](./ORGANISATION_PROFILE_ENGINE.md).
 
 ---
 
@@ -56,14 +57,16 @@ It provides **operational decision support**: structured questioning, a locked c
 ### Product promise (what this baseline delivers)
 
 - A fixed 24-question assessment (six departments × four questions)
+- An Organisation Profile context step before assessment (browser-local; separate storage)
 - Saved answers in the browser using a locked storage schema
 - Calculable Health Scores, risk ratings, maturity bands and Estimated Annual Value at Risk
-- An executive dashboard that consumes the assessment **domain engine only**
+- An executive dashboard that consumes the assessment **domain engine only** (Company name may display from a completed profile; it is contextual display only)
 
 ### What this baseline does **not** promise
 
 - Audited financial loss figures or guarantees of future outcomes
-- Organisation Profile / company context capture
+- Cloud sync, encryption claims, multi-device Organisation Profile access or regulated retention
+- Assessment completion **Date** on the dashboard (not recorded in Sprint 005)
 - AI-generated executive narrative or recommendations
 - Multi-tenant SaaS hosting, authentication or cloud persistence
 - A changed scoring model beyond locked v0.3.1 behaviour
@@ -97,18 +100,21 @@ This is repository-level policy. It does **not** invent named individuals or cla
 
 ### Current capability
 
-1. Open `/` (platform entry with links to assessment and dashboard).
-2. Start **`/assessment`**.
-3. For each question: select a **maturity response** (1–5) and a **confidence** (Low / Medium / High).
-4. Answers autosave to browser storage. Optional **Save and exit** returns to `/`.
-5. Navigate Previous / Next. **Review answers** is available before finish.
-6. When all 24 questions are answered, **Finish and view dashboard** saves and opens **`/dashboard`**.
-7. Dashboard loads the same storage key and presents executive metrics.
+1. Open `/` (platform entry). Primary CTA: **Organisation Profile**, then assessment and dashboard.
+2. Complete **`/organisation-profile`** (required context). Data saves only in this browser on this device — not synced to a cloud account.
+3. Start **`/assessment`**. If the profile is incomplete, an accessible setup gate directs the user back to the Organisation Profile; existing assessment answers are preserved.
+4. For each question: select a **maturity response** (1–5) and a **confidence** (Low / Medium / High).
+5. Answers autosave to assessment browser storage. Optional **Save and exit** returns to `/`.
+6. Navigate Previous / Next. **Review answers** is available before finish.
+7. When all 24 questions are answered, **Finish and view dashboard** saves and opens **`/dashboard`**.
+8. Dashboard loads assessment storage for scoring. When a valid completed Organisation Profile exists, **Company** shows `organisation.name` as read-only context. **Date** stays hidden.
 
 ### Operating policy
 
 - Facilitators should rate the organisation **as it operates today** (guidance shown in the assessment UI).
-- Do not invent company or completion-date values; they are not part of the locked answer schema.
+- Organisation Profile data is contextual only — it must not affect Health Score, maturity, confidence, Risk Score, risk rating, prioritisation or Estimated Annual Value at Risk.
+- Do not invent an assessment completion **Date**; recording one requires a separately approved assessment-persistence change.
+- Completing or changing the Organisation Profile must not clear or rewrite assessment answers.
 
 ### Known limitation
 
@@ -293,7 +299,8 @@ The Top Three Risk Areas list presents **domain-backed facts** (band, rating, Es
 |---------|----------------|
 | Assessment completed | Yes / In progress / Not started from answer completeness (24 of 24) |
 | Version | Assessment baseline label (for example `v0.3.1`) |
-| Company / Date | Hidden when unavailable — not part of locked answer storage |
+| Company | Read-only display of Organisation Profile `organisation.name` when the profile is **explicitly completed** (valid schema, required/conditional fields filled, and a valid `completedAt` timestamp); otherwise hidden. Does not affect scoring. Autosaved fields alone are not enough. Editing any field clears `completedAt` until Complete is selected again. |
+| Date | Hidden — assessment completion timestamp is not recorded in Sprint 005 |
 | Executive Health Score | Overall Health Score and related band / rating |
 | Estimated Annual Value at Risk | Illustrative modelled estimate (see disclaimer) |
 | Assessment Confidence | Predominant Low / Medium / High language and response counts — not raw cost factors |
@@ -312,6 +319,8 @@ Labels such as “Operational Health” may appear as supporting copy next to Ex
 
 ### Current capability
 
+**Assessment**
+
 | Item | Value |
 |------|--------|
 | Storage | Browser `localStorage` only |
@@ -320,12 +329,22 @@ Labels such as “Operational Health” may appear as supporting copy next to Ex
 | Answer values | Maturity responses `1`–`5` |
 | Confidence values | `low` \| `medium` \| `high` |
 
-There is **no** server-side assessment store in this baseline. Clearing site data removes results from that browser.
+**Organisation Profile** (separate key)
+
+| Item | Value |
+|------|--------|
+| Storage | Browser `localStorage` only (same device/browser; not cloud-synced) |
+| Key | `myresolve_organisation_profile_v1` |
+| Schema | `schemaVersion: 2` (A1 multi-select operating models) |
+| Load-time migration | Accepts legacy singular `operatingModel` → `operatingModels: [id]`; never writes to the assessment key |
+
+There is **no** server-side store in this baseline. Clearing site data removes profile and assessment results from that browser. Anyone using the same browser may access locally stored profile data. Avoid unnecessary confidential or personal information. Do not claim encryption, cloud backup, multi-device access or regulated retention.
 
 ### Operating policy
 
-- Do not mix Organisation Profile or other commercial context into this key.
-- Do not change the key or schema without Product Owner approval and a versioned migration plan.
+- Do not mix Organisation Profile or other commercial context into `myresolve_answers_v03`.
+- Do not change either key or schema without Product Owner approval and a versioned migration plan.
+- Profile completion changes must not clear assessment answers.
 
 ---
 
@@ -359,7 +378,7 @@ The dashboard shows an intentional notice that **AI Executive Narrative** is pla
 ### Future / deferred (examples — not shipped)
 
 - AI Executive Advisor / generated narrative (see product delivery roadmap beyond Snapshot 001)
-- Organisation Profile context for personalisation
+- Using Organisation Profile bands to calibrate cost-of-failure envelopes (product decision; not enabled — profile remains contextual display/context only)
 - Board PDF packages, SaaS authentication, cloud persistence, subscription billing
 
 Do not describe deferred items as current capability.
@@ -442,7 +461,7 @@ npm run lint
 
 # 6. Production build
 npm run build
-# Expect routes: /, /assessment, /dashboard (plus framework /_not-found)
+# Expect routes: /, /organisation-profile, /assessment, /dashboard (plus framework /_not-found)
 
 # 7. Golden-baseline integrity
 cd ../..
@@ -450,12 +469,12 @@ md5sum legacy/v0.3.1/index.html
 # Expect: 64e282b822c4bcd612bfa0e4ad8803aa
 # Note: on macOS without md5sum, use: md5 -q legacy/v0.3.1/index.html
 
-# 8. Confirm Organisation Profile is absent from this tree
-test ! -d apps/web/app/organisation-profile \
-  && test ! -d apps/web/src/domain/organisationProfile \
-  && test ! -d apps/web/src/features/organisation-profile \
-  && test ! -f docs/ORGANISATION_PROFILE_ENGINE.md \
-  && echo "Organisation Profile absent (expected)"
+# 8. Confirm Organisation Profile surfaces are present (Sprint 005)
+test -d apps/web/app/organisation-profile \
+  && test -d apps/web/src/domain/organisationProfile \
+  && test -d apps/web/src/features/organisation-profile \
+  && test -f docs/ORGANISATION_PROFILE_ENGINE.md \
+  && echo "Organisation Profile present (expected)"
 ```
 
 Optional root wrappers (from repository root, after the web-app install above):
@@ -476,13 +495,16 @@ npm run legacy   # serves legacy/v0.3.1 via npx serve
 
 ## 18. Current exclusions
 
-Explicitly **out of** the approved baseline:
+Explicitly **out of** the current product surfaces (or deferred beyond Sprint 005):
 
-- **Organisation Profile** — route, domain, feature, persistence and specification documents not on `main` as shipped product. **Sprint 005 remains closed and requires separate authorisation.**
+- Assessment completion **Date** on the dashboard
 - AI-generated narrative or recommendations
 - Scoring evolution beyond locked v0.3.1 / Phase 2 parity (including future “reliability” confidence models)
 - SaaS foundation features (authentication, cloud persistence, billing, multi-user tenancy)
 - Board PDF / commercial report packages as finished products
+- Using Organisation Profile data to change Health Score, risk, prioritisation or VaR
+
+Organisation Profile (route, domain, feature, persistence, and `docs/ORGANISATION_PROFILE_ENGINE.md`) is implemented in Sprint 005 as contextual pre-assessment data only.
 
 ---
 
