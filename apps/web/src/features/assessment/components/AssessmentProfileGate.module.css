@@ -1,0 +1,26 @@
+.gate {
+  max-width: 36rem;
+  margin: 2rem auto;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid rgba(23, 63, 53, 0.2);
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.title {
+  margin: 0 0 0.7rem;
+  font-size: 1.35rem;
+  color: var(--mr-green, #173f35);
+}
+
+.copy {
+  margin: 0 0 0.85rem;
+  color: var(--mr-muted, #5c6b66);
+  line-height: 1.55;
+}
+
+.link {
+  color: var(--mr-green, #173f35);
+  font-weight: 650;
+  text-underline-offset: 3px;
+}

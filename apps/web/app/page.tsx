@@ -8,12 +8,21 @@ export default function Home() {
         MYReSolve Platform v1.0 migration environment
       </p>
       <p className={styles.linkWrap}>
-        <Link href="/assessment" className={styles.link}>
+        <Link
+          href="/organisation-profile"
+          className={styles.link}
+          data-testid="home-organisation-profile"
+        >
+          Organisation Profile
+        </Link>
+      </p>
+      <p className={styles.linkWrap}>
+        <Link href="/assessment" className={styles.link} data-testid="home-assessment">
           Start assessment
         </Link>
       </p>
       <p className={styles.linkWrap}>
-        <Link href="/dashboard" className={styles.link}>
+        <Link href="/dashboard" className={styles.link} data-testid="home-dashboard">
           Open executive dashboard
         </Link>
       </p>

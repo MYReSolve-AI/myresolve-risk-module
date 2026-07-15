@@ -1,0 +1,26 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--mr-muted);
+}
+
+.dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--mr-line);
+}
+
+.saved .dot {
+  background: var(--mr-good);
+}
+
+.saving .dot {
+  background: var(--mr-gold);
+}
+
+.error .dot {
+  background: var(--mr-danger);
+}

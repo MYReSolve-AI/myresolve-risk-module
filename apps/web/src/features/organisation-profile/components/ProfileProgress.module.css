@@ -1,0 +1,45 @@
+.header {
+  background: var(--mr-surface-elevated);
+  border: 1px solid rgba(221, 201, 167, 0.75);
+  border-radius: var(--mr-radius);
+  box-shadow: var(--mr-shadow);
+  padding: 1.1rem 1.2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--mr-green-2);
+  font-weight: 650;
+}
+
+.meta {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--mr-muted);
+}
+
+.track {
+  width: 100%;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #eee4d6;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--mr-green);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}

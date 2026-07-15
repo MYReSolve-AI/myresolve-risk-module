@@ -1,0 +1,31 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.55rem;
+}
+
+.option {
+  appearance: none;
+  border: 1px solid rgba(221, 201, 167, 0.85);
+  background: #fffcf8;
+  border-radius: 12px;
+  padding: 0.7rem 0.75rem;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  color: var(--mr-ink);
+  text-align: left;
+}
+
+.option:hover,
+.option:focus-visible {
+  border-color: rgba(198, 139, 53, 0.7);
+  outline: none;
+}
+
+.selected {
+  background: rgba(23, 63, 53, 0.06);
+  border-color: var(--mr-green);
+  font-weight: 650;
+  color: var(--mr-green-2);
+}

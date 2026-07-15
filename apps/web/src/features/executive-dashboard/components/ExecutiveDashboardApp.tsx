@@ -10,6 +10,10 @@ import {
   loadAssessmentAnswers,
   saveAssessmentAnswers,
 } from "@/src/lib/assessmentPersistence";
+import {
+  isProfileComplete,
+} from "@/src/domain/organisationProfile";
+import { loadOrganisationProfile } from "@/src/lib/organisationProfilePersistence";
 import { ExecutiveDashboard } from "./ExecutiveDashboard";
 import styles from "./ExecutiveDashboard.module.css";
 
@@ -25,19 +29,26 @@ function isDeveloperModeEnabled(): boolean {
 }
 
 /**
- * Client-only dashboard host. Reads the locked assessment storage key so
- * completed /assessment flows populate the executive view.
+ * Client-only dashboard host. Assessment storage remains the sole scoring input.
+ * Organisation name is display-only context when a completed profile exists (PO-5).
  */
 export function ExecutiveDashboardApp() {
   const [state, setState] = useState<AssessmentAnswers>(() =>
     loadAssessmentAnswers(),
   );
   const developerMode = useMemo(() => isDeveloperModeEnabled(), []);
+  const companyName = useMemo(() => {
+    const profile = loadOrganisationProfile();
+    if (!isProfileComplete(profile)) return undefined;
+    const name = profile.organisation.name.trim();
+    return name.length > 0 ? name : undefined;
+  }, []);
 
   return (
     <ExecutiveDashboard
       state={state}
       assessmentVersion="v0.3.1"
+      companyName={companyName}
       actions={
         developerMode ? (
           <>
