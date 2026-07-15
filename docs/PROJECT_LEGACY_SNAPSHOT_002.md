@@ -1,10 +1,10 @@
 # Project Legacy Snapshot 002
 
-**Status:** Approved post–Sprint 005 platform baseline  
-**Date:** 2026-07-15  
-**Tag:** `legacy-snapshot-002`  
-**Exact SHA:** `bcf4426dfbb4135b56de420be38e0dc18bb0ccb1`  
-**Git message on tag:** Project Legacy Snapshot 002 — post-Sprint 005 approved baseline  
+**Status:** Approved post–Sprint 005 platform baseline
+**Date:** 2026-07-15
+**Tag:** `legacy-snapshot-002`
+**Exact SHA:** `bcf4426dfbb4135b56de420be38e0dc18bb0ccb1`
+**Git message on tag:** Project Legacy Snapshot 002 — post-Sprint 005 approved baseline
 
 This snapshot freezes the MYReSolve platform state on `main` after Sprint 005 (Organisation Profile Engine) and the Operating Manual were merged. It supersedes Snapshot 001 as the current approved baseline while **preserving** Snapshot 001 as the preceding frozen post–Sprint 004 reference.
 
@@ -19,7 +19,7 @@ This snapshot freezes the MYReSolve platform state on `main` after Sprint 005 (O
 - Product operating guidance for current surfaces and vocabulary
 - Updated for Sprint 005 Organisation Profile journey and persistence boundary
 
-**Merged as:** [PR #7](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/7)  
+**Merged as:** [PR #7](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/7)
 **Key documentation commit:** `887fe42222f58cb78179d0ef63b2216fc92711f2`
 
 ### Sprint 005 — Organisation Profile Engine
@@ -31,8 +31,8 @@ This snapshot freezes the MYReSolve platform state on `main` after Sprint 005 (O
 - Specification: `docs/ORGANISATION_PROFILE_ENGINE.md`
 - Operating Manual alignment for the pre-assessment context step
 
-**Merged as:** [PR #8](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/8)  
-**Key feature commit:** `067e848641585d9ed6d1c5c6b00dc3eb01164876`  
+**Merged as:** [PR #8](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/8)
+**Key feature commit:** `067e848641585d9ed6d1c5c6b00dc3eb01164876`
 **Merge commit (this snapshot tip):** `bcf4426dfbb4135b56de420be38e0dc18bb0ccb1`
 
 Snapshot 001 contents (Phase 0–2, Sprint 004 assessment and dashboard, locked v0.3.1 domain) remain in this tip as ancestors.
