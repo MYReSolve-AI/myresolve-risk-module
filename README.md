@@ -1,7 +1,7 @@
 # MYReSolve
 
-**Product ID:** MR-PRD-001  
-**Locked assessment:** v0.3.1 (immutable golden baseline)  
+**Product ID:** MR-PRD-001
+**Locked assessment:** v0.3.1 (immutable golden baseline)
 **Platform workspace:** Next.js migration environment (`apps/web`)
 
 A commercial SaaS platform in progress. The approved executive risk and cost assessment remains the locked v0.3 / v0.3.1 browser prototype until behavioural parity is formally approved.
