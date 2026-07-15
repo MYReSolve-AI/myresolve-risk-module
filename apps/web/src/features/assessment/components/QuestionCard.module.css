@@ -1,0 +1,44 @@
+.card {
+  background: var(--mr-surface-elevated);
+  border: 1px solid rgba(221, 201, 167, 0.75);
+  border-radius: var(--mr-radius);
+  box-shadow: var(--mr-shadow);
+  padding: 1.5rem 1.45rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mr-gold);
+  font-weight: 650;
+}
+
+.title {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+  color: var(--mr-green-2);
+}
+
+.help {
+  margin: 0.65rem 0 0;
+  color: var(--mr-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.intro {
+  margin: 0;
+  padding: 0.85rem 0.95rem;
+  border-radius: 12px;
+  background: rgba(23, 63, 53, 0.04);
+  color: var(--mr-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
