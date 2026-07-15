@@ -1,10 +1,10 @@
 # Scoring parity — v0.3.1 behavioural preservation
 
-**Status:** Phase 2 domain extraction  
-**Source of truth:** `legacy/v0.3.1/index.html`  
+**Status:** Phase 2 domain extraction
+**Source of truth:** `legacy/v0.3.1/index.html`
 **Implementation:** `apps/web/src/domain/assessment/`
 
-This document describes the formulas extracted for automated parity testing.  
+This document describes the formulas extracted for automated parity testing.
 **This is behavioural preservation of the locked prototype, not commercial or financial validation of the cost-of-failure model.**
 
 ---
@@ -20,7 +20,7 @@ avg = sum(maturityValues) / count
 sectionScore = count === 0 ? 0 : Math.round(((avg - 1) / 4) * 100)
 ```
 
-Legacy `sectionScore` counts a value when `Number(answers[key]) >= 1` (unanswered / zero ignored).  
+Legacy `sectionScore` counts a value when `Number(answers[key]) >= 1` (unanswered / zero ignored).
 Legacy `answered()` used for confidence averaging and completion requires `1 <= value <= 5`.
 
 ### Section risk score
@@ -168,7 +168,7 @@ Default when maturity is selected without a confidence choice: **medium**.
 
 ## Explicit statement
 
-> Phase 2 extracts and tests the locked v0.3.1 calculation behaviour for migration safety.  
+> Phase 2 extracts and tests the locked v0.3.1 calculation behaviour for migration safety.
 > Passing these tests proves **behavioural parity with the prototype**, not that cost figures are commercially validated, auditable, or suitable as financial advice.
 
 Do not change these formulas during UI porting unless a new product version is approved and golden fixtures are regenerated under that version.
