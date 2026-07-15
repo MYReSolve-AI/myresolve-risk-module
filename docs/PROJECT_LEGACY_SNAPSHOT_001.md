@@ -28,7 +28,7 @@ This snapshot freezes the MYReSolve platform state on `main` after Phase 0–2 a
 - Scoring parity documentation
 
 **Merged as:** [PR #2](https://github.com/MYReSolve-AI/myresolve-risk-module/pull/2)
-**Key commit:** `cf8c682` — extract assessment domain engine with parity tests
+**Key commit:** `cf8c682` — feat: extract assessment domain engine with parity tests
 
 ### Sprint 004 — Executive experience
 
