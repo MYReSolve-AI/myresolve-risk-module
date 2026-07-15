@@ -3,9 +3,9 @@ import "@/src/styles/brand.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MYReSolve Platform",
+  title: "MYReSolve: Less time reporting. More time improving.",
   description:
-    "MYReSolve Platform — executive risk assessment and dashboard migration environment",
+    "MYReSolve turns a structured executive assessment into a clear view of operational health, risk and potential value at risk.",
 };
 
 export default function RootLayout({
@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <body>{children}</body>
     </html>
   );
