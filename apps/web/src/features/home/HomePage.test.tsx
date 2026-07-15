@@ -37,6 +37,12 @@ describe("Landing Page V2", () => {
         name: "Less time reporting. More time improving.",
       }),
     ).toBeInTheDocument();
+    expect(screen.getByTestId("home-problem")).toHaveTextContent(
+      "MYReSolve helps leaders understand where their business stands, what needs attention first and where value may be at risk.",
+    );
+    expect(screen.getByTestId("home-support")).toHaveTextContent(
+      "Leaders can then choose expert support from MYReSolve or subscribe to the platform to track performance and lead improvement themselves.",
+    );
     expect(screen.getByTestId("home-hero-tag")).toHaveTextContent(
       "One shared starting point for a better leadership conversation.",
     );
