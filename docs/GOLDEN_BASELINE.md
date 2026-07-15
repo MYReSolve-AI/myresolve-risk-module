@@ -2,11 +2,11 @@
 
 ## Locked reference
 
-**Release:** v0.3.1  
-**Product ID:** MR-PRD-001  
-**Canonical file:** `legacy/v0.3.1/index.html`  
-**Archive snapshot:** `legacy/v0.3.1/archive/MYReSolve_Risk_Module_v0.3.1_GitHub_Hotfix.zip`  
-**Content checksum (MD5):** `64e282b822c4bcd612bfa0e4ad8803aa`  
+**Release:** v0.3.1
+**Product ID:** MR-PRD-001
+**Canonical file:** `legacy/v0.3.1/index.html`
+**Archive snapshot:** `legacy/v0.3.1/archive/MYReSolve_Risk_Module_v0.3.1_GitHub_Hotfix.zip`
+**Content checksum (MD5):** `64e282b822c4bcd612bfa0e4ad8803aa`
 **Status:** Immutable golden baseline
 
 v0.3.1 is a packaging and deployment hotfix only. The approved assessment design, wording, styling, scoring experience and maturity model remain the locked **v0.3** product baseline.
@@ -30,7 +30,7 @@ Persistence is browser-local only. There is no server-side storage in v0.3.1.
 Each department has **4** questions (6 × 4 = **24**).
 
 ### 1. People
-Intro: Assess leadership depth, role clarity, capability and accountability.  
+Intro: Assess leadership depth, role clarity, capability and accountability.
 Estimated annual cost range (GBP): 750,000 – 1,500,000
 
 1. Do we have the right people in the right roles?
@@ -39,7 +39,7 @@ Estimated annual cost range (GBP): 750,000 – 1,500,000
 4. Is accountability clear and reinforced?
 
 ### 2. Process
-Intro: Assess simplicity, consistency, hand-offs and continuous improvement.  
+Intro: Assess simplicity, consistency, hand-offs and continuous improvement.
 Estimated annual cost range (GBP): 1,000,000 – 2,200,000
 
 1. Are our core processes simple, standard and followed?
@@ -48,7 +48,7 @@ Estimated annual cost range (GBP): 1,000,000 – 2,200,000
 4. Do we measure and improve key processes?
 
 ### 3. Customer
-Intro: Assess customer understanding, resolution, effort and lifetime value.  
+Intro: Assess customer understanding, resolution, effort and lifetime value.
 Estimated annual cost range (GBP): 1,200,000 – 2,800,000
 
 1. Do we understand our customers deeply?
@@ -57,7 +57,7 @@ Estimated annual cost range (GBP): 1,200,000 – 2,800,000
 4. Are we creating loyalty rather than handling demand?
 
 ### 4. Operations
-Intro: Assess visibility, capacity, asset use and operating discipline.  
+Intro: Assess visibility, capacity, asset use and operating discipline.
 Estimated annual cost range (GBP): 800,000 – 1,800,000
 
 1. Do we have clear end-to-end operational visibility?
@@ -66,7 +66,7 @@ Estimated annual cost range (GBP): 800,000 – 1,800,000
 4. Do we have a culture of continuous improvement?
 
 ### 5. Technology
-Intro: Assess whether systems, data and automation help people perform.  
+Intro: Assess whether systems, data and automation help people perform.
 Estimated annual cost range (GBP): 400,000 – 1,000,000
 
 1. Does technology help rather than hinder teams?
@@ -75,7 +75,7 @@ Estimated annual cost range (GBP): 400,000 – 1,000,000
 4. Are we automating the right things?
 
 ### 6. Finance
-Intro: Assess cost-to-serve, reporting confidence and investment discipline.  
+Intro: Assess cost-to-serve, reporting confidence and investment discipline.
 Estimated annual cost range (GBP): 600,000 – 1,400,000
 
 1. Do we understand the true cost of serving customers?

@@ -26,5 +26,5 @@ npm run build
 npm run start
 ```
 
-Locked legacy prototype: `../../legacy/v0.3.1/index.html`  
+Locked legacy prototype: `../../legacy/v0.3.1/index.html`
 Migration docs: `../../docs/MIGRATION_PLAN.md`
