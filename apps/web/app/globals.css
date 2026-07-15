@@ -7,9 +7,9 @@ body {
 
 body {
   min-height: 100vh;
-  color: #1e2825;
-  background: #f7f3ec;
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--mr-ink);
+  background: var(--mr-cream);
+  font-family: var(--mr-font-ui);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

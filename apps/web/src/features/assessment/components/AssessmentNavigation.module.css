@@ -1,0 +1,43 @@
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.button {
+  appearance: none;
+  border: 1px solid var(--mr-green);
+  background: var(--mr-green);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.65rem 1.1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--mr-green);
+}
+
+.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--mr-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

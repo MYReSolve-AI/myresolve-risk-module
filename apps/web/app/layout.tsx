@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import "@/src/styles/brand.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "MYReSolve Platform",
-  description: "MYReSolve Platform v1.0 migration environment",
+  description:
+    "MYReSolve Platform — executive risk assessment and dashboard migration environment",
 };
 
 export default function RootLayout({
