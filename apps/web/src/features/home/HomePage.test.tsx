@@ -1,11 +1,29 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
-import Home from "@/app/page";
+import { LandingPage } from "./LandingPage";
+import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
 describe("Landing Page V2", () => {
+  it("renders validated publisher wording without allowing route changes", () => {
+    const content = structuredClone(LANDING_PAGE_FALLBACK);
+    content.hero.headline = "Publisher-approved headline";
+    content.primaryCta.label = "Begin now";
+
+    render(<LandingPage content={content} />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Publisher-approved headline" }),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("home-primary-cta")).toHaveTextContent("Begin now");
+    expect(screen.getByTestId("home-primary-cta")).toHaveAttribute(
+      "href",
+      "/organisation-profile",
+    );
+  });
+
   it("shows the approved editorial hero and primary CTA to Organisation Profile", () => {
-    render(<Home />);
+    render(<LandingPage />);
 
     expect(screen.getByTestId("home-eyebrow")).toHaveTextContent(
       "Operational clarity for leaders",
@@ -37,7 +55,7 @@ describe("Landing Page V2", () => {
   });
 
   it("exposes How it works as an in-page anchor with the human journey", () => {
-    render(<Home />);
+    render(<LandingPage />);
 
     const how = screen.getByTestId("how-it-works");
     expect(how).toHaveAttribute("id", "how-it-works");
@@ -62,7 +80,7 @@ describe("Landing Page V2", () => {
   });
 
   it("includes leadership conversation copy and the financial qualification", () => {
-    render(<Home />);
+    render(<LandingPage />);
 
     const clarity = screen.getByTestId("home-clarity");
     expect(
@@ -87,7 +105,7 @@ describe("Landing Page V2", () => {
   });
 
   it("shows From→To clarity and familiar observations without a product preview", () => {
-    render(<Home />);
+    render(<LandingPage />);
 
     expect(screen.getByTestId("home-pull-statement")).toHaveTextContent(
       "Reporting creates visibility. MYReSolve is designed to create clarity.",
@@ -112,7 +130,7 @@ describe("Landing Page V2", () => {
   });
 
   it("does not expose booking links, cloud-future wording or migration shortcuts", () => {
-    render(<Home />);
+    render(<LandingPage />);
 
     const links = screen.getAllByRole("link");
     for (const link of links) {
@@ -132,7 +150,7 @@ describe("Landing Page V2", () => {
   });
 
   it("includes the current browser-local privacy note near the final CTA", () => {
-    render(<Home />);
+    render(<LandingPage />);
     expect(screen.getByTestId("home-privacy-note")).toHaveTextContent(
       "Your information is saved only in this browser on this device. It is not synced to a cloud account.",
     );
@@ -144,7 +162,7 @@ describe("Landing Page V2", () => {
   });
 
   it("uses no em or en dashes as sentence punctuation in customer-facing copy", () => {
-    render(<Home />);
+    render(<LandingPage />);
     const pageText = screen.getByTestId("landing-page").textContent ?? "";
     expect(pageText).not.toMatch(/[—–]/);
     expect(

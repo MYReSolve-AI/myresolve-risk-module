@@ -1,0 +1,100 @@
+{
+  "seo": {
+    "title": "MYReSolve: Less time reporting. More time improving.",
+    "description": "MYReSolve turns a structured executive assessment into a clear view of operational health, risk and potential value at risk."
+  },
+  "hero": {
+    "eyebrow": "Operational clarity for leaders",
+    "headline": "Less time reporting. More time improving.",
+    "problemText": "Leadership needs confidence. But too often, your best people spend their time rebuilding updates, packs and slides instead of improving delivery.",
+    "supportText": "MYReSolve gives leadership one structured view of operational health, risk and where attention should go first.",
+    "supportingLine": "One shared starting point for a better leadership conversation."
+  },
+  "primaryCta": {
+    "label": "Start your assessment"
+  },
+  "secondaryCta": {
+    "label": "See how it works"
+  },
+  "campaign": {
+    "enabled": false,
+    "label": "",
+    "headline": "",
+    "body": ""
+  },
+  "familiar": {
+    "introHeading": "Does this feel familiar?",
+    "intro": "For many leaders, the reporting cycle has become work in its own right.",
+    "observation1": {
+      "title": "Different meeting. Same information. Rebuilt again.",
+      "body": "Teams gather and reformat information from across the business for different audiences."
+    },
+    "observation2": {
+      "title": "The people closest to the work are pulled into explaining it.",
+      "body": "Time spent preparing confidence packs is time not spent improving performance."
+    },
+    "observation3": {
+      "title": "The report is finished. The first priority is still unclear.",
+      "body": "More information does not always create a clearer decision."
+    },
+    "transitionStatement": "Reporting creates visibility. MYReSolve is designed to create clarity."
+  },
+  "fromTo": {
+    "heading": "From reporting activity to operational clarity",
+    "row1": {
+      "from": "Scattered operational updates",
+      "to": "One structured executive assessment"
+    },
+    "row2": {
+      "from": "Different views of the same business",
+      "to": "A shared view of operational health"
+    },
+    "row3": {
+      "from": "A long list of issues",
+      "to": "The three areas needing attention first"
+    },
+    "row4": {
+      "from": "Financial exposure discussed in isolation",
+      "to": "An illustrative estimate for comparing potential exposure"
+    }
+  },
+  "howItWorks": {
+    "heading": "How it works",
+    "step1": {
+      "title": "Describe your organisation",
+      "body": "Give the assessment enough context to understand how your operation works."
+    },
+    "step2": {
+      "title": "Bring leadership knowledge together",
+      "body": "Answer 24 structured questions across six operational areas."
+    },
+    "step3": {
+      "title": "See where to focus first",
+      "body": "Get a shared view of operational health, risk, potential exposure and priority areas."
+    }
+  },
+  "clarity": {
+    "heading": "A clearer leadership conversation",
+    "intro": "MYReSolve helps leadership move past “Are we in control?” It opens three more useful questions:",
+    "q1": {
+      "title": "What is working?",
+      "body": "See the overall operational picture and areas of strength."
+    },
+    "q2": {
+      "title": "Where is risk building?",
+      "body": "Compare health and exposure across People, Process, Customer, Operations, Technology and Finance."
+    },
+    "q3": {
+      "title": "Where should we focus first?",
+      "body": "Bring the three highest-risk areas into one shared conversation."
+    }
+  },
+  "finalCta": {
+    "title": "Give your team a clearer place to start.",
+    "body": "Start with what your leadership team already knows. Turn that knowledge into a shared view of health, risk and priority.",
+    "buttonLabel": "Start your assessment"
+  },
+  "footer": {
+    "description": "Structured executive assessment for operational health, risk and potential value at risk."
+  }
+}

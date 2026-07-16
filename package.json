@@ -9,6 +9,8 @@
     "web:build": "npm --prefix apps/web run build",
     "web:start": "npm --prefix apps/web run start",
     "web:test": "npm --prefix apps/web run test",
+    "studio:dev": "npm --prefix apps/studio run dev",
+    "studio:build": "npm --prefix apps/studio run build",
     "lint": "npm run web:lint",
     "build": "npm run web:build",
     "test": "npm run web:test"
