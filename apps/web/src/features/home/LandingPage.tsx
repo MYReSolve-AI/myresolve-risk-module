@@ -1,4 +1,8 @@
 import Link from "next/link";
+import {
+  LANDING_PAGE_FALLBACK,
+  type LandingPageContent,
+} from "./landingContent";
 import styles from "./LandingPage.module.css";
 
 const PRIMARY_HREF = "/organisation-profile";
@@ -6,7 +10,24 @@ const PRIMARY_HREF = "/organisation-profile";
 const VAR_QUALIFICATION =
   "Estimated Annual Value at Risk is an illustrative modelled estimate. It is not an audited loss calculation or financial forecast.";
 
-export function LandingPage() {
+type LandingPageProps = {
+  content?: LandingPageContent;
+};
+
+export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProps) {
+  const {
+    hero,
+    primaryCta,
+    secondaryCta,
+    campaign,
+    familiar,
+    fromTo,
+    howItWorks,
+    clarity,
+    finalCta,
+    footer,
+  } = content;
+
   return (
     <div className={styles.page} data-testid="landing-page">
       <a href="#main-content" className={styles.skipLink}>
@@ -30,29 +51,38 @@ export function LandingPage() {
               className={styles.navCta}
               data-testid="home-header-cta"
             >
-              Start your assessment
+              {primaryCta.label}
             </Link>
           </nav>
         </div>
       </header>
 
       <main id="main-content">
+        {campaign.enabled ? (
+          <section className={styles.campaign} aria-labelledby="campaign-heading">
+            <div className={styles.campaignInner}>
+              <p className={styles.campaignLabel}>{campaign.label}</p>
+              <h2 id="campaign-heading" className={styles.campaignTitle}>
+                {campaign.headline}
+              </h2>
+              <p className={styles.campaignBody}>{campaign.body}</p>
+            </div>
+          </section>
+        ) : null}
+
         <section className={styles.hero} aria-labelledby="hero-headline">
           <div className={styles.heroInner}>
             <p className={styles.eyebrow} data-testid="home-eyebrow">
-              Operational clarity for leaders
+              {hero.eyebrow}
             </p>
             <h1 id="hero-headline" className={styles.headline}>
-              Less time reporting. More time improving.
+              {hero.headline}
             </h1>
             <p className={styles.problem} data-testid="home-problem">
-              Leadership needs confidence. But too often, your best people spend
-              their time rebuilding updates, packs and slides instead of improving
-              delivery.
+              {hero.problemText}
             </p>
             <p className={styles.support} data-testid="home-support">
-              MYReSolve gives leadership one structured view of operational
-              health, risk and where attention should go first.
+              {hero.supportText}
             </p>
             <div className={styles.ctaRow}>
               <Link
@@ -60,19 +90,21 @@ export function LandingPage() {
                 className={styles.ctaPrimary}
                 data-testid="home-primary-cta"
               >
-                Start your assessment
+                {primaryCta.label}
               </Link>
               <a
                 href="#how-it-works"
                 className={styles.ctaSecondary}
                 data-testid="home-secondary-cta"
               >
-                See how it works
+                {secondaryCta.label}
               </a>
             </div>
-            <p className={styles.heroTag} data-testid="home-hero-tag">
-              One shared starting point for a better leadership conversation.
-            </p>
+            {hero.supportingLine ? (
+              <p className={styles.heroTag} data-testid="home-hero-tag">
+                {hero.supportingLine}
+              </p>
+            ) : null}
           </div>
         </section>
 
@@ -84,44 +116,40 @@ export function LandingPage() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
               <h2 id="familiar-heading" className={styles.sectionTitle}>
-                Does this feel familiar?
+                {familiar.introHeading}
               </h2>
               <p className={styles.sectionLead}>
-                For many leaders, the reporting cycle has become work in its own
-                right.
+                {familiar.intro}
               </p>
             </div>
             <div className={styles.observations}>
               <article className={styles.observation}>
                 <h3 className={styles.observationTitle}>
-                  Different meeting. Same information. Rebuilt again.
+                  {familiar.observation1.title}
                 </h3>
                 <p className={styles.observationBody}>
-                  Teams gather and reformat information from across the business
-                  for different audiences.
+                  {familiar.observation1.body}
                 </p>
               </article>
               <article className={styles.observation}>
                 <h3 className={styles.observationTitle}>
-                  The people closest to the work are pulled into explaining it.
+                  {familiar.observation2.title}
                 </h3>
                 <p className={styles.observationBody}>
-                  Time spent preparing confidence packs is time not spent
-                  improving performance.
+                  {familiar.observation2.body}
                 </p>
               </article>
               <article className={styles.observation}>
                 <h3 className={styles.observationTitle}>
-                  The report is finished. The first priority is still unclear.
+                  {familiar.observation3.title}
                 </h3>
                 <p className={styles.observationBody}>
-                  More information does not always create a clearer decision.
+                  {familiar.observation3.body}
                 </p>
               </article>
             </div>
             <p className={styles.pull} data-testid="home-pull-statement">
-              Reporting creates visibility. MYReSolve is designed to create
-              clarity.
+              {familiar.transitionStatement}
             </p>
           </div>
         </section>
@@ -135,7 +163,7 @@ export function LandingPage() {
           <div className={styles.sectionInnerWide}>
             <div className={styles.sectionIntro}>
               <h2 id="from-to-heading" className={styles.sectionTitle}>
-                From reporting activity to operational clarity
+                {fromTo.heading}
               </h2>
             </div>
             <div className={styles.compare} role="table" aria-label="From reporting to MYReSolve">
@@ -148,22 +176,20 @@ export function LandingPage() {
                 </p>
               </div>
               <div className={styles.compareRow} role="row">
-                <p role="cell">Scattered operational updates</p>
-                <p role="cell">One structured executive assessment</p>
+                <p role="cell">{fromTo.row1.from}</p>
+                <p role="cell">{fromTo.row1.to}</p>
               </div>
               <div className={styles.compareRow} role="row">
-                <p role="cell">Different views of the same business</p>
-                <p role="cell">A shared view of operational health</p>
+                <p role="cell">{fromTo.row2.from}</p>
+                <p role="cell">{fromTo.row2.to}</p>
               </div>
               <div className={styles.compareRow} role="row">
-                <p role="cell">A long list of issues</p>
-                <p role="cell">The three areas needing attention first</p>
+                <p role="cell">{fromTo.row3.from}</p>
+                <p role="cell">{fromTo.row3.to}</p>
               </div>
               <div className={styles.compareRow} role="row">
-                <p role="cell">Financial exposure discussed in isolation</p>
-                <p role="cell">
-                  An illustrative estimate for comparing potential exposure
-                </p>
+                <p role="cell">{fromTo.row4.from}</p>
+                <p role="cell">{fromTo.row4.to}</p>
               </div>
             </div>
             <p
@@ -184,7 +210,7 @@ export function LandingPage() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
               <h2 id="how-it-works-heading" className={styles.sectionTitle}>
-                How it works
+                {howItWorks.heading}
               </h2>
             </div>
             <ol className={styles.steps}>
@@ -197,12 +223,11 @@ export function LandingPage() {
                       className={styles.stepLink}
                       data-testid="home-step-org-profile"
                     >
-                      Describe your organisation
+                      {howItWorks.step1.title}
                     </Link>
                   </h3>
                   <p className={styles.stepBody}>
-                    Give the assessment enough context to understand how your
-                    operation works.
+                    {howItWorks.step1.body}
                   </p>
                 </div>
               </li>
@@ -210,21 +235,18 @@ export function LandingPage() {
                 <p className={styles.stepNumber}>2</p>
                 <div>
                   <h3 className={styles.stepTitle}>
-                    Bring leadership knowledge together
+                    {howItWorks.step2.title}
                   </h3>
                   <p className={styles.stepBody}>
-                    Answer 24 structured questions across six operational areas.
+                    {howItWorks.step2.body}
                   </p>
                 </div>
               </li>
               <li className={styles.step}>
                 <p className={styles.stepNumber}>3</p>
                 <div>
-                  <h3 className={styles.stepTitle}>See where to focus first</h3>
-                  <p className={styles.stepBody}>
-                    Get a shared view of operational health, risk, potential
-                    exposure and priority areas.
-                  </p>
+                  <h3 className={styles.stepTitle}>{howItWorks.step3.title}</h3>
+                  <p className={styles.stepBody}>{howItWorks.step3.body}</p>
                 </div>
               </li>
             </ol>
@@ -240,34 +262,27 @@ export function LandingPage() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
               <h2 id="clarity-heading" className={styles.sectionTitle}>
-                A clearer leadership conversation
+                {clarity.heading}
               </h2>
               <p className={styles.sectionLead}>
-                MYReSolve helps leadership move past “Are we in control?” It opens
-                three more useful questions:
+                {clarity.intro}
               </p>
             </div>
             <div className={styles.questions} data-testid="home-clarity-questions">
               <article className={styles.question}>
-                <h3 className={styles.questionTitle}>What is working?</h3>
-                <p className={styles.questionBody}>
-                  See the overall operational picture and areas of strength.
-                </p>
+                <h3 className={styles.questionTitle}>{clarity.q1.title}</h3>
+                <p className={styles.questionBody}>{clarity.q1.body}</p>
               </article>
               <article className={styles.question}>
-                <h3 className={styles.questionTitle}>Where is risk building?</h3>
-                <p className={styles.questionBody}>
-                  Compare health and exposure across People, Process, Customer,
-                  Operations, Technology and Finance.
-                </p>
+                <h3 className={styles.questionTitle}>{clarity.q2.title}</h3>
+                <p className={styles.questionBody}>{clarity.q2.body}</p>
               </article>
               <article className={styles.question}>
                 <h3 className={styles.questionTitle}>
-                  Where should we focus first?
+                  {clarity.q3.title}
                 </h3>
                 <p className={styles.questionBody}>
-                  Bring the three highest-risk areas into one shared
-                  conversation.
+                  {clarity.q3.body}
                 </p>
               </article>
             </div>
@@ -287,11 +302,10 @@ export function LandingPage() {
           <div className={styles.sectionInnerNarrow}>
             <div className={styles.sectionIntro}>
               <h2 id="final-cta-heading" className={styles.finalTitle}>
-                Give your team a clearer place to start.
+                {finalCta.title}
               </h2>
               <p className={styles.finalCopy}>
-                Start with what your leadership team already knows. Turn that
-                knowledge into a shared view of health, risk and priority.
+                {finalCta.body}
               </p>
             </div>
             <Link
@@ -299,7 +313,7 @@ export function LandingPage() {
               className={styles.ctaPrimary}
               data-testid="home-final-cta"
             >
-              Start your assessment
+              {finalCta.buttonLabel}
             </Link>
             <p className={styles.privacy} data-testid="home-privacy-note">
               Your information is saved only in this browser on this device. It is
@@ -313,8 +327,7 @@ export function LandingPage() {
         <div className={styles.footerInner}>
           <p className={styles.footerBrand}>MYReSolve</p>
           <p className={styles.footerDesc}>
-            Structured executive assessment for operational health, risk and
-            potential value at risk.
+            {footer.description}
           </p>
         </div>
       </footer>

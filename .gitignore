@@ -5,6 +5,8 @@ apps/*/node_modules/
 # Next.js
 apps/web/.next/
 apps/web/out/
+apps/studio/dist/
+apps/studio/.sanity/
 
 # Logs / OS
 .DS_Store
