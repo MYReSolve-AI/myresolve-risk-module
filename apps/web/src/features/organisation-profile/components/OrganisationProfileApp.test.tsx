@@ -30,11 +30,11 @@ describe("OrganisationProfileApp", () => {
     pushMock.mockReset();
   });
 
-  it("shows privacy guidance near the first step", () => {
+  it("shows privacy guidance at the bottom of each profile page", () => {
     render(<OrganisationProfileApp />);
-    expect(screen.getByTestId("organisation-profile-privacy")).toHaveTextContent(
-      ORGANISATION_PROFILE_PRIVACY_COPY,
-    );
+    const privacy = screen.getByTestId("organisation-profile-privacy");
+    expect(privacy).toHaveTextContent(ORGANISATION_PROFILE_PRIVACY_COPY);
+    expect(screen.getByTestId("profile-nav").nextElementSibling).toBe(privacy);
   });
 
   it("renders all profile sections in order", async () => {
@@ -45,6 +45,26 @@ describe("OrganisationProfileApp", () => {
       expect(
         screen.getByTestId(`profile-section-${SECTION_ORDER[i]}`),
       ).toBeTruthy();
+      if (i < SECTION_ORDER.length - 1) {
+        await user.click(screen.getByTestId("profile-next"));
+      }
+    }
+  });
+
+  it("explains every metric in plain English", async () => {
+    const user = userEvent.setup();
+    render(<OrganisationProfileApp />);
+
+    for (let i = 0; i < SECTION_ORDER.length; i++) {
+      const section = screen.getByTestId(
+        `profile-section-${SECTION_ORDER[i]}`,
+      );
+      const fields = section.querySelectorAll('[data-testid^="field-"]');
+      expect(fields.length).toBeGreaterThan(0);
+      fields.forEach((field) => {
+        expect(field.querySelector("p")?.textContent?.trim()).toBeTruthy();
+      });
+
       if (i < SECTION_ORDER.length - 1) {
         await user.click(screen.getByTestId("profile-next"));
       }
@@ -145,11 +165,21 @@ describe("OrganisationProfileApp", () => {
 
     await user.click(screen.getByTestId("operating-models-add-manufacturing"));
     await user.click(screen.getByTestId("operating-models-add-retail"));
+    await user.click(
+      screen.getByTestId(
+        "operating-models-add-customer_service_contact_centre",
+      ),
+    );
     await user.click(screen.getByTestId("operating-models-add-other"));
 
     expect(screen.getByTestId("operating-models-chips")).toBeTruthy();
     expect(
       screen.getByRole("button", { name: "Remove Manufacturing" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", {
+        name: "Remove Customer service / contact centre",
+      }),
     ).toBeTruthy();
     expect(screen.getByTestId("operations.operatingModelOther")).toBeTruthy();
 
@@ -164,7 +194,11 @@ describe("OrganisationProfileApp", () => {
     const raw = JSON.parse(
       localStorage.getItem(ORGANISATION_PROFILE_STORAGE_KEY) || "{}",
     );
-    expect(raw.operations.operatingModels).toEqual(["manufacturing", "retail"]);
+    expect(raw.operations.operatingModels).toEqual([
+      "manufacturing",
+      "retail",
+      "customer_service_contact_centre",
+    ]);
     expect(raw.operations.operatingModelOther).toBe("");
   });
 
@@ -219,6 +253,14 @@ describe("OrganisationProfileApp", () => {
     await user.click(screen.getByTestId("profile-open-review"));
     await user.click(screen.getByTestId("profile-review-complete"));
     expect(screen.getByTestId("profile-validation")).toBeTruthy();
+    expect(
+      screen
+        .getByTestId("review-organisation.name")
+        .querySelector('[aria-label="Incomplete"]'),
+    ).toBeTruthy();
+    expect(
+      screen.getByTestId("review-organisation.name").querySelector("button"),
+    ).toHaveTextContent("Edit");
     expect(pushMock).not.toHaveBeenCalled();
   });
 
@@ -227,6 +269,14 @@ describe("OrganisationProfileApp", () => {
     saveOrganisationProfile(fillRequiredOrganisationProfile());
     render(<OrganisationProfileApp />);
     await user.click(screen.getByTestId("profile-open-review"));
+    expect(
+      screen.getByRole("heading", { name: "Review Profile" }),
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByTestId("review-organisation.name")
+        .querySelector('[aria-label="Complete"]'),
+    ).toBeTruthy();
     expect(screen.getByTestId("profile-status-ready")).toBeTruthy();
     expect(loadOrganisationProfile().completedAt).toBeNull();
   });

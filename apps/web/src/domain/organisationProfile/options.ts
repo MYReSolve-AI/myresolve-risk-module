@@ -45,6 +45,10 @@ export const OPERATING_MODEL_OPTIONS: SelectOption<OperatingModel>[] = [
     label: "Installation/field services",
   },
   { value: "repairs_aftercare", label: "Repairs/aftercare" },
+  {
+    value: "customer_service_contact_centre",
+    label: "Customer service / contact centre",
+  },
   { value: "professional_services", label: "Professional services" },
   { value: "other", label: "Other" },
 ];

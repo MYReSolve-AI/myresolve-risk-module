@@ -21,7 +21,6 @@ export { StatusBadge, RiskBadge, maturityTone, riskTone } from "./ui/StatusBadge
 export { SectionHeading } from "./ui/SectionHeading";
 export { DashboardSection } from "./ui/DashboardSection";
 export { PrioritiesList, PrioritiesPanel } from "./components/PrioritiesList";
-export { NarrativePanel } from "./components/NarrativePanel";
 export { ExecutiveHealthScore } from "./components/ExecutiveHealthScore";
 export { AnnualValueAtRiskCard } from "./components/AnnualValueAtRiskCard";
 export { AssessmentConfidenceCard } from "./components/AssessmentConfidenceCard";

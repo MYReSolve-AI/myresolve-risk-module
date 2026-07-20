@@ -1,4 +1,4 @@
-import { ProfileField } from "./ProfileField";
+import { ProfileField, profileField } from "./ProfileField";
 import styles from "./StrategicPriorityField.module.css";
 
 export function StrategicPriorityField({
@@ -18,8 +18,7 @@ export function StrategicPriorityField({
   return (
     <div className={styles.stack} data-testid="strategic-priorities">
       <ProfileField
-        label="Strategic priority 1"
-        governance="required"
+        {...profileField("strategicPriorities.priority1")}
         htmlFor="priority1"
       >
         <input
@@ -31,8 +30,7 @@ export function StrategicPriorityField({
         />
       </ProfileField>
       <ProfileField
-        label="Strategic priority 2"
-        governance="required"
+        {...profileField("strategicPriorities.priority2")}
         htmlFor="priority2"
       >
         <input
@@ -44,8 +42,7 @@ export function StrategicPriorityField({
         />
       </ProfileField>
       <ProfileField
-        label="Strategic priority 3"
-        governance="required"
+        {...profileField("strategicPriorities.priority3")}
         htmlFor="priority3"
       >
         <input
@@ -57,8 +54,7 @@ export function StrategicPriorityField({
         />
       </ProfileField>
       <ProfileField
-        label="Biggest concern today"
-        governance="required"
+        {...profileField("strategicPriorities.biggestConcern")}
         htmlFor="biggestConcern"
       >
         <textarea
@@ -70,8 +66,7 @@ export function StrategicPriorityField({
         />
       </ProfileField>
       <ProfileField
-        label="What success looks like in 12 months"
-        governance="required"
+        {...profileField("strategicPriorities.successIn12Months")}
         htmlFor="successIn12Months"
       >
         <textarea
@@ -83,8 +78,7 @@ export function StrategicPriorityField({
         />
       </ProfileField>
       <ProfileField
-        label="Area that would create the greatest value if improved"
-        governance="required"
+        {...profileField("strategicPriorities.greatestValueArea")}
         htmlFor="greatestValueArea"
       >
         <textarea

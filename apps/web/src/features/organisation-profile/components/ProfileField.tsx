@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
-import type { FieldGovernance } from "@/src/domain/organisationProfile";
+import {
+  PROFILE_FIELDS,
+  type FieldGovernance,
+  type ProfileFieldPath,
+} from "@/src/domain/organisationProfile";
 import styles from "./ProfileField.module.css";
 
 export function ProfileField({
@@ -11,7 +15,7 @@ export function ProfileField({
 }: {
   label: string;
   governance: FieldGovernance;
-  help?: string;
+  help: string;
   children: ReactNode;
   htmlFor?: string;
 }) {
@@ -38,4 +42,17 @@ export function ProfileField({
       <div className={styles.control}>{children}</div>
     </div>
   );
+}
+
+export function profileField(path: ProfileFieldPath) {
+  const definition = PROFILE_FIELDS.find((field) => field.path === path);
+  if (!definition) {
+    throw new Error(`Unknown Organisation Profile field: ${path}`);
+  }
+
+  return {
+    label: definition.label,
+    governance: definition.governance,
+    help: definition.help,
+  };
 }

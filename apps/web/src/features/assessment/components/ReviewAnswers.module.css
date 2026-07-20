@@ -73,8 +73,52 @@
 
 .qAnswer {
   margin: 0.35rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
   color: var(--mr-muted);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.28rem 0.65rem;
+  color: var(--mr-ink);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.critical {
+  background: #fff0ee;
+  border-color: #e4a29c;
+}
+
+.developing {
+  background: #fff3e8;
+  border-color: #e7b27d;
+}
+
+.established {
+  background: #fff8e5;
+  border-color: #dfc078;
+}
+
+.strong {
+  background: #eef8f1;
+  border-color: #9bc9aa;
+}
+
+.leading {
+  background: #e5f3eb;
+  border-color: #70ab8b;
+}
+
+.confidence {
+  color: var(--mr-muted);
 }
 
 .actions {

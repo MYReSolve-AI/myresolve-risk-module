@@ -13,7 +13,7 @@ import {
   type ProfileSectionId,
   type RevenueBand,
 } from "@/src/domain/organisationProfile";
-import { ProfileField } from "./ProfileField";
+import { ProfileField, profileField } from "./ProfileField";
 import { RevenueBandSelector } from "./RevenueBandSelector";
 import { PercentageField } from "./PercentageField";
 import { MultiSelect } from "./MultiSelect";
@@ -62,7 +62,7 @@ function renderFields(
     case "organisation":
       return (
         <>
-          <ProfileField label="Organisation name" governance="required" htmlFor="org-name">
+          <ProfileField {...profileField("organisation.name")} htmlFor="org-name">
             <input
               id="org-name"
               value={profile.organisation.name}
@@ -70,7 +70,7 @@ function renderFields(
               data-testid="organisation.name"
             />
           </ProfileField>
-          <ProfileField label="Industry" governance="required" htmlFor="org-industry">
+          <ProfileField {...profileField("organisation.industry")} htmlFor="org-industry">
             <input
               id="org-industry"
               list="industry-suggestions"
@@ -84,7 +84,7 @@ function renderFields(
               ))}
             </datalist>
           </ProfileField>
-          <ProfileField label="Country" governance="required" htmlFor="org-country">
+          <ProfileField {...profileField("organisation.country")} htmlFor="org-country">
             <input
               id="org-country"
               value={profile.organisation.country}
@@ -92,7 +92,7 @@ function renderFields(
               data-testid="organisation.country"
             />
           </ProfileField>
-          <ProfileField label="Number of employees" governance="required" htmlFor="org-employees">
+          <ProfileField {...profileField("organisation.employeeBand")} htmlFor="org-employees">
             <select
               id="org-employees"
               value={profile.organisation.employeeBand}
@@ -107,7 +107,7 @@ function renderFields(
               ))}
             </select>
           </ProfileField>
-          <ProfileField label="Annual revenue band" governance="required" htmlFor="org-revenue">
+          <ProfileField {...profileField("organisation.annualRevenueBand")} htmlFor="org-revenue">
             <RevenueBandSelector
               name="organisation.annualRevenueBand"
               value={profile.organisation.annualRevenueBand}
@@ -116,11 +116,7 @@ function renderFields(
               }
             />
           </ProfileField>
-          <ProfileField
-            label="Number of operating locations"
-            governance="required"
-            htmlFor="org-locations"
-          >
+          <ProfileField {...profileField("organisation.operatingLocations")} htmlFor="org-locations">
             <input
               id="org-locations"
               type="number"
@@ -135,7 +131,7 @@ function renderFields(
               data-testid="organisation.operatingLocations"
             />
           </ProfileField>
-          <ProfileField label="Growth stage" governance="required" htmlFor="org-growth">
+          <ProfileField {...profileField("organisation.growthStage")} htmlFor="org-growth">
             <select
               id="org-growth"
               value={profile.organisation.growthStage}
@@ -155,7 +151,7 @@ function renderFields(
     case "customers":
       return (
         <>
-          <ProfileField label="Customer type" governance="recommended" htmlFor="cust-type">
+          <ProfileField {...profileField("customers.customerType")} htmlFor="cust-type">
             <select
               id="cust-type"
               value={profile.customers.customerType}
@@ -170,11 +166,7 @@ function renderFields(
               ))}
             </select>
           </ProfileField>
-          <ProfileField
-            label="Number of active customers"
-            governance="recommended"
-            htmlFor="cust-active"
-          >
+          <ProfileField {...profileField("customers.activeCustomers")} htmlFor="cust-active">
             <input
               id="cust-active"
               type="number"
@@ -189,7 +181,7 @@ function renderFields(
               data-testid="customers.activeCustomers"
             />
           </ProfileField>
-          <ProfileField label="NPS" governance="optional" htmlFor="cust-nps" help="Net Promoter Score, if measured">
+          <ProfileField {...profileField("customers.nps")} htmlFor="cust-nps">
             <input
               id="cust-nps"
               type="number"
@@ -203,21 +195,21 @@ function renderFields(
               data-testid="customers.nps"
             />
           </ProfileField>
-          <ProfileField label="Customer retention" governance="recommended" htmlFor="cust-retention">
+          <ProfileField {...profileField("customers.customerRetentionPercent")} htmlFor="cust-retention">
             <PercentageField
               id="customers.customerRetentionPercent"
               value={profile.customers.customerRetentionPercent}
               onChange={(v) => onChange("customers.customerRetentionPercent", v)}
             />
           </ProfileField>
-          <ProfileField label="OTIF or service level" governance="optional" htmlFor="cust-otif">
+          <ProfileField {...profileField("customers.serviceLevelPercent")} htmlFor="cust-otif">
             <PercentageField
               id="customers.serviceLevelPercent"
               value={profile.customers.serviceLevelPercent}
               onChange={(v) => onChange("customers.serviceLevelPercent", v)}
             />
           </ProfileField>
-          <ProfileField label="Complaint rate" governance="optional" htmlFor="cust-complaints">
+          <ProfileField {...profileField("customers.complaintRatePercent")} htmlFor="cust-complaints">
             <PercentageField
               id="customers.complaintRatePercent"
               value={profile.customers.complaintRatePercent}
@@ -229,11 +221,7 @@ function renderFields(
     case "operations":
       return (
         <>
-          <ProfileField
-            label="Which operating models apply?"
-            governance="required"
-            help="Select all that apply."
-          >
+          <ProfileField {...profileField("operations.operatingModels")}>
             <OperatingModelsField
               selected={profile.operations.operatingModels}
               otherDescription={profile.operations.operatingModelOther}
@@ -257,11 +245,7 @@ function renderFields(
               }
             />
           </ProfileField>
-          <ProfileField
-            label="Number of sites or warehouses"
-            governance="recommended"
-            htmlFor="ops-sites"
-          >
+          <ProfileField {...profileField("operations.sitesOrWarehouses")} htmlFor="ops-sites">
             <input
               id="ops-sites"
               type="number"
@@ -276,11 +260,7 @@ function renderFields(
               data-testid="operations.sitesOrWarehouses"
             />
           </ProfileField>
-          <ProfileField
-            label="Deliveries, orders or transactions per week"
-            governance="recommended"
-            htmlFor="ops-tx"
-          >
+          <ProfileField {...profileField("operations.weeklyTransactions")} htmlFor="ops-tx">
             <input
               id="ops-tx"
               type="number"
@@ -295,7 +275,7 @@ function renderFields(
               data-testid="operations.weeklyTransactions"
             />
           </ProfileField>
-          <ProfileField label="Outsourced operations" governance="recommended" htmlFor="ops-out">
+          <ProfileField {...profileField("operations.outsourcedOperations")} htmlFor="ops-out">
             <select
               id="ops-out"
               value={profile.operations.outsourcedOperations}
@@ -312,7 +292,7 @@ function renderFields(
               ))}
             </select>
           </ProfileField>
-          <ProfileField label="Capacity utilisation" governance="optional" htmlFor="ops-capacity">
+          <ProfileField {...profileField("operations.capacityUtilisationPercent")} htmlFor="ops-capacity">
             <PercentageField
               id="operations.capacityUtilisationPercent"
               value={profile.operations.capacityUtilisationPercent}
@@ -320,11 +300,7 @@ function renderFields(
               placeholder="e.g. 75"
             />
           </ProfileField>
-          <ProfileField
-            label="Primary operational constraint"
-            governance="recommended"
-            htmlFor="ops-constraint"
-          >
+          <ProfileField {...profileField("operations.primaryConstraint")} htmlFor="ops-constraint">
             <input
               id="ops-constraint"
               value={profile.operations.primaryConstraint}
@@ -339,7 +315,7 @@ function renderFields(
     case "people":
       return (
         <>
-          <ProfileField label="Total headcount" governance="required" htmlFor="people-headcount">
+          <ProfileField {...profileField("people.totalHeadcount")} htmlFor="people-headcount">
             <input
               id="people-headcount"
               type="number"
@@ -354,7 +330,7 @@ function renderFields(
               data-testid="people.totalHeadcount"
             />
           </ProfileField>
-          <ProfileField label="Leadership team size" governance="recommended" htmlFor="people-leaders">
+          <ProfileField {...profileField("people.leadershipTeamSize")} htmlFor="people-leaders">
             <input
               id="people-leaders"
               type="number"
@@ -369,26 +345,21 @@ function renderFields(
               data-testid="people.leadershipTeamSize"
             />
           </ProfileField>
-          <ProfileField label="Employee turnover" governance="recommended" htmlFor="people-turnover">
+          <ProfileField {...profileField("people.employeeTurnoverPercent")} htmlFor="people-turnover">
             <PercentageField
               id="people.employeeTurnoverPercent"
               value={profile.people.employeeTurnoverPercent}
               onChange={(v) => onChange("people.employeeTurnoverPercent", v)}
             />
           </ProfileField>
-          <ProfileField label="Absence rate" governance="optional" htmlFor="people-absence">
+          <ProfileField {...profileField("people.absenceRatePercent")} htmlFor="people-absence">
             <PercentageField
               id="people.absenceRatePercent"
               value={profile.people.absenceRatePercent}
               onChange={(v) => onChange("people.absenceRatePercent", v)}
             />
           </ProfileField>
-          <ProfileField
-            label="Engagement score"
-            governance="optional"
-            htmlFor="people-engagement"
-            help="If you use a 0–100 engagement measure"
-          >
+          <ProfileField {...profileField("people.engagementScore")} htmlFor="people-engagement">
             <PercentageField
               id="people.engagementScore"
               value={profile.people.engagementScore}
@@ -400,19 +371,14 @@ function renderFields(
     case "finance":
       return (
         <>
-          <ProfileField
-            label="Annual revenue band"
-            governance="optional"
-            htmlFor="fin-revenue"
-            help="Optional refinement — organisation revenue is already captured"
-          >
+          <ProfileField {...profileField("finance.annualRevenueBand")} htmlFor="fin-revenue">
             <RevenueBandSelector
               name="finance.annualRevenueBand"
               value={profile.finance.annualRevenueBand}
               onChange={(v) => onChange("finance.annualRevenueBand", v)}
             />
           </ProfileField>
-          <ProfileField label="EBITDA margin band" governance="recommended" htmlFor="fin-ebitda">
+          <ProfileField {...profileField("finance.ebitdaMarginBand")} htmlFor="fin-ebitda">
             <select
               id="fin-ebitda"
               value={profile.finance.ebitdaMarginBand}
@@ -427,7 +393,7 @@ function renderFields(
               ))}
             </select>
           </ProfileField>
-          <ProfileField label="Major cost pressures" governance="recommended" htmlFor="fin-costs">
+          <ProfileField {...profileField("finance.costPressures")} htmlFor="fin-costs">
             <MultiSelect<CostPressure>
               name="finance.costPressures"
               options={COST_PRESSURE_OPTIONS}

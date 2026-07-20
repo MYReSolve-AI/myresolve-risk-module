@@ -93,6 +93,7 @@ This sprint **captures context only**. It does **not** alter assessment scoring,
 | `transport_logistics` | Transport and logistics |
 | `installation_field_services` | Installation/field services |
 | `repairs_aftercare` | Repairs/aftercare |
+| `customer_service_contact_centre` | Customer service / contact centre |
 | `professional_services` | Professional services |
 | `other` | Other |
 

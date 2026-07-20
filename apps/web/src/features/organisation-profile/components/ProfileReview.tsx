@@ -51,7 +51,7 @@ export function ProfileReview({
 
   return (
     <section className={styles.panel} data-testid="profile-review">
-      <h2 className={styles.title}>Review organisation profile</h2>
+      <h2 className={styles.title}>Review Profile</h2>
       <p className={styles.lede}>
         Confirm the required details. Optional and recommended fields can stay
         blank — they will enrich future briefings when available. Explicitly
@@ -95,6 +95,9 @@ export function ProfileReview({
       <ul className={styles.list}>
         {required.map((field) => {
           const filled = isFieldFilled(profile, field.path);
+          const value = displayValue(profile, field.path);
+          const showCompleteTick = value === "Complete";
+          const showIncompleteCross = value === "Needed";
           return (
             <li
               key={field.path}
@@ -105,7 +108,29 @@ export function ProfileReview({
             >
               <p className={styles.label}>{field.label}</p>
               <div>
-                <p className={styles.status}>{displayValue(profile, field.path)}</p>
+                <p className={styles.status}>
+                  {showCompleteTick ? (
+                    <span
+                      className={styles.completeTick}
+                      role="img"
+                      aria-label="Complete"
+                      title="Complete"
+                    >
+                      ✓
+                    </span>
+                  ) : showIncompleteCross ? (
+                    <span
+                      className={styles.incompleteCross}
+                      role="img"
+                      aria-label="Incomplete"
+                      title="Incomplete"
+                    >
+                      ×
+                    </span>
+                  ) : (
+                    value
+                  )}
+                </p>
                 {!filled ? (
                   <button
                     type="button"

@@ -31,6 +31,7 @@ export type OperatingModel =
   | "transport_logistics"
   | "installation_field_services"
   | "repairs_aftercare"
+  | "customer_service_contact_centre"
   | "professional_services"
   | "other";
 
