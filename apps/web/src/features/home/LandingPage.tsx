@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   LANDING_PAGE_FALLBACK,
@@ -17,13 +18,13 @@ type LandingPageProps = {
 export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProps) {
   const {
     hero,
-    primaryCta,
     secondaryCta,
     campaign,
     familiar,
     fromTo,
     howItWorks,
     clarity,
+    founder,
     finalCta,
     footer,
   } = content;
@@ -46,12 +47,11 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
             <a href="#clarity" className={styles.navLink}>
               Clarity
             </a>
-            <Link
-              href={PRIMARY_HREF}
-              className={styles.navCta}
-              data-testid="home-header-cta"
-            >
-              {primaryCta.label}
+            <a href="#why-myresolve" className={styles.navLink}>
+              Why MYReSolve?
+            </a>
+            <Link href="/contact" className={styles.navLink}>
+              Contact
             </Link>
           </nav>
         </div>
@@ -85,13 +85,6 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
               {hero.supportText}
             </p>
             <div className={styles.ctaRow}>
-              <Link
-                href={PRIMARY_HREF}
-                className={styles.ctaPrimary}
-                data-testid="home-primary-cta"
-              >
-                {primaryCta.label}
-              </Link>
               <a
                 href="#how-it-works"
                 className={styles.ctaSecondary}
@@ -296,6 +289,39 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
         </section>
 
         <section
+          id="why-myresolve"
+          className={styles.section}
+          aria-labelledby="founder-heading"
+          data-testid="home-founder"
+        >
+          <div className={styles.founderInner}>
+            <div className={styles.founderPortraitWrap}>
+              <Image
+                src="/images/rob-pierce-founder.png"
+                alt="Rob Pierce, founder of MYReSolve"
+                width={1024}
+                height={1024}
+                sizes="(max-width: 640px) 180px, 240px"
+                className={styles.founderPortrait}
+              />
+            </div>
+            <div className={styles.founderCopy}>
+              <p className={styles.eyebrow}>{founder.eyebrow}</p>
+              <h2 id="founder-heading" className={styles.sectionTitle}>
+                {founder.heading}
+              </h2>
+              <p className={styles.founderBody}>{founder.body1}</p>
+              <p className={styles.founderBody}>{founder.body2}</p>
+              <blockquote className={styles.founderQuote}>
+                “{founder.quote}”
+              </blockquote>
+              <p className={styles.founderName}>{founder.name}</p>
+              <p className={styles.founderRole}>{founder.role}</p>
+            </div>
+          </div>
+        </section>
+
+        <section
           className={styles.finalCta}
           aria-labelledby="final-cta-heading"
         >
@@ -328,6 +354,11 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
           <p className={styles.footerBrand}>MYReSolve</p>
           <p className={styles.footerDesc}>
             {footer.description}
+          </p>
+          <p className={styles.footerContact}>
+            <Link href="/contact">Contact MYReSolve</Link>
+            <span aria-hidden="true"> · </span>
+            <a href="mailto:rob.myresolve@gmail.com">rob.myresolve@gmail.com</a>
           </p>
         </div>
       </footer>

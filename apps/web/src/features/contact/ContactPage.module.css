@@ -1,0 +1,267 @@
+.page {
+  min-height: 100vh;
+  color: var(--mr-ink);
+  font-family: var(--mr-font-ui);
+  background:
+    radial-gradient(ellipse at top right, rgba(198, 139, 53, 0.1), transparent 42%),
+    linear-gradient(180deg, #f3ece1 0%, var(--mr-cream) 34%, #faf6ef 100%);
+}
+
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.65rem 1rem;
+  background: var(--mr-green-2);
+  color: var(--mr-cream);
+  font-weight: 600;
+}
+
+.skipLink:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.header {
+  border-bottom: 1px solid rgba(221, 201, 167, 0.7);
+  background: rgba(247, 243, 236, 0.9);
+}
+
+.headerInner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.95rem 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brandLink {
+  color: var(--mr-green-2);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.backLink {
+  color: var(--mr-green);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(198, 139, 53, 0.75);
+  text-underline-offset: 0.22em;
+}
+
+.brandLink:focus-visible,
+.backLink:focus-visible,
+.stickyEmail:focus-visible,
+.address:focus-visible {
+  outline: 2px solid var(--mr-amber);
+  outline-offset: 3px;
+}
+
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3.5rem 1.35rem 4rem;
+}
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(150px, 190px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.75rem, 5vw, 4rem);
+  max-width: 820px;
+}
+
+.portraitWrap {
+  border-radius: 50%;
+  padding: 0.35rem;
+  background: var(--mr-surface-elevated);
+  border: 1px solid rgba(198, 139, 53, 0.35);
+  box-shadow: var(--mr-shadow);
+}
+
+.portrait {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--mr-gold);
+  font-size: 0.86rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  max-width: 650px;
+  font-family: var(--mr-font);
+  color: var(--mr-green-2);
+  font-size: clamp(2.4rem, 6vw, 4.35rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.lead {
+  margin: 1.25rem 0 0;
+  max-width: 620px;
+  color: var(--mr-ink);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.6;
+}
+
+.founder {
+  margin: 1rem 0 0;
+  color: var(--mr-green);
+  font-weight: 700;
+}
+
+.enquiries {
+  margin-top: 4rem;
+}
+
+.sectionTitle {
+  margin: 0 0 1.5rem;
+  color: var(--mr-green-2);
+  font-family: var(--mr-font);
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+  line-height: 1.15;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  padding: 1.4rem;
+  border: 1px solid rgba(221, 201, 167, 0.9);
+  border-radius: var(--mr-radius);
+  background: rgba(255, 252, 247, 0.9);
+  box-shadow: var(--mr-shadow);
+}
+
+.card h3 {
+  margin: 0;
+  color: var(--mr-green-2);
+  font-family: var(--mr-font);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.card p {
+  margin: 0.8rem 0 1.25rem;
+  color: var(--mr-muted);
+  line-height: 1.55;
+}
+
+.stickyEmail {
+  position: fixed;
+  right: 1.35rem;
+  bottom: 1.35rem;
+  z-index: 40;
+  border-radius: 999px;
+  padding: 0.82rem 1.3rem;
+  background: var(--mr-green);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(15, 46, 39, 0.24);
+}
+
+.stickyEmail:hover {
+  background: var(--mr-green-2);
+}
+
+.contactBox {
+  margin-top: 2rem;
+  padding: 1.6rem;
+  border-left: 4px solid var(--mr-gold);
+  border-radius: 0 var(--mr-radius-sm) var(--mr-radius-sm) 0;
+  background: rgba(255, 252, 247, 0.82);
+}
+
+.contactLabel {
+  margin: 0 0 0.3rem;
+  color: var(--mr-muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.address {
+  color: var(--mr-green-2);
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.securityNote {
+  margin: 1rem 0 0;
+  max-width: 720px;
+  color: var(--mr-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.footer {
+  padding: 1.5rem 1.35rem 2rem;
+  border-top: 1px solid rgba(221, 201, 167, 0.65);
+  background: rgba(247, 243, 236, 0.85);
+}
+
+.footer p {
+  max-width: 960px;
+  margin: 0 auto;
+  color: var(--mr-muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .main {
+    padding: 2.5rem 1rem 3rem;
+  }
+
+  .intro {
+    grid-template-columns: 1fr;
+    gap: 1.35rem;
+  }
+
+  .portraitWrap {
+    width: min(150px, 45vw);
+  }
+
+  .enquiries {
+    margin-top: 3rem;
+  }
+
+  .stickyEmail {
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    text-align: center;
+  }
+}

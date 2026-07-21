@@ -19,13 +19,13 @@ const LANDING_PAGE_QUERY = `*[
 ][0]{
   seo,
   hero,
-  primaryCta,
   secondaryCta,
   campaign,
   familiar,
   fromTo,
   howItWorks,
   clarity,
+  founder,
   finalCta,
   footer
 }`;

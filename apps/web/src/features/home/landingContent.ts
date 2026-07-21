@@ -22,7 +22,6 @@ export type LandingPageContent = {
     supportText: string;
     supportingLine?: string;
   };
-  primaryCta: { label: string };
   secondaryCta: { label: string };
   campaign: {
     enabled: boolean;
@@ -57,6 +56,15 @@ export type LandingPageContent = {
     q1: Question;
     q2: Question;
     q3: Question;
+  };
+  founder: {
+    eyebrow: string;
+    heading: string;
+    body1: string;
+    body2: string;
+    quote: string;
+    name: string;
+    role: string;
   };
   finalCta: { title: string; body: string; buttonLabel: string };
   footer: { description: string };
@@ -150,13 +158,17 @@ export function validateLandingPageContent(value: unknown): ValidationResult {
   const root = objectAt(value, "landingPage", errors);
   const seo = objectAt(root.seo, "seo", errors);
   const hero = objectAt(root.hero, "hero", errors);
-  const primaryCta = objectAt(root.primaryCta, "primaryCta", errors);
   const secondaryCta = objectAt(root.secondaryCta, "secondaryCta", errors);
   const campaign = objectAt(root.campaign, "campaign", errors);
   const familiar = objectAt(root.familiar, "familiar", errors);
   const fromTo = objectAt(root.fromTo, "fromTo", errors);
   const howItWorks = objectAt(root.howItWorks, "howItWorks", errors);
   const clarity = objectAt(root.clarity, "clarity", errors);
+  const founder = objectAt(
+    root.founder ?? approvedContent.founder,
+    "founder",
+    errors,
+  );
   const finalCta = objectAt(root.finalCta, "finalCta", errors);
   const footer = objectAt(root.footer, "footer", errors);
   const campaignEnabled = booleanAt(campaign.enabled, "campaign.enabled", errors);
@@ -234,14 +246,6 @@ export function validateLandingPageContent(value: unknown): ValidationResult {
         LANDING_CONTENT_LIMITS.body,
         errors,
         true,
-      ),
-    },
-    primaryCta: {
-      label: textAt(
-        primaryCta.label,
-        "primaryCta.label",
-        LANDING_CONTENT_LIMITS.label,
-        errors,
       ),
     },
     secondaryCta: {
@@ -356,6 +360,50 @@ export function validateLandingPageContent(value: unknown): ValidationResult {
       q1: pair(clarity.q1, "clarity.q1", errors, "title", "body") as Question,
       q2: pair(clarity.q2, "clarity.q2", errors, "title", "body") as Question,
       q3: pair(clarity.q3, "clarity.q3", errors, "title", "body") as Question,
+    },
+    founder: {
+      eyebrow: textAt(
+        founder.eyebrow,
+        "founder.eyebrow",
+        LANDING_CONTENT_LIMITS.label,
+        errors,
+      ),
+      heading: textAt(
+        founder.heading,
+        "founder.heading",
+        LANDING_CONTENT_LIMITS.heading,
+        errors,
+      ),
+      body1: textAt(
+        founder.body1,
+        "founder.body1",
+        LANDING_CONTENT_LIMITS.body,
+        errors,
+      ),
+      body2: textAt(
+        founder.body2,
+        "founder.body2",
+        LANDING_CONTENT_LIMITS.body,
+        errors,
+      ),
+      quote: textAt(
+        founder.quote,
+        "founder.quote",
+        LANDING_CONTENT_LIMITS.heading,
+        errors,
+      ),
+      name: textAt(
+        founder.name,
+        "founder.name",
+        LANDING_CONTENT_LIMITS.label,
+        errors,
+      ),
+      role: textAt(
+        founder.role,
+        "founder.role",
+        LANDING_CONTENT_LIMITS.label,
+        errors,
+      ),
     },
     finalCta: {
       title: textAt(
