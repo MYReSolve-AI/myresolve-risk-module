@@ -37,14 +37,16 @@ export function ProfileNavigation({
         </button>
       </div>
       <div className={styles.group}>
-        <button
-          type="button"
-          className={`${styles.button} ${styles.ghost}`}
-          onClick={onReview}
-          data-testid="profile-open-review"
-        >
-          Review
-        </button>
+        {!isLastSection ? (
+          <button
+            type="button"
+            className={`${styles.button} ${styles.ghost}`}
+            onClick={onReview}
+            data-testid="profile-open-review"
+          >
+            Review
+          </button>
+        ) : null}
         <button
           type="button"
           className={`${styles.button} ${styles.secondary}`}

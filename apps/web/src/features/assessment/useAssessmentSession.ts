@@ -8,7 +8,6 @@ import {
   isAnswered,
   type AssessmentAnswers,
   type AssessmentQuestion,
-  type ConfidenceValue,
   type MaturityValue,
   SECTIONS,
 } from "@/src/domain/assessment";
@@ -92,21 +91,6 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     [currentQuestion.id, persist],
   );
 
-  const setConfidence = useCallback(
-    (value: ConfidenceValue) => {
-      const key = currentQuestion.id;
-      setState((prev) => {
-        const next = {
-          answers: { ...prev.answers },
-          confidence: { ...prev.confidence, [key]: value },
-        };
-        persist(next);
-        return next;
-      });
-    },
-    [currentQuestion.id, persist],
-  );
-
   const goNext = useCallback(() => {
     if (currentIndex >= TOTAL_QUESTIONS - 1) {
       setMode("review");
@@ -123,12 +107,6 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     }
     setCurrentIndex((i) => clampIndex(i - 1));
   }, [mode]);
-
-  const goToQuestion = useCallback((index: number) => {
-    setMode("question");
-    setCurrentIndex(clampIndex(index));
-    setShowValidation(false);
-  }, []);
 
   const openReview = useCallback(() => {
     setMode("review");
@@ -155,14 +133,6 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     rawMaturity >= 1 && rawMaturity <= 5
       ? (rawMaturity as MaturityValue)
       : null;
-  const rawConfidence = state.confidence[currentQuestion.id];
-  const confidenceValue: ConfidenceValue | null =
-    rawConfidence === "low" ||
-    rawConfidence === "medium" ||
-    rawConfidence === "high"
-      ? rawConfidence
-      : null;
-
   return {
     questions,
     state,
@@ -171,7 +141,6 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     currentQuestion,
     currentDepartment,
     maturityValue,
-    confidenceValue,
     answeredCount,
     progressPercent,
     unanswered,
@@ -179,10 +148,8 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     saveStatus,
     showValidation,
     setMaturity,
-    setConfidence,
     goNext,
     goPrevious,
-    goToQuestion,
     openReview,
     saveAndExit,
     attemptComplete,

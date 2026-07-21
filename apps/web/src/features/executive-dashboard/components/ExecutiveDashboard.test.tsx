@@ -59,11 +59,7 @@ describe("ExecutiveDashboard", () => {
     expect(screen.getByTestId("metric-confidence")).toHaveTextContent(
       "24 responses",
     );
-    expect(
-      screen
-        .getByTestId("metric-confidence")
-        .querySelector('[data-tone="danger"]'),
-    ).toHaveTextContent("Low");
+    expect(screen.queryByLabelText("Confidence mix")).toBeNull();
     expect(screen.getByTestId("metric-confidence").textContent).not.toMatch(
       /Average factor|1\.07/,
     );
