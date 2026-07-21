@@ -128,24 +128,25 @@ describe("AssessmentApp", () => {
     const reviewRating = screen.getByTestId("review-rating-0-0");
     expect(reviewRating).toHaveTextContent("1 · Critical");
     expect(reviewRating).toHaveAttribute("data-rating", "critical");
+    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 
-  it("selects maturity and confidence and autosaves to locked storage", async () => {
+  it("selects maturity and autosaves the locked default confidence", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
     await waitFor(() => expect(screen.getByTestId("maturity-3")).toBeTruthy());
 
     await user.click(screen.getByTestId("maturity-3"));
-    await user.click(screen.getByTestId("confidence-high"));
 
     const stored = JSON.parse(storage().getItem(STORAGE_KEY) || "{}");
     expect(stored.answers["0-0"]).toBe(3);
-    expect(stored.confidence["0-0"]).toBe("high");
+    expect(stored.confidence["0-0"]).toBe("medium");
     expect(screen.getByTestId("save-status")).toHaveTextContent("Saved");
+    expect(screen.queryByTestId("confidence-selector")).toBeNull();
 
     const restored = loadAssessmentAnswers();
     expect(restored.answers["0-0"]).toBe(3);
-    expect(restored.confidence["0-0"]).toBe("high");
+    expect(restored.confidence["0-0"]).toBe("medium");
   });
 
   it("defaults confidence to medium when maturity is chosen first", async () => {
@@ -186,10 +187,7 @@ describe("AssessmentApp", () => {
       "aria-checked",
       "true",
     );
-    expect(screen.getByTestId("confidence-low")).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    expect(screen.queryByTestId("confidence-selector")).toBeNull();
     expect(screen.getByTestId("progress-header")).toHaveTextContent(
       "Viewing question 1 of 24",
     );

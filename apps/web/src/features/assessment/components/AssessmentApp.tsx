@@ -101,9 +101,7 @@ export function AssessmentApp() {
             questionInDepartment={session.currentQuestion.questionIndex + 1}
             questionsInDepartment={session.currentDepartment.questions.length}
             maturity={session.maturityValue}
-            confidence={session.confidenceValue}
             onMaturityChange={session.setMaturity}
-            onConfidenceChange={session.setConfidence}
           />
           <AssessmentNavigation
             canGoPrevious={session.currentIndex > 0}
@@ -121,7 +119,6 @@ export function AssessmentApp() {
           unanswered={session.unanswered}
           showValidation={session.showValidation}
           departmentNameFor={(i) => SECTIONS[i]!.name}
-          onEdit={session.goToQuestion}
           onBackToQuestions={() => session.setMode("question")}
           onComplete={handleComplete}
         />

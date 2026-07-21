@@ -281,6 +281,18 @@ describe("OrganisationProfileApp", () => {
     expect(loadOrganisationProfile().completedAt).toBeNull();
   });
 
+  it("shows only the primary Review button on the final section", async () => {
+    const user = userEvent.setup();
+    render(<OrganisationProfileApp />);
+
+    for (let step = 0; step < 5; step += 1) {
+      await user.click(screen.getByTestId("profile-next"));
+    }
+
+    expect(screen.getAllByRole("button", { name: "Review" })).toHaveLength(1);
+    expect(screen.queryByTestId("profile-open-review")).not.toBeInTheDocument();
+  });
+
   it("records completedAt on complete and routes to assessment", async () => {
     const user = userEvent.setup();
     saveOrganisationProfile(fillRequiredOrganisationProfile());

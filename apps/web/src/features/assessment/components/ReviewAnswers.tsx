@@ -15,7 +15,6 @@ export type ReviewAnswersProps = {
   unanswered: UnansweredItem[];
   showValidation: boolean;
   departmentNameFor: (sectionIndex: number) => string;
-  onEdit: (index: number) => void;
   onBackToQuestions: () => void;
   onComplete: () => void;
 };
@@ -53,7 +52,6 @@ export function ReviewAnswers({
   unanswered,
   showValidation,
   departmentNameFor,
-  onEdit,
   onBackToQuestions,
   onComplete,
 }: ReviewAnswersProps) {
@@ -61,8 +59,8 @@ export function ReviewAnswers({
     <section className={styles.panel} data-testid="review-answers">
       <h2 className={styles.title}>Review answers</h2>
       <p className={styles.lede}>
-        Confirm every response before viewing your executive dashboard. You can
-        edit any question.
+        Confirm every response before viewing your executive dashboard. Use
+        Back to questions if the assessment needs revisiting.
       </p>
 
       {showValidation && unanswered.length > 0 ? (
@@ -74,7 +72,7 @@ export function ReviewAnswers({
       ) : null}
 
       <ul className={styles.list}>
-        {questions.map((question, index) => {
+        {questions.map((question) => {
           const answered = isAnswered(state.answers, question.id);
           const maturity = Number(state.answers[question.id]);
           return (
@@ -115,18 +113,11 @@ export function ReviewAnswers({
                   <p className={styles.qAnswer}>Unanswered</p>
                 )}
               </div>
-              <div>
-                {!answered ? (
+              {!answered ? (
+                <div>
                   <p className={styles.badge}>Required</p>
-                ) : null}
-                <button
-                  type="button"
-                  className={`${styles.button} ${styles.secondary}`}
-                  onClick={() => onEdit(index)}
-                >
-                  Edit
-                </button>
-              </div>
+                </div>
+              ) : null}
             </li>
           );
         })}
