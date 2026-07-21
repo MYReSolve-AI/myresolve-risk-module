@@ -14,6 +14,21 @@ describe("landing page content validation", () => {
     expect(result.success).toBe(true);
   });
 
+  it("fills the approved founder story for older published content", () => {
+    const content = editableFallback() as Record<string, unknown>;
+    delete content.founder;
+
+    const result = validateLandingPageContent(content);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.content.founder.name).toBe("Rob Pierce");
+      expect(result.content.founder.quote).toBe(
+        "You can’t improve what you can’t see.",
+      );
+    }
+  });
+
   it("accepts an enabled campaign when all fixed fields are present", () => {
     const content = editableFallback();
     content.campaign = {

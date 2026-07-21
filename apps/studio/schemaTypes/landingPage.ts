@@ -153,21 +153,6 @@ export const landingPage = defineType({
       ],
     }),
     defineField({
-      name: "primaryCta",
-      title: "Primary button",
-      type: "object",
-      group: "cta",
-      description: "The button destination is protected in the website code.",
-      fields: [
-        defineField({
-          name: "label",
-          title: "Button wording",
-          type: "string",
-          validation: (rule) => requiredText(rule, limits.label),
-        }),
-      ],
-    }),
-    defineField({
       name: "secondaryCta",
       title: "Secondary button",
       type: "object",
@@ -307,6 +292,60 @@ export const landingPage = defineType({
         copyPair("q1", "Question 1"),
         copyPair("q2", "Question 2"),
         copyPair("q3", "Question 3"),
+      ],
+    }),
+    defineField({
+      name: "founder",
+      title: "Why MYReSolve?",
+      type: "object",
+      group: "story",
+      description:
+        "Founder wording is editable. The approved portrait and section layout remain protected in the website code.",
+      fields: [
+        defineField({
+          name: "eyebrow",
+          title: "Eyebrow",
+          type: "string",
+          validation: (rule) => requiredText(rule, limits.label),
+        }),
+        defineField({
+          name: "heading",
+          title: "Heading",
+          type: "string",
+          validation: (rule) => requiredText(rule, limits.heading),
+        }),
+        defineField({
+          name: "body1",
+          title: "Experience statement",
+          type: "text",
+          rows: 3,
+          validation: (rule) => requiredText(rule, limits.body),
+        }),
+        defineField({
+          name: "body2",
+          title: "How the experience shapes MYReSolve",
+          type: "text",
+          rows: 3,
+          validation: (rule) => requiredText(rule, limits.body),
+        }),
+        defineField({
+          name: "quote",
+          title: "Signature brand line",
+          type: "string",
+          validation: (rule) => requiredText(rule, limits.heading),
+        }),
+        defineField({
+          name: "name",
+          title: "Founder name",
+          type: "string",
+          validation: (rule) => requiredText(rule, limits.label),
+        }),
+        defineField({
+          name: "role",
+          title: "Founder role",
+          type: "string",
+          validation: (rule) => requiredText(rule, limits.label),
+        }),
       ],
     }),
     defineField({

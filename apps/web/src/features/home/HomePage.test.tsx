@@ -8,15 +8,15 @@ describe("Landing Page V2", () => {
   it("renders validated publisher wording without allowing route changes", () => {
     const content = structuredClone(LANDING_PAGE_FALLBACK);
     content.hero.headline = "Publisher-approved headline";
-    content.primaryCta.label = "Begin now";
+    content.finalCta.buttonLabel = "Begin now";
 
     render(<LandingPage content={content} />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "Publisher-approved headline" }),
     ).toBeInTheDocument();
-    expect(screen.getByTestId("home-primary-cta")).toHaveTextContent("Begin now");
-    expect(screen.getByTestId("home-primary-cta")).toHaveAttribute(
+    expect(screen.getByTestId("home-final-cta")).toHaveTextContent("Begin now");
+    expect(screen.getByTestId("home-final-cta")).toHaveAttribute(
       "href",
       "/organisation-profile",
     );
@@ -47,16 +47,21 @@ describe("Landing Page V2", () => {
       "One shared starting point for a better leadership conversation.",
     );
 
-    const primary = screen.getByTestId("home-primary-cta");
-    expect(primary).toHaveAttribute("href", "/organisation-profile");
-    expect(primary).toHaveTextContent("Start your assessment");
-    expect(screen.getByTestId("home-header-cta")).toHaveAttribute(
+    expect(screen.queryByTestId("home-primary-cta")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("home-header-cta")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Why MYReSolve?" }),
+    ).toHaveAttribute("href", "#why-myresolve");
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
       "href",
-      "/organisation-profile",
+      "/contact",
     );
     expect(screen.getByTestId("home-final-cta")).toHaveAttribute(
       "href",
       "/organisation-profile",
+    );
+    expect(screen.getByTestId("home-final-cta")).toHaveTextContent(
+      "Start your assessment",
     );
   });
 
@@ -120,6 +125,11 @@ describe("Landing Page V2", () => {
       screen.getByRole("heading", { name: "Does this feel familiar?" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByText(
+        "For most leaders, weekly and monthly reporting has become an industry in its own right within the company.",
+      ),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("heading", {
         name: "From reporting activity to operational clarity",
       }),
@@ -127,6 +137,9 @@ describe("Landing Page V2", () => {
     expect(
       screen.getByText("One structured executive assessment"),
     ).toBeInTheDocument();
+    expect(screen.getByText("One version of the truth")).toBeInTheDocument();
+    expect(screen.getByText("Focus on the big wins")).toBeInTheDocument();
+    expect(screen.getByText("The real hidden cost of risk")).toBeInTheDocument();
 
     expect(screen.queryByTestId("home-product-preview")).not.toBeInTheDocument();
     expect(screen.queryByText(/dashboard layout/i)).not.toBeInTheDocument();
@@ -167,6 +180,26 @@ describe("Landing Page V2", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows the founder experience and signature brand line", () => {
+    render(<LandingPage />);
+
+    const founder = screen.getByTestId("home-founder");
+    expect(
+      within(founder).getByRole("heading", {
+        name: "Built from experience. Designed for clarity.",
+      }),
+    ).toBeInTheDocument();
+    expect(within(founder).getByText(/30 years of experience/i)).toBeInTheDocument();
+    expect(
+      within(founder).getByText("“You can’t improve what you can’t see.”"),
+    ).toBeInTheDocument();
+    expect(
+      within(founder)
+        .getByAltText("Rob Pierce, founder of MYReSolve")
+        .getAttribute("src"),
+    ).toContain("rob-pierce-founder.png");
+  });
+
   it("uses no em or en dashes as sentence punctuation in customer-facing copy", () => {
     render(<LandingPage />);
     const pageText = screen.getByTestId("landing-page").textContent ?? "";
@@ -176,5 +209,16 @@ describe("Landing Page V2", () => {
         name: "The report is finished. The first priority is still unclear.",
       }),
     ).toBeInTheDocument();
+  });
+
+  it("offers the temporary contact details without collecting information", () => {
+    render(<LandingPage />);
+
+    expect(
+      screen.getByRole("link", { name: "Contact MYReSolve" }),
+    ).toHaveAttribute("href", "/contact");
+    expect(
+      screen.getByRole("link", { name: "rob.myresolve@gmail.com" }),
+    ).toHaveAttribute("href", "mailto:rob.myresolve@gmail.com");
   });
 });

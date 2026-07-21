@@ -10,9 +10,6 @@
     "supportText": "Leaders can then choose expert support from MYReSolve or subscribe to the platform to track performance and lead improvement themselves.",
     "supportingLine": "One shared starting point for a better leadership conversation."
   },
-  "primaryCta": {
-    "label": "Start your assessment"
-  },
   "secondaryCta": {
     "label": "See how it works"
   },
@@ -24,7 +21,7 @@
   },
   "familiar": {
     "introHeading": "Does this feel familiar?",
-    "intro": "For many leaders, the reporting cycle has become work in its own right.",
+    "intro": "For most leaders, weekly and monthly reporting has become an industry in its own right within the company.",
     "observation1": {
       "title": "Different meeting. Same information. Rebuilt again.",
       "body": "Teams gather and reformat information from across the business for different audiences."
@@ -47,15 +44,15 @@
     },
     "row2": {
       "from": "Different views of the same business",
-      "to": "A shared view of operational health"
+      "to": "One version of the truth"
     },
     "row3": {
       "from": "A long list of issues",
-      "to": "The three areas needing attention first"
+      "to": "Focus on the big wins"
     },
     "row4": {
       "from": "Financial exposure discussed in isolation",
-      "to": "An illustrative estimate for comparing potential exposure"
+      "to": "The real hidden cost of risk"
     }
   },
   "howItWorks": {
@@ -88,6 +85,15 @@
       "title": "Where should we focus first?",
       "body": "Bring the three highest-risk areas into one shared conversation."
     }
+  },
+  "founder": {
+    "eyebrow": "Why MYReSolve?",
+    "heading": "Built from experience. Designed for clarity.",
+    "body1": "MYReSolve was created by Rob Pierce, drawing on 30 years of experience from frontline delivery through to executive leadership.",
+    "body2": "That experience has shaped the questions and measures in MYReSolve, helping leaders see what is working, where risk is building and where to focus first.",
+    "quote": "You can’t improve what you can’t see.",
+    "name": "Rob Pierce",
+    "role": "Founder, MYReSolve"
   },
   "finalCta": {
     "title": "Give your team a clearer place to start.",
