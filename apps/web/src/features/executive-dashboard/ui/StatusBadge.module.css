@@ -20,25 +20,25 @@
 }
 
 .good {
-  color: var(--mr-good);
-  background: rgba(61, 139, 96, 0.1);
-  border-color: rgba(61, 139, 96, 0.16);
+  color: #176b42;
+  background: #e4f4eb;
+  border-color: #70ab8b;
 }
 
 .amber {
-  color: #a86d18;
-  background: rgba(223, 148, 45, 0.12);
-  border-color: rgba(223, 148, 45, 0.2);
+  color: #8c4d0b;
+  background: #fff0de;
+  border-color: #e7a45d;
 }
 
 .danger {
-  color: var(--mr-danger);
-  background: rgba(201, 53, 43, 0.1);
-  border-color: rgba(201, 53, 43, 0.16);
+  color: #b62f27;
+  background: #ffe8e5;
+  border-color: #e58f88;
 }
 
 .gold {
-  color: #8a5f1d;
-  background: rgba(198, 139, 53, 0.14);
-  border-color: rgba(198, 139, 53, 0.22);
+  color: #72520d;
+  background: #fff6cf;
+  border-color: #dbc060;
 }

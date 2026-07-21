@@ -33,6 +33,7 @@ describe("organisation profile domain", () => {
       "transport_logistics",
       "installation_field_services",
       "repairs_aftercare",
+      "customer_service_contact_centre",
       "professional_services",
       "other",
     ]);
@@ -41,7 +42,10 @@ describe("organisation profile domain", () => {
       "Installation/field services",
     );
     expect(operatingModelLabel("repairs_aftercare")).toBe("Repairs/aftercare");
-    expect(OPERATING_MODEL_IDS).toHaveLength(11);
+    expect(operatingModelLabel("customer_service_contact_centre")).toBe(
+      "Customer service / contact centre",
+    );
+    expect(OPERATING_MODEL_IDS).toHaveLength(12);
   });
 
   it("requires at least one operating model", () => {

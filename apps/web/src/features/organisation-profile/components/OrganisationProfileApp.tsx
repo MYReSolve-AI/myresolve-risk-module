@@ -24,13 +24,6 @@ export function OrganisationProfileApp() {
     <OrganisationProfileShell
       trailing={<SaveStatus status={session.saveStatus} />}
     >
-      <aside
-        className={styles.privacy}
-        data-testid="organisation-profile-privacy"
-      >
-        <p className={styles.privacyTitle}>Browser-local storage</p>
-        <p className={styles.privacyCopy}>{ORGANISATION_PROFILE_PRIVACY_COPY}</p>
-      </aside>
       {session.mode === "section" ? (
         <>
           <ProfileProgress
@@ -78,6 +71,13 @@ export function OrganisationProfileApp() {
           }}
         />
       )}
+      <aside
+        className={styles.privacy}
+        data-testid="organisation-profile-privacy"
+      >
+        <p className={styles.privacyTitle}>Browser-local storage</p>
+        <p className={styles.privacyCopy}>{ORGANISATION_PROFILE_PRIVACY_COPY}</p>
+      </aside>
     </OrganisationProfileShell>
   );
 }

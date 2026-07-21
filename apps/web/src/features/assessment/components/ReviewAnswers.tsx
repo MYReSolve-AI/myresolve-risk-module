@@ -6,6 +6,7 @@ import {
 } from "@/src/domain/assessment";
 import { isAnswered } from "@/src/domain/assessment";
 import type { UnansweredItem } from "../useAssessmentSession";
+import { assessmentQuestionTitle } from "../constants";
 import styles from "./ReviewAnswers.module.css";
 
 export type ReviewAnswersProps = {
@@ -21,6 +22,23 @@ export type ReviewAnswersProps = {
 
 function maturityLabel(value: number): string {
   return MATURITY_LEVELS.find((m) => m.value === value)?.name ?? "—";
+}
+
+function maturityClass(value: number): string {
+  switch (value) {
+    case 1:
+      return styles.critical;
+    case 2:
+      return styles.developing;
+    case 3:
+      return styles.established;
+    case 4:
+      return styles.strong;
+    case 5:
+      return styles.leading;
+    default:
+      return "";
+  }
 }
 
 function confidenceLabel(value: string | undefined): string {
@@ -75,14 +93,27 @@ export function ReviewAnswers({
                   {departmentNameFor(question.sectionIndex)} · Q
                   {question.questionIndex + 1}
                 </p>
-                <p className={styles.qText}>{question.text}</p>
-                <p className={styles.qAnswer}>
-                  {answered
-                    ? `${maturityLabel(maturity)} · Confidence ${confidenceLabel(
-                        state.confidence[question.id],
-                      )}`
-                    : "Unanswered"}
+                <p className={styles.qText}>
+                  {assessmentQuestionTitle(question.id, question.text)}
                 </p>
+                {answered ? (
+                  <div className={styles.qAnswer}>
+                    <span
+                      className={[styles.rating, maturityClass(maturity)]
+                        .filter(Boolean)
+                        .join(" ")}
+                      data-testid={`review-rating-${question.id}`}
+                      data-rating={maturityLabel(maturity).toLowerCase()}
+                    >
+                      {maturity} · {maturityLabel(maturity)}
+                    </span>
+                    <span className={styles.confidence}>
+                      Confidence {confidenceLabel(state.confidence[question.id])}
+                    </span>
+                  </div>
+                ) : (
+                  <p className={styles.qAnswer}>Unanswered</p>
+                )}
               </div>
               <div>
                 {!answered ? (

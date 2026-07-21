@@ -47,7 +47,6 @@ export function ExecutiveDashboardApp() {
   return (
     <ExecutiveDashboard
       state={state}
-      assessmentVersion="v0.3.1"
       companyName={companyName}
       actions={
         developerMode ? (

@@ -126,7 +126,7 @@ This is repository-level policy. It does **not** invent named individuals or cla
 
 ### Current capability
 
-Six departments, four questions each (**24** total), fixed wording from the locked baseline:
+Six departments, four questions each (**24** total), with stable identifiers and scoring meaning from the locked baseline:
 
 | # | Department | Role of the section (intro intent) |
 |---|------------|-------------------------------------|
@@ -141,9 +141,19 @@ Answer keys use `` `${sectionIndex}-${questionIndex}` `` (for example `0-0` … 
 
 Exact question text and department cost envelopes are recorded in `docs/GOLDEN_BASELINE.md` and implemented in `apps/web/src/domain/assessment/questions.ts`.
 
+The current UI applies three Product Owner approved plain-English presentation titles without changing the stable answer keys, order or scoring meaning:
+
+| Answer key | Presentation title |
+|------------|--------------------|
+| `1-1` | Does work move smoothly between teams? |
+| `2-0` | Do we understand what our customers need and experience? |
+| `2-1` | Can customers contact us easily, when and how they need to? |
+
+Each question also has neutral guidance that explains what leaders should consider while answering for the company's current reality.
+
 ### Operating policy
 
-Question wording is frozen with the golden baseline until Product Owner approves a new assessment version and regenerates parity fixtures.
+Domain question wording remains frozen with the golden baseline. A presentation-title clarification requires Product Owner approval and must preserve the stable answer key, order and scoring meaning. A change to what a question measures requires a new assessment version and regenerated parity fixtures.
 
 ---
 
@@ -158,6 +168,8 @@ Question wording is frozen with the golden baseline until Product Owner approves
 | 3 | Established |
 | 4 | Strong |
 | 5 | Leading |
+
+The assessment and answer review use matching red, orange, amber and green presentation tones. The value and label remain visible so colour is not the only indicator.
 
 ### Current capability — maturity band (from department or overall Health Score)
 
@@ -298,16 +310,14 @@ The Top Three Risk Areas list presents **domain-backed facts** (band, rating, Es
 | Element | How to read it |
 |---------|----------------|
 | Assessment completed | Yes / In progress / Not started from answer completeness (24 of 24) |
-| Version | Assessment baseline label (for example `v0.3.1`) |
 | Company | Read-only display of Organisation Profile `organisation.name` when the profile is **explicitly completed** (valid schema, required/conditional fields filled, and a valid `completedAt` timestamp); otherwise hidden. Does not affect scoring. Autosaved fields alone are not enough. Editing any field clears `completedAt` until Complete is selected again. |
 | Date | Hidden — assessment completion timestamp is not recorded in Sprint 005 |
-| Executive Health Score | Overall Health Score and related band / rating |
-| Estimated Annual Value at Risk | Illustrative modelled estimate (see disclaimer) |
+| Executive Health Score | Overall Health Score, related band / rating and position on the five-level MYReSolve maturity scale. It is not an industry benchmark. |
+| Total Estimated Annual Value at Risk | Illustrative modelled estimate formed from six department scenario ranges (see disclaimer) |
 | Assessment Confidence | Predominant Low / Medium / High language and response counts — not raw cost factors |
 | Highest Risk Department | Top of the risk-ranked list |
 | Department Risk Overview | All six departments: Health Score, maturity band, risk rating, Est. VaR |
-| Top Three Risk Areas | Highest Risk Score departments among those with answers |
-| AI Executive Narrative | Deferred notice only — no generated narrative |
+| Top Three Risk Areas | Three separate priority cards for the highest Risk Score departments among those with answers |
 
 ### Known limitation
 
@@ -373,7 +383,7 @@ Operators comparing a CSV artifact to the dashboard must allow for that differen
 
 ### Current capability
 
-The dashboard shows an intentional notice that **AI Executive Narrative** is planned for a future release. This baseline surfaces assessment results only and does **not** generate recommendations.
+The dashboard contains no AI narrative, recommendation or future-feature teaser. It surfaces assessment results only.
 
 ### Future / deferred (examples — not shipped)
 

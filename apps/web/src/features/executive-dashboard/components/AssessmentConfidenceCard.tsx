@@ -42,7 +42,7 @@ export function AssessmentConfidenceCard({
             />
           </li>
           <li>
-            <StatusBadge label={`Low ${confidence.counts.low}`} tone="amber" />
+            <StatusBadge label={`Low ${confidence.counts.low}`} tone="danger" />
           </li>
         </ul>
       ) : null}

@@ -16,10 +16,42 @@ describe("ExecutiveDashboard", () => {
     expect(screen.getByRole("heading", { name: "MYReSolve" })).toBeTruthy();
     expect(screen.getByText("Executive Health Score")).toBeTruthy();
     expect(screen.getByTestId("metric-health")).toHaveTextContent(
-      `${mixed.overall}/100`,
+      `${mixed.overall} / 100`,
     );
+    expect(screen.getByTestId("metric-health")).toHaveTextContent(
+      "not an industry benchmark",
+    );
+    expect(
+      screen
+        .getByTestId("metric-health")
+        .querySelector('[data-tone="gold"]'),
+    ).toHaveTextContent("Established");
+    expect(
+      screen
+        .getByTestId("metric-health")
+        .querySelector('[data-tone="amber"]'),
+    ).toHaveTextContent("HIGH");
+    expect(
+      Array.from(
+        screen.getByLabelText(/Maturity scale\. Current position/).children,
+      ).map((band) => band.textContent?.replace("Current", "")),
+    ).toEqual([
+      "Leading",
+      "Strong",
+      "Established",
+      "Developing",
+      "Critical",
+    ]);
+    expect(
+      screen
+        .getByTestId("metric-health")
+        .querySelector('[aria-current="true"]'),
+    ).toHaveTextContent(`${mixed.overallMaturity}Current`);
     expect(screen.getByTestId("metric-var")).toHaveTextContent(
       formatGbp(mixed.totalCost),
+    );
+    expect(screen.getByTestId("metric-var")).toHaveTextContent(
+      "not an audited loss calculation or financial forecast",
     );
     expect(screen.getByTestId("metric-confidence")).toHaveTextContent(
       "Medium confidence",
@@ -27,6 +59,11 @@ describe("ExecutiveDashboard", () => {
     expect(screen.getByTestId("metric-confidence")).toHaveTextContent(
       "24 responses",
     );
+    expect(
+      screen
+        .getByTestId("metric-confidence")
+        .querySelector('[data-tone="danger"]'),
+    ).toHaveTextContent("Low");
     expect(screen.getByTestId("metric-confidence").textContent).not.toMatch(
       /Average factor|1\.07/,
     );
@@ -46,12 +83,8 @@ describe("ExecutiveDashboard", () => {
     expect(screen.getByTestId("priorities-list").textContent).not.toContain(
       "Prioritise evidence",
     );
-    expect(screen.getByTestId("executive-narrative")).toHaveTextContent(
-      "AI Executive Narrative",
-    );
-    expect(screen.getByTestId("executive-narrative")).toHaveTextContent(
-      "future release",
-    );
+    expect(screen.getByTestId("priorities-list").children).toHaveLength(3);
+    expect(screen.queryByTestId("executive-narrative")).toBeNull();
     expect(screen.getByTestId("department-score-grid").children).toHaveLength(
       6,
     );
@@ -65,8 +98,8 @@ describe("ExecutiveDashboard", () => {
     expect(screen.queryByText("Company")).toBeNull();
     expect(screen.queryByText("Date")).toBeNull();
     expect(screen.getByText("Assessment completed")).toBeTruthy();
-    expect(screen.getByText("Version")).toBeTruthy();
-    expect(screen.getByText("v0.3.1")).toBeTruthy();
+    expect(screen.queryByText("Version")).toBeNull();
+    expect(screen.queryByText("v0.3.1")).toBeNull();
   });
 
   it("shows company and date only when supplied", () => {

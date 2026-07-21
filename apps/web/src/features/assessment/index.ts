@@ -9,4 +9,10 @@ export { AssessmentNavigation } from "./components/AssessmentNavigation";
 export { SaveStatus } from "./components/SaveStatus";
 export { ReviewAnswers } from "./components/ReviewAnswers";
 export { useAssessmentSession } from "./useAssessmentSession";
-export { ASSESSMENT_QUESTION_HELP, ASSESSMENT_VERSION } from "./constants";
+export {
+  ASSESSMENT_QUESTION_GUIDANCE,
+  ASSESSMENT_QUESTION_TITLES,
+  ASSESSMENT_VERSION,
+  assessmentQuestionGuidance,
+  assessmentQuestionTitle,
+} from "./constants";

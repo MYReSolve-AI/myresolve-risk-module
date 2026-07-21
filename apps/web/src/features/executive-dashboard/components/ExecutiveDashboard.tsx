@@ -9,7 +9,6 @@ import { AssessmentConfidenceCard } from "./AssessmentConfidenceCard";
 import { HighestRiskDepartmentCard } from "./HighestRiskDepartmentCard";
 import { DepartmentScoreGrid } from "./DepartmentScoreCard";
 import { PrioritiesPanel } from "./PrioritiesList";
-import { NarrativePanel } from "./NarrativePanel";
 import { DashboardSection } from "../ui/DashboardSection";
 import { SectionHeading } from "../ui/SectionHeading";
 import sr from "../ui/sr.module.css";
@@ -21,7 +20,6 @@ export type ExecutiveDashboardProps = {
   actions?: ReactNode;
   /** Organisation name when available; omit or leave empty to hide */
   companyName?: string;
-  assessmentVersion?: string;
   /** Completion date when available; omit or leave empty to hide */
   assessmentDate?: string;
 };
@@ -36,7 +34,6 @@ export function ExecutiveDashboard({
   state,
   actions,
   companyName,
-  assessmentVersion = "v0.3.1",
   assessmentDate,
 }: ExecutiveDashboardProps) {
   const model = buildExecutiveDashboard(state);
@@ -77,10 +74,6 @@ export function ExecutiveDashboard({
                 <p className={styles.metaValue}>{companyName}</p>
               </div>
             ) : null}
-            <div className={styles.metaItem}>
-              <p className={styles.metaLabel}>Version</p>
-              <p className={styles.metaValue}>{assessmentVersion}</p>
-            </div>
           </div>
         </div>
       </header>
@@ -139,10 +132,6 @@ export function ExecutiveDashboard({
             priorityCount={model.priorityCount}
           />
         </DashboardSection>
-
-        <div className={styles.narrativeWide}>
-          <NarrativePanel />
-        </div>
       </div>
     </div>
   );

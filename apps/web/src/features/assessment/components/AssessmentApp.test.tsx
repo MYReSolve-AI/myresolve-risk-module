@@ -18,7 +18,10 @@ import { saveOrganisationProfile } from "@/src/lib/organisationProfilePersistenc
 import { AssessmentApp } from "./AssessmentApp";
 import { buildExecutiveDashboard } from "@/src/features/executive-dashboard";
 import { ExecutiveDashboard } from "@/src/features/executive-dashboard";
-import { ASSESSMENT_QUESTION_HELP } from "../constants";
+import {
+  assessmentQuestionGuidance,
+  assessmentQuestionTitle,
+} from "../constants";
 
 const pushMock = vi.fn();
 
@@ -88,7 +91,7 @@ describe("AssessmentApp", () => {
 
     for (let i = 0; i < expected.length; i++) {
       expect(screen.getByTestId("question-text")).toHaveTextContent(
-        expected[i]!.text,
+        assessmentQuestionTitle(expected[i]!.id, expected[i]!.text),
       );
       expect(screen.getByTestId("progress-header")).toHaveTextContent(
         SECTIONS[expected[i]!.sectionIndex]!.name,
@@ -96,11 +99,35 @@ describe("AssessmentApp", () => {
       expect(screen.getByTestId("progress-header")).toHaveTextContent(
         `Viewing question ${i + 1} of ${TOTAL_QUESTIONS}`,
       );
-      expect(screen.getByText(ASSESSMENT_QUESTION_HELP)).toBeTruthy();
+      expect(screen.getByTestId("question-guidance")).toHaveTextContent(
+        assessmentQuestionGuidance(expected[i]!.id),
+      );
       if (i < expected.length - 1) {
         await user.click(screen.getByTestId("nav-next"));
       }
     }
+  });
+
+  it("uses the approved five-level colours in assessment and review", async () => {
+    const user = userEvent.setup();
+    render(<AssessmentApp />);
+    await waitFor(() => expect(screen.getByTestId("maturity-1")).toBeTruthy());
+
+    expect(screen.getByTestId("maturity-1")).toHaveAttribute(
+      "data-rating",
+      "critical",
+    );
+    expect(screen.getByTestId("maturity-5")).toHaveAttribute(
+      "data-rating",
+      "leading",
+    );
+
+    await user.click(screen.getByTestId("maturity-1"));
+    await user.click(screen.getByTestId("nav-review"));
+
+    const reviewRating = screen.getByTestId("review-rating-0-0");
+    expect(reviewRating).toHaveTextContent("1 · Critical");
+    expect(reviewRating).toHaveAttribute("data-rating", "critical");
   });
 
   it("selects maturity and confidence and autosaves to locked storage", async () => {

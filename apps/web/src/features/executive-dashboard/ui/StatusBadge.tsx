@@ -19,6 +19,7 @@ export function StatusBadge({
       className={[styles.badge, styles[tone], className]
         .filter(Boolean)
         .join(" ")}
+      data-tone={tone}
     >
       {label}
     </span>

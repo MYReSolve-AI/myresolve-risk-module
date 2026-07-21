@@ -1,6 +1,9 @@
 import type { AssessmentQuestion } from "@/src/domain/assessment";
 import type { ConfidenceValue, MaturityValue } from "@/src/domain/assessment";
-import { ASSESSMENT_QUESTION_HELP } from "../constants";
+import {
+  assessmentQuestionGuidance,
+  assessmentQuestionTitle,
+} from "../constants";
 import { MaturityScale } from "./MaturityScale";
 import { ConfidenceSelector } from "./ConfidenceSelector";
 import styles from "./QuestionCard.module.css";
@@ -36,9 +39,11 @@ export function QuestionCard({
           {questionsInDepartment}
         </p>
         <h2 className={styles.title} data-testid="question-text">
-          {question.text}
+          {assessmentQuestionTitle(question.id, question.text)}
         </h2>
-        <p className={styles.help}>{ASSESSMENT_QUESTION_HELP}</p>
+        <p className={styles.help} data-testid="question-guidance">
+          {assessmentQuestionGuidance(question.id)}
+        </p>
       </div>
 
       <p className={styles.intro}>{departmentIntro}</p>

@@ -5,9 +5,9 @@
 }
 
 .option {
+  position: relative;
   appearance: none;
-  border: 1px solid rgba(221, 201, 167, 0.85);
-  background: #fffcf8;
+  border: 1px solid transparent;
   border-radius: 14px;
   padding: 0.85rem 0.5rem;
   cursor: pointer;
@@ -20,16 +20,40 @@
 
 .option:hover,
 .option:focus-visible {
-  border-color: rgba(198, 139, 53, 0.7);
   box-shadow: var(--mr-shadow);
-  outline: none;
+  outline: 3px solid rgba(198, 139, 53, 0.32);
+  outline-offset: 2px;
   transform: translateY(-1px);
 }
 
 .selected {
-  background: rgba(23, 63, 53, 0.06);
-  border-color: var(--mr-green);
-  box-shadow: inset 0 0 0 1px rgba(23, 63, 53, 0.15);
+  border-color: var(--mr-green-2);
+  box-shadow: inset 0 0 0 2px var(--mr-green-2), var(--mr-shadow);
+}
+
+.critical {
+  background: #fff0ee;
+  border-color: #e4a29c;
+}
+
+.developing {
+  background: #fff3e8;
+  border-color: #e7b27d;
+}
+
+.established {
+  background: #fff8e5;
+  border-color: #dfc078;
+}
+
+.strong {
+  background: #eef8f1;
+  border-color: #9bc9aa;
+}
+
+.leading {
+  background: #e5f3eb;
+  border-color: #70ab8b;
 }
 
 .number {
@@ -44,8 +68,24 @@
   display: block;
   margin-top: 0.35rem;
   font-size: 0.72rem;
-  color: var(--mr-muted);
+  color: var(--mr-ink);
   line-height: 1.25;
+}
+
+.selectedMark {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.45rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mr-green-2);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .ends {
@@ -68,6 +108,12 @@
     gap: 0.75rem;
     text-align: left;
     padding: 0.75rem 0.9rem;
+  }
+
+  .selectedMark {
+    position: static;
+    margin-left: auto;
+    flex: 0 0 auto;
   }
 
   .name {
