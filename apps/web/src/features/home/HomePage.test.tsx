@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
+import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
 import { LandingPage } from "./LandingPage";
 import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
@@ -168,11 +169,11 @@ describe("Landing Page V2", () => {
     expect(screen.queryByText(/nothing promised beyond/i)).not.toBeInTheDocument();
   });
 
-  it("includes the current browser-local privacy note near the final CTA", () => {
+  it("includes the private-preview guidance near the final CTA", () => {
     render(<LandingPage />);
-    expect(screen.getByTestId("home-privacy-note")).toHaveTextContent(
-      "Your information is saved only in this browser on this device. It is not synced to a cloud account.",
-    );
+    const privacyNote = screen.getByTestId("home-privacy-note");
+    expect(privacyNote).toHaveTextContent("Private preview.");
+    expect(privacyNote).toHaveTextContent(ORGANISATION_PROFILE_PRIVACY_COPY);
     expect(
       screen.getByRole("heading", {
         name: "Give your team a clearer place to start.",

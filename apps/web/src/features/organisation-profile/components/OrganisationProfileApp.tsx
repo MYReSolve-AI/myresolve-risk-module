@@ -75,7 +75,7 @@ export function OrganisationProfileApp() {
         className={styles.privacy}
         data-testid="organisation-profile-privacy"
       >
-        <p className={styles.privacyTitle}>Browser-local storage</p>
+        <p className={styles.privacyTitle}>Private preview</p>
         <p className={styles.privacyCopy}>{ORGANISATION_PROFILE_PRIVACY_COPY}</p>
       </aside>
     </OrganisationProfileShell>

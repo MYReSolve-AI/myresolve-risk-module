@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
 import {
   LANDING_PAGE_FALLBACK,
   type LandingPageContent,
@@ -161,9 +162,9 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
             </div>
             <div className={styles.compare} role="table" aria-label="From reporting to MYReSolve">
               <div className={styles.compareHead} role="row">
-                <p className={styles.compareLabel} role="columnheader">
+                <span className={styles.compareLabelHidden} role="columnheader">
                   From
-                </p>
+                </span>
                 <p className={styles.compareLabelAccent} role="columnheader">
                   With MYReSolve
                 </p>
@@ -342,8 +343,8 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
               {finalCta.buttonLabel}
             </Link>
             <p className={styles.privacy} data-testid="home-privacy-note">
-              Your information is saved only in this browser on this device. It is
-              not synced to a cloud account.
+              <strong>Private preview.</strong>{" "}
+              {ORGANISATION_PROFILE_PRIVACY_COPY}
             </p>
           </div>
         </section>
