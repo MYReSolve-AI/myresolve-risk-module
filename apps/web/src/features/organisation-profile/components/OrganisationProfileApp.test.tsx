@@ -33,6 +33,7 @@ describe("OrganisationProfileApp", () => {
   it("shows privacy guidance at the bottom of each profile page", () => {
     render(<OrganisationProfileApp />);
     const privacy = screen.getByTestId("organisation-profile-privacy");
+    expect(privacy).toHaveTextContent("Private preview");
     expect(privacy).toHaveTextContent(ORGANISATION_PROFILE_PRIVACY_COPY);
     expect(screen.getByTestId("profile-nav").nextElementSibling).toBe(privacy);
   });

@@ -194,4 +194,4 @@ export const INDUSTRY_SUGGESTIONS = [
 
 /** Short privacy guidance shown on the Organisation Profile (PO-7). */
 export const ORGANISATION_PROFILE_PRIVACY_COPY =
-  "Your Organisation Profile is saved only in this browser on this device. It is not synced to a cloud account. Anyone using this browser may be able to access it, and clearing browser data may remove it. Avoid entering unnecessary confidential or personal information.";
+  "Your Organisation Profile and assessment answers stay on this device and are not sent to MYReSolve, sold or shared. This preview does not yet have secure account sign-in, so use business-level estimates only and do not enter confidential or personal information.";
