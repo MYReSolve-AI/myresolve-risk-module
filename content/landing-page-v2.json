@@ -1,13 +1,13 @@
 {
   "seo": {
-    "title": "MYReSolve: Less time reporting. More time improving.",
-    "description": "MYReSolve helps leaders understand where their business stands, what needs attention first and where value may be at risk."
+    "title": "MYReSolve: Less Reporting, Clearer Decisions, Better Results",
+    "description": "MYReSolve brings leadership knowledge together to show what is working, what needs attention and where value may be at risk."
   },
   "hero": {
     "eyebrow": "Operational clarity for leaders",
-    "headline": "Less time reporting. More time improving.",
-    "problemText": "MYReSolve helps leaders understand where their business stands, what needs attention first and where value may be at risk.",
-    "supportText": "Leaders can then choose expert support from MYReSolve or subscribe to the platform to track performance and lead improvement themselves.",
+    "headline": "Transform Your Business with MYReSolve: Less Reporting, Clearer Decisions, Better Results.",
+    "problemText": "Experience a clearer way to understand your business. MYReSolve brings leadership knowledge together in one structured view, helping you see what is working, what needs attention and where value may be at risk.",
+    "supportText": "Subscribe to MYReSolve to track performance, focus improvement and keep leadership aligned. Expert support is available whenever you want help turning insight into action.",
     "supportingLine": "One shared starting point for a better leadership conversation."
   },
   "secondaryCta": {
@@ -20,18 +20,18 @@
     "body": ""
   },
   "familiar": {
-    "introHeading": "Does this feel familiar?",
-    "intro": "For most leaders, weekly and monthly reporting has become an industry in its own right within the company.",
+    "introHeading": "Sound familiar?",
+    "intro": "For many leaders, weekly and monthly reporting has turned into a company-wide industry of its own.",
     "observation1": {
-      "title": "Different meeting. Same information. Rebuilt again.",
-      "body": "Teams gather and reformat information from across the business for different audiences."
+      "title": "Another meeting. The same numbers. Yet another rebuild.",
+      "body": "Teams scramble to gather and repackage information from every corner of the business for different audiences."
     },
     "observation2": {
-      "title": "The people closest to the work are pulled into explaining it.",
-      "body": "Time spent preparing confidence packs is time not spent improving performance."
+      "title": "The experts, the people closest to the work, spend valuable time explaining instead of improving.",
+      "body": "Every hour spent preparing confidence packs is an hour lost to real performance improvement."
     },
     "observation3": {
-      "title": "The report is finished. The first priority is still unclear.",
+      "title": "When the report is finally done, the top priority still isn’t clear.",
       "body": "More information does not always create a clearer decision."
     },
     "transitionStatement": "Reporting creates visibility. MYReSolve is designed to create clarity."
@@ -71,34 +71,34 @@
     }
   },
   "clarity": {
-    "heading": "A clearer leadership conversation",
-    "intro": "MYReSolve helps leadership move past “Are we in control?” It opens three more useful questions:",
+    "heading": "Lead with Clarity and Confidence",
+    "intro": "MYReSolve empowers leaders to move beyond the basics and drive progress by asking the questions that matter most:",
     "q1": {
       "title": "What is working?",
-      "body": "See the overall operational picture and areas of strength."
+      "body": "Gain a panoramic view of your operations and quickly spot what’s working best."
     },
     "q2": {
       "title": "Where is risk building?",
-      "body": "Compare health and exposure across People, Process, Customer, Operations, Technology and Finance."
+      "body": "Easily assess strengths and risks across People, Process, Customer, Operations, Technology, and Finance, all in one place."
     },
     "q3": {
       "title": "Where should we focus first?",
-      "body": "Bring the three highest-risk areas into one shared conversation."
+      "body": "Focus on your top three risks and align your leadership team on what to tackle first."
     }
   },
   "founder": {
     "eyebrow": "Why MYReSolve?",
-    "heading": "Built from experience. Designed for clarity.",
-    "body1": "MYReSolve was created by Rob Pierce, drawing on 30 years of experience from frontline delivery through to executive leadership.",
-    "body2": "That experience has shaped the questions and measures in MYReSolve, helping leaders see what is working, where risk is building and where to focus first.",
+    "heading": "Decades of Expertise, One Clear Vision.",
+    "body1": "MYReSolve is the result of 25+ years navigating every level of business, from hands-on frontline delivery to the boardroom. Over these years, I’ve tested countless approaches, and I know what truly makes a difference. MYReSolve focuses leaders on the essentials that drive real results.",
+    "body2": "Every question and measure in MYReSolve is built on that foundation, so you see what matters most, spot risks early, and invest your energy where it counts.",
     "quote": "You can’t improve what you can’t see.",
     "name": "Rob Pierce",
     "role": "Founder, MYReSolve"
   },
   "finalCta": {
-    "title": "Give your team a clearer place to start.",
-    "body": "Start with what your leadership team already knows. Turn that knowledge into a shared view of health, risk and priority.",
-    "buttonLabel": "Start your assessment"
+    "title": "Empower your team with a clear starting point.",
+    "body": "Begin with your leadership team’s expertise. Turn that collective knowledge into a unified view of your organisation’s health, risks and priorities.",
+    "buttonLabel": "Start your assessment now"
   },
   "footer": {
     "description": "Structured executive assessment for operational health, risk and potential value at risk."

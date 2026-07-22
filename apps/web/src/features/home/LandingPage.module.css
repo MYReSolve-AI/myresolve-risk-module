@@ -125,7 +125,7 @@
 }
 
 .heroInner {
-  max-width: 760px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -141,12 +141,28 @@
 .headline {
   margin: 0 0 1.15rem;
   font-family: var(--mr-font);
-  font-size: clamp(2.15rem, 5.2vw, 3.35rem);
-  font-weight: 650;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
   color: var(--mr-green-2);
-  max-width: 14ch;
+  max-width: none;
+}
+
+.headlineLead {
+  display: block;
+  max-width: 100%;
+  font-size: clamp(2.7rem, 6.2vw, 4.8rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.headlineOutcome {
+  display: block;
+  margin-top: 0.7rem;
+  font-size: clamp(1.45rem, 3vw, 2.35rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-wrap: balance;
 }
 
 .problem {
@@ -625,6 +641,14 @@
 
   .headline {
     max-width: none;
+  }
+
+  .headlineLead {
+    font-size: clamp(2.35rem, 12vw, 3.2rem);
+  }
+
+  .headlineOutcome {
+    font-size: clamp(1.35rem, 7vw, 1.75rem);
   }
 
   .section {

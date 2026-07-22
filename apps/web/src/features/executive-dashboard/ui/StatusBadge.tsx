@@ -53,6 +53,36 @@ export function riskTone(rating: RiskRating): StatusTone {
   }
 }
 
+export function riskDisplayLevel(
+  rating: RiskRating,
+): "LOW" | "MEDIUM" | "HIGH" {
+  switch (rating) {
+    case "LOW":
+      return "LOW";
+    case "MODERATE":
+      return "MEDIUM";
+    case "HIGH":
+    case "CRITICAL":
+      return "HIGH";
+  }
+}
+
+function riskDisplayTone(rating: RiskRating): StatusTone {
+  switch (riskDisplayLevel(rating)) {
+    case "LOW":
+      return "good";
+    case "MEDIUM":
+      return "gold";
+    case "HIGH":
+      return "danger";
+  }
+}
+
 export function RiskBadge({ rating }: { rating: RiskRating }) {
-  return <StatusBadge label={rating} tone={riskTone(rating)} />;
+  return (
+    <StatusBadge
+      label={`RISK: ${riskDisplayLevel(rating)}`}
+      tone={riskDisplayTone(rating)}
+    />
+  );
 }

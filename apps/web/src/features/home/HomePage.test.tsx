@@ -35,14 +35,14 @@ describe("Landing Page V2", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Less time reporting. More time improving.",
+        name: "Transform Your Business with MYReSolve: Less Reporting, Clearer Decisions, Better Results.",
       }),
     ).toBeInTheDocument();
     expect(screen.getByTestId("home-problem")).toHaveTextContent(
-      "MYReSolve helps leaders understand where their business stands, what needs attention first and where value may be at risk.",
+      "Experience a clearer way to understand your business. MYReSolve brings leadership knowledge together in one structured view, helping you see what is working, what needs attention and where value may be at risk.",
     );
     expect(screen.getByTestId("home-support")).toHaveTextContent(
-      "Leaders can then choose expert support from MYReSolve or subscribe to the platform to track performance and lead improvement themselves.",
+      "Subscribe to MYReSolve to track performance, focus improvement and keep leadership aligned. Expert support is available whenever you want help turning insight into action.",
     );
     expect(screen.getByTestId("home-hero-tag")).toHaveTextContent(
       "One shared starting point for a better leadership conversation.",
@@ -62,7 +62,7 @@ describe("Landing Page V2", () => {
       "/organisation-profile",
     );
     expect(screen.getByTestId("home-final-cta")).toHaveTextContent(
-      "Start your assessment",
+      "Start your assessment now",
     );
   });
 
@@ -97,10 +97,15 @@ describe("Landing Page V2", () => {
     const clarity = screen.getByTestId("home-clarity");
     expect(
       within(clarity).getByRole("heading", {
-        name: "A clearer leadership conversation",
+        name: "Lead with Clarity and Confidence",
       }),
     ).toBeInTheDocument();
     expect(within(clarity).getByText("What is working?")).toBeInTheDocument();
+    expect(
+      within(clarity).getByText(
+        "Gain a panoramic view of your operations and quickly spot what’s working best.",
+      ),
+    ).toBeInTheDocument();
     expect(within(clarity).getByText("Where is risk building?")).toBeInTheDocument();
     expect(
       within(clarity).getByText("Where should we focus first?"),
@@ -123,12 +128,22 @@ describe("Landing Page V2", () => {
       "Reporting creates visibility. MYReSolve is designed to create clarity.",
     );
     expect(
-      screen.getByRole("heading", { name: "Does this feel familiar?" }),
+      screen.getByRole("heading", { name: "Sound familiar?" }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "For most leaders, weekly and monthly reporting has become an industry in its own right within the company.",
+        "For many leaders, weekly and monthly reporting has turned into a company-wide industry of its own.",
       ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "Another meeting. The same numbers. Yet another rebuild.",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "The experts, the people closest to the work, spend valuable time explaining instead of improving.",
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
@@ -176,7 +191,7 @@ describe("Landing Page V2", () => {
     expect(privacyNote).toHaveTextContent(ORGANISATION_PROFILE_PRIVACY_COPY);
     expect(
       screen.getByRole("heading", {
-        name: "Give your team a clearer place to start.",
+        name: "Empower your team with a clear starting point.",
       }),
     ).toBeInTheDocument();
   });
@@ -187,10 +202,12 @@ describe("Landing Page V2", () => {
     const founder = screen.getByTestId("home-founder");
     expect(
       within(founder).getByRole("heading", {
-        name: "Built from experience. Designed for clarity.",
+        name: "Decades of Expertise, One Clear Vision.",
       }),
     ).toBeInTheDocument();
-    expect(within(founder).getByText(/30 years of experience/i)).toBeInTheDocument();
+    expect(
+      within(founder).getByText(/25\+ years navigating every level of business/i),
+    ).toBeInTheDocument();
     expect(
       within(founder).getByText("“You can’t improve what you can’t see.”"),
     ).toBeInTheDocument();
@@ -207,7 +224,7 @@ describe("Landing Page V2", () => {
     expect(pageText).not.toMatch(/[—–]/);
     expect(
       screen.getByRole("heading", {
-        name: "The report is finished. The first priority is still unclear.",
+        name: "When the report is finally done, the top priority still isn’t clear.",
       }),
     ).toBeInTheDocument();
   });
