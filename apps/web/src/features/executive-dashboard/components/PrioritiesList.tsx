@@ -61,17 +61,13 @@ export function PrioritiesList({ priorities }: PrioritiesListProps) {
               <dd>{formatScore(item.score)}</dd>
             </div>
             <div>
-              <dt>Risk score</dt>
-              <dd>{formatScore(item.risk)}</dd>
-            </div>
-            <div>
               <dt>Estimated value at risk</dt>
               <dd>{formatGbp(item.cost)}</dd>
             </div>
           </dl>
           <p className={styles.explanation}>
-            Ranked {ordinal(index)} because it has one of the highest current
-            risk scores among departments with assessment answers.
+            Ranked {ordinal(index)} because it has one of the lowest current
+            health scores among departments with assessment answers.
           </p>
           <p className={styles.action}>
             <strong>Next action:</strong> Review the four {item.name} responses

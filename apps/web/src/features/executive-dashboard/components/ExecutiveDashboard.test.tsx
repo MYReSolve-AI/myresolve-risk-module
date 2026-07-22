@@ -29,24 +29,17 @@ describe("ExecutiveDashboard", () => {
     expect(
       screen
         .getByTestId("metric-health")
-        .querySelector('[data-tone="amber"]'),
-    ).toHaveTextContent("HIGH");
+        .querySelector('[data-tone="danger"]'),
+    ).toHaveTextContent("RISK: HIGH");
+    expect(screen.getByTestId("metric-health")).not.toHaveTextContent(
+      "CRITICAL",
+    );
     expect(
-      Array.from(
-        screen.getByLabelText(/Maturity scale\. Current position/).children,
-      ).map((band) => band.textContent?.replace("Current", "")),
-    ).toEqual([
-      "Leading",
-      "Strong",
-      "Established",
-      "Developing",
-      "Critical",
-    ]);
-    expect(
-      screen
-        .getByTestId("metric-health")
-        .querySelector('[aria-current="true"]'),
-    ).toHaveTextContent(`${mixed.overallMaturity}Current`);
+      screen.queryByLabelText(/Maturity scale\. Current position/),
+    ).toBeNull();
+    expect(screen.getByTestId("metric-health")).not.toHaveTextContent(
+      "LeadingStrongEstablishedDevelopingCritical",
+    );
     expect(screen.getByTestId("metric-var")).toHaveTextContent(
       formatGbp(mixed.totalCost),
     );
@@ -78,6 +71,12 @@ describe("ExecutiveDashboard", () => {
     );
     expect(screen.getByTestId("priorities-list").textContent).not.toContain(
       "Prioritise evidence",
+    );
+    expect(screen.getByTestId("priorities-list")).not.toHaveTextContent(
+      "Risk score",
+    );
+    expect(screen.getByTestId("priorities-list")).toHaveTextContent(
+      "lowest current health scores",
     );
     expect(screen.getByTestId("priorities-list").children).toHaveLength(3);
     expect(screen.queryByTestId("executive-narrative")).toBeNull();

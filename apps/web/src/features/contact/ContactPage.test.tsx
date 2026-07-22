@@ -8,16 +8,22 @@ describe("Contact page", () => {
     render(<ContactPage />);
 
     expect(
-      screen.getByRole("heading", { name: "Start a clearer conversation." }),
+      screen.getByRole("heading", {
+        name: "Let’s Connect: Start a Clearer Conversation",
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Discuss my company results" }),
+      screen.getByRole("heading", { name: "Get Clarity on Your Results" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Explore consultancy support" }),
+      screen.getByRole("heading", {
+        name: "Discover Tailored Consultancy Support",
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Ask about the MYReSolve platform" }),
+      screen.getByRole("heading", {
+        name: "Learn More About the MYReSolve Platform",
+      }),
     ).toBeInTheDocument();
 
     const emailRob = screen.getByRole("link", { name: "Email Rob" });
@@ -32,7 +38,7 @@ describe("Contact page", () => {
     render(<ContactPage />);
 
     expect(
-      screen.getByText(/Please do not include confidential company/i),
+      screen.getByText(/Please don’t include confidential company/i),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();

@@ -6,16 +6,16 @@ const CONTACT_EMAIL = "rob.myresolve@gmail.com";
 
 const ENQUIRIES = [
   {
-    title: "Discuss my company results",
-    body: "Talk through what your assessment is showing and where attention may be needed first.",
+    title: "Get Clarity on Your Results",
+    body: "Let’s review your assessment together and identify where your focus will have the greatest impact.",
   },
   {
-    title: "Explore consultancy support",
-    body: "Discuss practical help to turn your priorities into measurable improvement.",
+    title: "Discover Tailored Consultancy Support",
+    body: "Explore practical ways to turn your priorities into measurable improvements, with expert guidance every step of the way.",
   },
   {
-    title: "Ask about the MYReSolve platform",
-    body: "Register your interest in future subscription access and ongoing performance tracking.",
+    title: "Learn More About the MYReSolve Platform",
+    body: "Register your interest for future subscription access and ongoing performance tracking; be the first to know when new features launch.",
   },
 ] as const;
 
@@ -53,20 +53,24 @@ export function ContactPage() {
           <div>
             <p className={styles.eyebrow}>Contact MYReSolve</p>
             <h1 id="contact-heading" className={styles.title}>
-              Start a clearer conversation.
+              Let’s Connect: Start a Clearer Conversation
             </h1>
             <p className={styles.lead}>
-              Whether you want to understand your assessment results, explore
-              expert support or discuss the future MYReSolve platform, contact
-              Rob directly.
+              Have questions about your assessment results, want expert
+              support, or are curious about the future MYReSolve platform?
+              Reach out to Rob directly; he’s here to help you move forward.
             </p>
-            <p className={styles.founder}>Rob Pierce, Founder of MYReSolve</p>
+            <p className={styles.founder}>
+              <strong>Rob Pierce</strong>
+              <br />
+              Founder, MYReSolve
+            </p>
           </div>
         </section>
 
         <section className={styles.enquiries} aria-labelledby="enquiry-heading">
           <h2 id="enquiry-heading" className={styles.sectionTitle}>
-            What would you like to discuss?
+            How can we help you move forward?
           </h2>
           <div className={styles.cardGrid}>
             {ENQUIRIES.map((enquiry) => (
@@ -79,14 +83,14 @@ export function ContactPage() {
         </section>
 
         <aside className={styles.contactBox} aria-label="Contact details">
-          <p className={styles.contactLabel}>Email</p>
+          <p className={styles.contactLabel}>Email:</p>
           <a href={`mailto:${CONTACT_EMAIL}`} className={styles.address}>
             {CONTACT_EMAIL}
           </a>
           <p className={styles.securityNote}>
-            Please do not include confidential company, financial or assessment
-            information in your first email. We can agree a secure way to share
-            information if it is needed.
+            Please don’t include confidential company, financial, or assessment
+            information in your first message. If needed, we’ll arrange a
+            secure way to share sensitive details.
           </p>
         </aside>
       </main>

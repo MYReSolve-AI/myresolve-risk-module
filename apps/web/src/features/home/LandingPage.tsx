@@ -29,6 +29,8 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
     finalCta,
     footer,
   } = content;
+  const [headlineLead, ...headlineRest] = hero.headline.split(":");
+  const headlineOutcome = headlineRest.join(":").trim();
 
   return (
     <div className={styles.page} data-testid="landing-page">
@@ -76,8 +78,17 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
             <p className={styles.eyebrow} data-testid="home-eyebrow">
               {hero.eyebrow}
             </p>
-            <h1 id="hero-headline" className={styles.headline}>
-              {hero.headline}
+            <h1
+              id="hero-headline"
+              className={styles.headline}
+              aria-label={hero.headline}
+            >
+              <span className={styles.headlineLead}>
+                {headlineLead}{headlineOutcome ? ":" : ""}
+              </span>
+              {headlineOutcome ? (
+                <span className={styles.headlineOutcome}>{headlineOutcome}</span>
+              ) : null}
             </h1>
             <p className={styles.problem} data-testid="home-problem">
               {hero.problemText}
