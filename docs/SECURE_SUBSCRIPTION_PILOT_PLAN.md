@@ -149,7 +149,161 @@ These controls are non-negotiable:
 
 MYReSolve must not promise that an internet service is completely secure. Customer wording must explain the controls honestly and must never claim a protection that has not been implemented and verified.
 
-## 8. Safe build order
+## 8. Secure subscription foundation design
+
+### 8.1 The company account
+
+Each paid customer receives one private company workspace.
+
+The workspace is the secure boundary around that company's:
+
+- Organisation Profile
+- assessments and answers
+- KPI definitions and values
+- source-system connections
+- progress history
+- invited users
+- exports and improvement actions
+
+Every workspace has its own permanent internal company identifier. The server applies that identifier to protected company records. The browser must never be trusted to choose or change it.
+
+Every person uses their own verified account. Shared logins are not permitted.
+
+The first verified person who creates the workspace becomes its Owner. Additional people join only through a revocable invitation from an authorised Owner or Admin.
+
+Creating a workspace with a company name is not proof that the person represents that company. During the controlled pilot, MYReSolve must verify the first Owner and company relationship before activating cloud storage. A future self-service journey will need an approved company-verification and duplicate-workspace recovery process.
+
+The pilot subscription covers one company workspace. Support for one person belonging to several companies can be designed later if real customer demand justifies the extra complexity.
+
+### 8.2 Access levels
+
+The first release uses three customer roles:
+
+- **Owner:** controls the company workspace, senior access, billing, export and deletion.
+- **Admin:** manages the working service, invited Members, assessments, KPIs and approved data connections.
+- **Member:** views the company workspace and contributes to assessments, KPIs and improvement work.
+
+| Action | Owner | Admin | Member | MYReSolve support |
+|---|---:|---:|---:|---:|
+| View the company dashboard | Yes | Yes | Yes | No |
+| Add or update assessments and KPI evidence | Yes | Yes | Yes | No |
+| Manage approved data connections | Yes | Yes | No | No |
+| Invite or remove Members | Yes | Yes | No | No |
+| Appoint or remove Admins | Yes | No | No | No |
+| Manage the subscription and invoices | Yes | No | No | No |
+| Export all company data | Yes | No | No | No |
+| Transfer company ownership | Yes, with identity recheck | No | No | Recovery process only |
+| Request complete company deletion | Yes, with identity recheck | No | No | No |
+
+MYReSolve support has no standing access to customer workspace content.
+
+Support may see only the minimum billing status needed to answer a billing query. Card details remain with the payment provider, and support cannot act as the customer to change the subscription.
+
+If support access is ever necessary, it must be:
+
+- requested or approved by the customer
+- limited to the minimum information and time required
+- visible to the customer
+- revocable
+- recorded in the security history
+
+The system must require the user to confirm their identity again before ownership transfer, complete export, company deletion, MFA reset or another high-risk account action.
+
+### 8.3 Where protected information lives
+
+| Information | Approved location | Important protection |
+|---|---|---|
+| Sign-in identity, passwordless factors and MFA | Identity provider | No assessment, KPI or financial content |
+| Company membership and roles | Protected company membership record | This is the final authority for access; current membership and role are checked on every protected action |
+| Organisation Profile, assessments and answers | Private company database | Every record carries the permanent company identifier and is protected by database company-isolation rules |
+| KPI definitions, values, source and refresh status | Private company database | Minimum aggregated values only; source and last-updated time retained |
+| Data-connection credentials and tokens | Encrypted server-side secret store | Never returned to the browser, logs or support tools |
+| Subscription status and invoice references | MYReSolve database plus payment provider | Card data remains with the payment provider |
+| Generated customer exports | Private short-lived storage | Authorised download only; automatic expiry; no public links |
+| Security history | Restricted append-only security record | Records who, what, when and company; does not copy assessment answers or KPI values |
+| Recovery copies | Separate encrypted backup | Restricted restoration; retention and deletion rules applied |
+| Public landing-page wording | Sanity | No account or company information |
+
+Production company data must not be placed in:
+
+- browser analytics
+- error messages or monitoring payloads
+- development or test environments
+- screenshots
+- support tickets
+- AI tools
+- Sanity
+- source control
+
+### 8.4 The checks behind every protected action
+
+For every protected page, read, update, export or deletion, the service performs the checks in this order:
+
+1. Confirm that the sign-in session is valid and has not been revoked.
+2. Confirm MFA where the account or action requires it.
+3. Confirm that the user is an active member of the company workspace.
+4. Confirm that the user's role permits the requested action.
+5. Apply the company identifier on the trusted server.
+6. Let the database independently enforce the same company boundary.
+7. Validate the information before saving or returning it.
+8. Record the important security event without copying sensitive business content.
+9. Return a safe error that does not reveal whether another company's record exists.
+
+The application must deny the action if any check fails.
+
+The identity provider proves who the person is. It does not, by itself, prove which company information they may access. Invitations and identity-provider organisation details must be reconciled with the current protected membership record before access is granted. Old browser state or an old role in a session must never preserve access after a person is removed or downgraded.
+
+### 8.5 Account and data lifecycle
+
+1. **Create:** a verified user creates the private company workspace and becomes Owner.
+2. **Invite:** the Owner or Admin sends a short-lived, revocable invitation to a named work email.
+3. **Join:** the invited person verifies their identity, sets up MFA and receives the approved role.
+4. **Use:** company information is stored only inside that workspace and all access is checked.
+5. **Connect:** the Owner or Admin approves a minimum-permission, read-only KPI connection.
+6. **Change access:** role and membership changes take effect immediately and are recorded.
+7. **Leave:** removing a person revokes their sessions and workspace access without deleting the company's records.
+8. **Cancel:** cancelling stops renewal but follows a clearly published access and retention period that must be approved before launch.
+9. **Export:** the Owner can create a protected, expiring export after confirming their identity.
+10. **Delete:** the Owner can request verified deletion. MYReSolve confirms the scope, deletes live records and applies the published backup-expiry process.
+
+The final cancellation period, backup retention period and deletion timetable remain Product Owner decisions. They must be agreed before real customer data is accepted and described consistently in the service terms and privacy notice.
+
+### 8.6 The first safe build
+
+The first implementation must be a small security proof, not a public subscription launch.
+
+It should contain only:
+
+- verified sign-in and MFA
+- one private workspace per invented company
+- Owner, Admin and Member roles
+- invitations and immediate access removal
+- synthetic Organisation Profiles and assessment answers
+- company-isolated reads and updates
+- a simple security history
+- one protected export
+- one verified deletion journey
+- encrypted backup and tested restoration
+
+The proof must use at least two invented companies and actively attempt to make one company's users access the other company's records.
+
+It passes only when:
+
+- all cross-company access attempts are denied
+- all permission tests pass
+- removed users lose access immediately
+- a user cannot accept another person's invitation
+- a user cannot promote themselves or alter their company identifier
+- account recovery does not bypass MFA or company checks
+- high-risk actions require identity confirmation
+- protected content is absent from browser logs, server logs and monitoring
+- export contains only the requesting company and its link expires
+- deletion and backup restoration behave exactly as documented
+- an independent reviewer confirms the evidence
+
+Only after this proof passes should MYReSolve add test-mode billing, automatic KPI connections or any real pilot customer data.
+
+## 9. Safe build order
 
 ### Stage 0 — Validate the offer
 
@@ -230,7 +384,7 @@ Do this while external assessment feedback arrives:
 - consider larger-company permissions and procurement needs
 - reassess architecture before enterprise commitments
 
-## 9. Launch gates
+## 10. Launch gates
 
 No real customer data or subscription payment is accepted until evidence confirms:
 
@@ -250,7 +404,7 @@ No real customer data or subscription payment is accepted until evidence confirm
 - independent security findings are resolved or formally accepted
 - the Product Owner records a clear launch approval
 
-## 10. Commercial decisions still required
+## 11. Commercial decisions still required
 
 Customer feedback should inform:
 
@@ -266,7 +420,7 @@ Customer feedback should inform:
 
 No price, saving or financial outcome should be advertised until it is approved and supported by evidence.
 
-## 11. Immediate actions
+## 12. Immediate actions
 
 1. Send the live free assessment to external reviewers.
 2. Record feedback against free, subscription, consultancy and trust.
@@ -278,7 +432,7 @@ No price, saving or financial outcome should be advertised until it is approved 
 8. Name the security, privacy and incident owners.
 9. Approve the budget for a synthetic-data security and connectivity proof.
 
-## 12. Explicitly not started
+## 13. Explicitly not started
 
 This plan does not:
 
@@ -291,7 +445,7 @@ This plan does not:
 - publish prices or security guarantees
 - change assessment scoring
 
-## 13. Detailed references
+## 14. Detailed references
 
 - [`docs/SUBSCRIPTION_MVP_BRIEF.md`](./SUBSCRIPTION_MVP_BRIEF.md)
 - [`docs/SECURITY_DATA_BLUEPRINT.md`](./SECURITY_DATA_BLUEPRINT.md)
