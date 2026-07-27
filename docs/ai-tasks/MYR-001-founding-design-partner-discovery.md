@@ -446,6 +446,55 @@ The single combined score is removed. Each option now has:
   the two non-blocking clarity notes. Then repeat the privacy and consistency
   scan. Do not contact prospective partners, push, merge, or deploy.
 
+## Builder follow-up 3 (final wording)
+
+- **Builder:** Claude
+- **Responds to Codex review at:** `ab17328`. This section is additive; all prior
+  Builder and Codex reports above are unchanged.
+- **Scope:** Final wording-only correction — the one remaining blocking finding
+  and the two non-blocking clarity notes, in one bounded edit. Only the three
+  owned paths touched; no product code, scoring, pricing, configuration, or
+  security implementation.
+
+### Finding 1 — Contradictory partner-selection instruction (RESOLVED)
+`docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md` §3 no longer says "record the criteria
+and a coded label only." It now instructs facilitators to **assess candidates
+privately, under coded labels, outside the repository** and to **commit only
+aggregate selection counts, with identifying combinations suppressed** — removing
+the conflict with §1 and the counts-only rule, so no coded label can reach a
+committed file.
+
+### Clarity note 1 — Stale [I] weight markers (RESOLVED)
+The three matrices' internal-assessment factor lists no longer carry weight
+markers (`×2`, `×1`). Each now reads "**Internal-assessment factors [I]
+(unweighted 0–3 inputs to the gate)**", with polarity notes (e.g. "3 = low
+effort") kept because they define score meaning, not weight.
+
+### Clarity note 2 — Continue wording (RESOLVED)
+The Continue threshold defines an **acceptable internal gate** once — Pass, or a
+Concern with the risk explicitly noted for the Owner; Fail is never acceptable —
+and all three Continue bullets now say "acceptable internal gate [I]" instead of a
+mix of "= Pass" and "Pass or Owner-noted Concern", so the rule reads consistently
+and matches the §1 gate definition and the Revise clause.
+
+### Checks run
+- **Scope:** only the three owned paths changed.
+- **Privacy:** no stable partner labels in any committed template, matrix,
+  evidence field, or decision record (remaining A/B/C mentions are prohibitions or
+  the private, do-not-commit §6a block); §3 now commits aggregate counts only.
+- **Source separation:** unchanged and intact — customer subtotal [C] ranks;
+  internal gate [I] is Pass/Concern/Fail; no combined total.
+- **Consistency:** "acceptable gate" defined once and used uniformly; [I] factors
+  described as unweighted throughout.
+- **Links:** all referenced documents resolve.
+- **Whitespace:** `git diff --check` clean.
+- **Checks not run:** application lint/test/build — documentation only, per the
+  verification agreement.
+
+- **Status:** Ready for final Codex re-review / Owner decision.
+- **No merge or deployment occurred:** Yes — one commit on the builder branch;
+  nothing pushed, merged, deployed, deleted, or contacted.
+
 ## Owner decision
 
 - **Decision:** Pending implementation and review

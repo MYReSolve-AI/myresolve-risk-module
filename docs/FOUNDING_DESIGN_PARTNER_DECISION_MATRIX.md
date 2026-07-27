@@ -73,8 +73,9 @@ Rank the candidate first offers (from `docs/SUBSCRIPTION_MVP_BRIEF.md` §3): a
 
 **Customer-evidence factors [C]:** Demand strength (×3) · Willingness to adopt as
 first paid step (×3) · Fit with a leader's felt problem (×2).
-**Internal-assessment factors [I]:** Deliverability before the security/foundation
-gates (×2) · Independence from unbuilt features (×1).
+**Internal-assessment factors [I]** (unweighted 0–3 inputs to the gate):
+Deliverability before the security/foundation gates · Independence from unbuilt
+features.
 
 | Candidate first package | Demand [C] ×3 | Adopt-first [C] ×3 | Problem fit [C] ×2 | **Customer subtotal [C]** | Deliverable [I] | Independence [I] | **Internal gate [I]** | Partner count [C] |
 |-------------------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -95,9 +96,9 @@ and §5) to separate "must have for a first paid pilot" from "later".
 
 **Customer-evidence factors [C]:** Value to partners (×3) · Frequency of use (×2)
 · Blocks adoption if absent (×3).
-**Internal-assessment factors [I]:** Build effort before launch (×2, where **3 =
-low effort**) · Security/foundation dependency (×2, where **3 = few
-dependencies**).
+**Internal-assessment factors [I]** (unweighted 0–3 inputs to the gate): Build
+effort before launch (**3 = low effort**) · Security/foundation dependency
+(**3 = few dependencies**).
 
 | Capability | Value [C] ×3 | Frequency [C] ×2 | Adoption-blocker [C] ×3 | **Customer subtotal [C]** | Low effort [I] | Few deps [I] | **Internal gate [I]** | Partner count [C] |
 |------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -128,9 +129,9 @@ named customer system with live data.
 **Customer-evidence factors [C]:** Repeated-effort removed (×3) · Number of
 partners who hold key KPIs there (×3) · Customer-reported access reality — how
 hard *they* say read-only access is to grant (×2).
-**Internal-assessment factors [I]:** Technical read-only + minimum-data
-feasibility (×2) · Security/permission risk (×2, where **3 = simplest & lowest
-risk**).
+**Internal-assessment factors [I]** (unweighted 0–3 inputs to the gate): Technical
+read-only + minimum-data feasibility · Security/permission risk (**3 = simplest &
+lowest risk**).
 
 | Connection category | Effort removed [C] ×3 | Partner spread [C] ×3 | Access reality [C] ×2 | **Customer subtotal [C]** | Tech feasibility [I] | Low risk [I] | **Internal gate [I]** | Partner count [C] |
 |---------------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -170,20 +171,22 @@ approved sample is three to five, so do not judge thresholds mid-round.
 Thresholds below use **majority signal** as defined in this table, so they hold
 whether the round finished with three, four, or five partners.
 
-Continue requires **both** sufficient customer evidence **and** a passing internal
-gate for the chosen options — the two are judged separately and both must hold.
+Continue requires **both** sufficient customer evidence **and** an **acceptable
+internal gate** for the chosen options — judged separately, both must hold. An
+internal gate is **acceptable** when it is **Pass**, or a **Concern with the risk
+explicitly noted for the Owner**; a **Fail** is never acceptable.
 
 ### Continue (proceed to the next planning step for the chosen option)
 - **A clear first package** has the highest **customer-evidence subtotal [C]**
   with **majority-signal** support to adopt it as the first paid step, **and** its
-  **internal gate [I] = Pass** (a Concern may proceed only with the risk noted for
-  the Owner), **and**
+  **internal gate [I] is acceptable** (as defined above), **and**
 - **at least 2 capabilities** register as "must have" (high [C] value + high [C]
-  adoption-blocker) with **majority signal**, each with an **internal gate [I] of
-  Pass or Owner-noted Concern**, **and**
+  adoption-blocker) with **majority signal**, each with an **acceptable internal
+  gate [I]**, **and**
 - **at least 2 connection categories** show strong repeated-effort-removed [C]
-  signal with **majority signal** **and** an **internal gate [I] = Pass** (feasible
-  read-only, minimum-data), **and**
+  signal with **majority signal** **and** an **acceptable internal gate [I]** —
+  where read-only, minimum-data feasibility and security risk are Pass, or a
+  Concern explicitly accepted by the Owner, **and**
 - **no unresolved trust blocker** is severe enough that partners would refuse to
   store data even once the stated foundations exist.
 

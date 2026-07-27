@@ -93,9 +93,12 @@ those documents or the locked assessment scoring model.
 
 ## 3. Selecting founding design partners (before any conversation)
 
-Aim for **three to five** partners who can give honest, relevant signal. Record
-the *criteria and a coded label only* — never names or contact details in the
-repository.
+Aim for **three to five** partners who can give honest, relevant signal. **Assess
+candidates privately, under coded labels, outside the repository** — never their
+names, contact details, coded labels, or per-candidate attributes in a committed
+file. **Commit only aggregate selection counts** (for example how many candidates
+met each criterion, and the sample's broad sector and size spread), with any
+small or distinctive combination suppressed.
 
 ### Selection criteria (score each candidate privately, outside the repo)
 
