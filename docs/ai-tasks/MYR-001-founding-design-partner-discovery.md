@@ -17,21 +17,21 @@
 
 ### Acceptance criteria
 
-- [ ] Create a concise, neutral interview guide suitable for a roughly
+- [x] Create a concise, neutral interview guide suitable for a roughly
   30-minute founding design-partner conversation.
-- [ ] Cover the current free assessment, proposed subscription outcome,
+- [x] Cover the current free assessment, proposed subscription outcome,
   optional consultancy, trust and data concerns, buying context, reporting
   needs, and source-system priorities.
-- [ ] Separate evidence from assumptions and avoid leading questions,
+- [x] Separate evidence from assumptions and avoid leading questions,
   unsupported savings claims, invented prices, or security guarantees.
-- [ ] Include safe facilitator guidance explaining what must not be collected,
+- [x] Include safe facilitator guidance explaining what must not be collected,
   entered into MYReSolve, or committed to the repository.
-- [ ] Define selection criteria for three to five potential founding design
+- [x] Define selection criteria for three to five potential founding design
   partners without recording their names or contact details in the repository.
-- [ ] Create a repeatable decision matrix that can rank the first paid package,
+- [x] Create a repeatable decision matrix that can rank the first paid package,
   essential launch capabilities, and the first two or three data connections.
-- [ ] Define clear evidence thresholds for continue, revise, or stop decisions.
-- [ ] Preserve the locked assessment scoring model and current application
+- [x] Define clear evidence thresholds for continue, revise, or stop decisions.
+- [x] Preserve the locked assessment scoring model and current application
   behaviour.
 
 ### Scope
@@ -97,18 +97,52 @@ part of this task.
 
 ## Builder handover
 
-- **Status:** Pending implementation
-- **Builder branch:**
-- **Head commit:**
-- **Outcome delivered:**
+- **Status:** Ready for review
+- **Task ID / roles:** MYR-001 — Builder: Claude, Reviewer: Codex.
+- **Base branch / base commit:** `origin/main` / `d492745` (verified ancestor of
+  the builder head).
+- **Builder branch:** `ai/claude/MYR-001-founding-design-partner-discovery`
+- **Head commit:** latest commit on the builder branch carrying this batch
+  (single commit; hash provided in the handover return to Codex).
+- **Outcome delivered:** A neutral, repeatable discovery kit that lets the Owner
+  learn which outcomes founding design partners value, which trust concerns block
+  adoption, and which two or three data connections matter most — with no
+  contact, no product code change, and no pricing.
 - **Files changed and why:**
-- **Checks run and results:**
-- **Checks not run and why:**
-- **Manual or visual evidence:**
-- **Dependencies, migrations, configuration, or environment changes:**
-- **Known limitations or residual risks:**
-- **Unresolved decisions:**
-- **No merge or deployment occurred:**
+  - `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md` (new) — facilitator safety and
+    claims boundaries, 3–5 partner selection criteria (no names/contacts), a
+    ~30-minute non-leading interview guide covering all seven required topics,
+    a question-hygiene checklist, and anonymised evidence-capture fields that
+    separate evidence from assumption.
+  - `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md` (new) — a repeatable
+    0–3 weighted scoring method and three ranking matrices (first paid package;
+    essential launch capabilities; first two or three data connections), plus
+    continue / revise / stop evidence thresholds and a per-round decision record.
+  - `docs/ai-tasks/MYR-001-founding-design-partner-discovery.md` — acceptance
+    criteria marked delivered and this handover completed.
+- **Checks run and results:** Scope check — only the three owned paths changed,
+  no product code or scoring touched (pass). `git diff --check` — clean.
+  Internal links — all referenced docs resolve. Privacy/claims scan — no prices,
+  currency amounts, percentage/ROI/savings claims, absolute security guarantees,
+  real participant names, or email addresses in the deliverables; the only
+  matches for "ROI"/"guarantee"/"never shared" are guardrail text instructing
+  facilitators NOT to make such claims (intended).
+- **Checks not run and why:** Application lint, tests, and production build were
+  not run — no application code, configuration, or scoring changed (documentation
+  only), consistent with the verification agreement.
+- **Manual or visual evidence:** Not applicable; deliverables are text templates
+  with no user-visible product change.
+- **Dependencies, migrations, configuration, or environment changes:** None.
+- **Known limitations or residual risks:** These are advisory templates, not
+  mechanically enforced; facilitator discipline is required to keep participant
+  identities and confidential data out of the repository. The matrices are
+  populated from evidence during real discovery, so they ship empty by design.
+- **Unresolved decisions:** None introduced. All commercial and security
+  decisions remain gated by `docs/SUBSCRIPTION_MVP_BRIEF.md` and
+  `docs/SECURE_SUBSCRIPTION_PILOT_PLAN.md`; no price, package, capability, or
+  connection is approved by this task.
+- **No merge or deployment occurred:** Yes — work stops at a single commit on the
+  builder branch; nothing pushed, merged, deployed, or deleted.
 
 ## Reviewer report
 
