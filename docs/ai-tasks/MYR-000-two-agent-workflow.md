@@ -199,7 +199,11 @@
 
 ## Owner decision
 
-- **Decision:** Pending review
-- **Decision notes:**
+- **Decision:** Approved for draft pull request
+- **Decision notes:** Approved by the Owner on 2026-07-27 after Claude's
+  independent review and follow-up verification. This authorizes recording the
+  decision, pushing the reviewed workflow branch, and opening a draft pull
+  request. It does not authorize merge, deployment, publication, branch
+  deletion, or removal of the safety stash.
 - **Merge explicitly approved:** No
 - **Deployment explicitly approved:** No
