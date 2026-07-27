@@ -400,6 +400,52 @@ The single combined score is removed. Each option now has:
 - **No merge or deployment occurred:** Yes — one commit on the builder branch;
   nothing pushed, merged, deployed, deleted, or contacted.
 
+## Second follow-up reviewer verification
+
+- **Reviewer:** Codex
+- **Reviewed commit:** `c936676` on
+  `ai/claude/MYR-001-founding-design-partner-discovery`.
+- **Review basis:** Compared with second review commit `c7e7c48`; verified that
+  the follow-up descends from it, changes only the three owned paths, and adds
+  to rather than deletes prior Builder and Reviewer history.
+- **Mechanical checks:** Pass. `git diff --check c7e7c48..c936676` is clean;
+  all referenced repository documents exist; no product code, locked scoring,
+  configuration, dependency, security implementation, or generated file
+  changed.
+- **Source-separation result:** Pass. All three matrices now rank only by a
+  customer-evidence subtotal [C] and report a separate Pass / Concern / Fail
+  internal-readiness gate [I]. There is no combined [C]+[I] total, and Continue
+  tests customer evidence and internal readiness separately.
+- **Privacy result:** Substantively corrected in the evidence capture and
+  decision matrix, but one contradictory repository instruction remains.
+- **Remaining blocking finding:**
+  1. **[P1] The partner-selection instruction still permits a coded label in
+     repository records.**
+     `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md:94-100` says to “Record the
+     criteria and a coded label only” and then qualifies only names and contact
+     details as excluded from the repository. That instruction conflicts with
+     lines 25-29 and the corrected counts-only rule, and could cause a
+     facilitator to commit the stable label the privacy correction is intended
+     to prohibit. Replace it with an unambiguous instruction to assess
+     candidates privately under coded labels and commit only aggregate
+     selection counts with identifying combinations suppressed.
+- **Non-blocking clarity notes:**
+  1. The [I] factor descriptions at
+     `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md:74-77`,
+     `:96-100`, and `:128-133` retain weight markers even though [I] factors now
+     feed an unweighted gate. Remove the stale [I] weights or explicitly define
+     their role.
+  2. Lines 173-180 say Continue requires a “passing” gate and then allow a
+     Concern with an Owner-noted risk. Use “acceptable under the rules below”
+     or define Concern as conditionally passing so the threshold reads
+     consistently.
+- **Acceptance-criteria result:** AC1, AC2, AC3, AC6, AC7, and AC8 pass. AC4
+  and AC5 remain narrowly blocked by the contradictory label instruction.
+- **Recommendation:** One final, wording-only correction is required before
+  approval. Correct the label instruction and, in the same bounded edit, resolve
+  the two non-blocking clarity notes. Then repeat the privacy and consistency
+  scan. Do not contact prospective partners, push, merge, or deploy.
+
 ## Owner decision
 
 - **Decision:** Pending implementation and review
