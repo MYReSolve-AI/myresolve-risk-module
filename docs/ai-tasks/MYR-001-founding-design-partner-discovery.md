@@ -521,7 +521,10 @@ and matches the §1 gate definition and the Revise clause.
 
 ## Owner decision
 
-- **Decision:** Pending implementation and review
-- **Decision notes:**
+- **Decision:** Approved
+- **Decision notes:** Owner approved MYR-001 after final Codex verification
+  confirmed AC1–AC8 pass at reviewer commit `b29468e`. This approves the
+  documentation outcome only; it does not authorise customer contact, product
+  implementation, a GitHub push or merge, or deployment.
 - **Merge explicitly approved:** No
 - **Deployment explicitly approved:** No
