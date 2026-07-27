@@ -147,13 +147,79 @@ part of this task.
 ## Reviewer report
 
 - **Reviewer:** Codex
-- **Reviewed commit or branch:**
-- **Compared with base commit:** `d492745`
+- **Reviewed commit or branch:** `7de3e50` on
+  `ai/claude/MYR-001-founding-design-partner-discovery`, reviewed read-only
+  from `ai/codex/MYR-001-review-founding-design-partner-discovery`.
+- **Compared with base commit:** `d492745`; also verified that the delivery
+  descends from approved brief commit `16f57fe`.
+- **Scope and mechanical checks:** Pass. Exactly the three owned paths changed;
+  `git diff --check` is clean; referenced repository documents exist; no
+  application code, scoring, configuration, dependency, or generated file
+  changed.
 - **Blocking findings:**
+  1. **[P1] The repository capture can still identify participants.**
+     `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md:107-115` calls a roster
+     anonymised while combining a coded label, sector, size band, role type,
+     and a distinctive fit rationale. Lines 241-264 repeat that context and
+     request concerns “verbatim where possible.” In a sample of only three to
+     five people drawn from a known network, those combined details or a
+     distinctive quotation can identify a person or company. This conflicts
+     with the task boundary forbidding identifying information in the
+     repository. Treat detailed partner-level notes as private
+     pseudonymised records; commit only redacted, paraphrased, aggregated
+     evidence with combinations suppressed where re-identification is
+     plausible.
+  2. **[P1] The claims guardrail permits unimplemented security controls to be
+     presented as usable customer framing.**
+     `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md:54-69` says facilitators may use
+     wording that company data “would be encrypted” and access limited to
+     approved users/personnel. The cited source,
+     `docs/SECURITY_DATA_BLUEPRINT.md:340-346`, permits that wording only after
+     controls are implemented and verified and says not to publish it until it
+     matches the live system and supplier agreements. The discovery guide must
+     instead require facilitators to state that these are proposed
+     requirements, not current or verified protections, and avoid reciting
+     future control wording as assurance.
+  3. **[P1] The scoring method mixes customer evidence with internal technical
+     judgement while requiring partner-only support.**
+     `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md:24-38` requires every
+     factor to use discovery notes and supporting partner labels, but the
+     matrices also score deliverability and independence (lines 49-51), build
+     effort and security dependencies (lines 68-71), and access feasibility
+     and security risk (lines 97-100). Design partners cannot evidence internal
+     build effort, architecture dependencies, or verified security
+     feasibility. Separate customer-evidence factors from an internal
+     technical/readiness assessment, identify the source for each score, and
+     do not use partner labels as support for internal judgements.
+  4. **[P2] Buying context is not directly tested.**
+     Acceptance criterion 2 requires buying context, and the desired outcome
+     includes value sufficient to adopt or pay for. The questions at
+     `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md:154-174` explore adoption and
+     consultancy use but do not neutrally ask how a purchase decision would be
+     made, who must approve it, what evidence is required, or which parts a
+     participant would expect to remain free versus paid. Add buying-process
+     questions without naming or anchoring a price.
 - **Non-blocking findings:**
-- **Acceptance criteria result:**
-- **Residual risk:**
-- **Recommendation:** Pending
+  1. The section timings total roughly 32 minutes before transitions rather
+     than 30. Label the guide “about 30–35 minutes” or trim it.
+  2. The Continue threshold says “at least 3 of 5” partners
+     (`docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md:129-137`) even though
+     the approved sample is three to five. Define the threshold for each
+     allowed sample size or require all five conversations before applying it.
+- **Acceptance criteria result:** AC8 passes. AC1 and AC7 are substantively
+  present but need the non-blocking clarifications above. AC2, AC3, AC4, and
+  AC6 are not yet satisfied because of findings 1-4. AC5's selection criteria
+  are present, but the repository-recording method must be corrected under
+  finding 1.
+- **Residual risk:** Even after correction, facilitator practice and private
+  note storage remain outside repository enforcement. The final documents
+  should distinguish anonymous aggregated evidence from private
+  pseudonymised notes and make the Owner responsible for approving any
+  retained evidence.
+- **Recommendation:** Changes requested. Return the four blocking findings to
+  Claude as one bounded documentation batch, then repeat the privacy, claims,
+  scoring-source, and acceptance-criteria review. Do not contact prospective
+  partners yet.
 
 ## Owner decision
 
