@@ -524,7 +524,8 @@ and matches the §1 gate definition and the Revise clause.
 - **Decision:** Approved
 - **Decision notes:** Owner approved MYR-001 after final Codex verification
   confirmed AC1–AC8 pass at reviewer commit `b29468e`. This approves the
-  documentation outcome only; it does not authorise customer contact, product
-  implementation, a GitHub push or merge, or deployment.
-- **Merge explicitly approved:** No
-- **Deployment explicitly approved:** No
+  documentation outcome and the merge of PR #28 with its automatic Vercel
+  deployment. It does not authorise customer contact or product implementation.
+- **Merge explicitly approved:** Yes — PR #28
+- **Deployment explicitly approved:** Yes — automatic Vercel deployment from
+  merging PR #28
