@@ -495,6 +495,30 @@ and matches the §1 gate definition and the Revise clause.
 - **No merge or deployment occurred:** Yes — one commit on the builder branch;
   nothing pushed, merged, deployed, deleted, or contacted.
 
+## Final reviewer verification
+
+- **Reviewer:** Codex
+- **Reviewed commit:** `5fe98bd` on
+  `ai/claude/MYR-001-founding-design-partner-discovery`.
+- **Bounded checks:** Pass. The follow-up descends from `ab17328`; exactly the
+  three owned paths changed; `git diff --check ab17328..5fe98bd` is clean; prior
+  Builder and Reviewer history is preserved additively.
+- **Privacy:** Pass. Candidate assessment is private and repository content is
+  limited to aggregate counts with identifying combinations suppressed. Stable
+  partner labels remain only in prohibitions or the explicitly private,
+  do-not-commit capture block.
+- **Source separation and consistency:** Pass. Customer-evidence subtotals [C]
+  remain the primary rankings; unweighted internal inputs feed a separate
+  Pass / Concern / Fail gate [I]; no combined total exists. “Acceptable internal
+  gate” is defined consistently as Pass or an Owner-noted Concern, never Fail.
+- **Acceptance criteria:** AC1–AC8 pass.
+- **Residual risk:** The templates remain advisory rather than mechanically
+  enforced. Facilitator discipline and Owner approval are still required before
+  any aggregate evidence is retained.
+- **Recommendation:** Approved for Owner decision. No further Builder correction
+  is required. This review does not authorise contact, implementation, push,
+  merge, or deployment.
+
 ## Owner decision
 
 - **Decision:** Pending implementation and review
