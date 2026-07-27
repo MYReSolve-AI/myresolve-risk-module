@@ -164,6 +164,39 @@
 - **Checks:** Documentation diff and whitespace validation passed.
 - **Next gate:** Claude verifies this follow-up before the Owner decision.
 
+## Follow-up verification (Claude)
+
+- **Reviewer:** Claude
+- **Verified commit:** `7c0b4c4` (range `68dd0ee..7c0b4c4`, single commit
+  "docs: address two-agent workflow review").
+- **Compared against reviewed commit:** `68dd0ee`. Verified `68dd0ee` is a true
+  ancestor of `7c0b4c4`; the builder based the fix directly on the reviewed
+  state. Diff is 3 Markdown files (`AGENTS.md`,
+  `docs/TWO_AGENT_WORKFLOW.md`, this record), 32 insertions / 5 deletions,
+  `git diff --check` clean, no code/config/secrets/generated files touched.
+- **Finding 1 — RESOLVED.** `AGENTS.md:9` now "Use repository tools only when…"
+  and `AGENTS.md:13` now "Start a fresh AI-assisted task…"; the Codex-only
+  framing is gone. Remaining "Codex" references (`AGENTS.md:3-4`, the two-agent
+  section) are the intended "Codex and Claude" naming and correctly untouched.
+- **Finding 2 — RESOLVED.** `docs/TWO_AGENT_WORKFLOW.md` handover contract now
+  states the reviewer records findings in its review-branch copy and the owner
+  or assigned builder integrates that reviewer-only commit before the owner
+  decision, and that the reviewer does not edit the builder branch directly.
+  This removes the earlier contradiction with the read-only reviewer rule
+  (lines 50-51, 57-67) and matches what actually happened (`68dd0ee` integrated
+  into the builder branch).
+- **Finding 3 — RESOLVED.** `docs/TWO_AGENT_WORKFLOW.md` isolation rules now
+  require a clean worktree before removal, treat forced worktree removal as a
+  destructive action needing explicit owner approval, and forbid removing a
+  worktree containing uncommitted work — consistent with the file's stop
+  conditions.
+- **Regressions or contradictions:** None found. Changes are additive/clarifying
+  and internally consistent with the surrounding rules.
+- **Residual risk:** Unchanged from the original review — governance remains
+  advisory with no mechanical enforcement gate.
+- **Recommendation:** All three non-blocking findings resolved; no new issues.
+  Ready for owner.
+
 ## Owner decision
 
 - **Decision:** Pending review
