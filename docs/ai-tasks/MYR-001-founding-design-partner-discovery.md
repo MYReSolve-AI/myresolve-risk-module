@@ -221,6 +221,75 @@ part of this task.
   scoring-source, and acceptance-criteria review. Do not contact prospective
   partners yet.
 
+## Builder follow-up
+
+- **Builder:** Claude
+- **Responds to Codex review at:** `a75684f`. This section is additive; the Codex
+  Reviewer report above is unchanged.
+- **Scope:** One bounded documentation batch addressing the four blocking findings
+  and the two non-blocking clarifications. Only the three owned paths edited; no
+  product code, scoring, prices, or contact.
+
+### Blocking findings
+
+- **B1 — Re-identification in a small sample (RESOLVED).**
+  `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md` §3 "Recording partners safely" now
+  keeps the full label-to-attribute roster **private (never committed)** and
+  commits only a minimal aggregate count, with explicit suppression of any
+  identifying attribute or combination. §6 is re-framed: the per-partner block
+  (§6a) is a private, pseudonymised record kept **outside** the repository, and
+  only a redacted, paraphrased, aggregated cross-partner summary (§6b) is
+  committed and approved by the Owner. "Verbatim where possible" is replaced by
+  paraphrase-only; §1 and the §5 checklist reinforce combination suppression.
+- **B2 — Future security controls recited as assurance (RESOLVED).**
+  §2 "No security guarantees" is rewritten so facilitators must not present
+  planned protections (encryption, access limits, company separation, supplier
+  handling) as current or verified. It requires stating they are **proposed
+  requirements, not yet built or verified**, notes the approved trust wording may
+  only be published once it matches the implemented system, and instructs
+  facilitators to capture the concern rather than reassure.
+- **B3 — Customer evidence mixed with internal judgement (RESOLVED).**
+  `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md` §1 now defines two factor
+  sources — **[C] customer-evidence** (partner-labelled) and **[I]
+  internal-assessment** (internal basis + owner, never partner-labelled) — and
+  forbids mixing them. All three matrices tag each factor [C] or [I] and carry
+  two separate support columns (*Partner support [C]* / *Internal basis [I]*).
+  Matrix C additionally splits customer-reported access reality [C] from internal
+  technical feasibility and security risk [I]. §5/§6 reflect the split so a score
+  built only on [I] is not read as customer validation.
+- **B4 — Buying context not directly tested (RESOLVED).**
+  A new interview section, §4 "Buying context and decision process", adds neutral
+  questions on how a purchase decision is made, who approves, what evidence is
+  required, the budget cycle, and free-vs-paid expectations — with no price named
+  or anchored. A matching BUYING CONTEXT capture field and a §5 checklist item
+  were added.
+
+### Non-blocking clarifications
+
+- **N1 — Timing (RESOLVED).** The section is retitled "The conversation (about
+  30–35 minutes)"; timings were rebalanced (Context 5→4, Free assessment 4→3) to
+  absorb the new 4-minute buying-context section, summing to ~34 minutes.
+- **N2 — Threshold vs sample size (RESOLVED).** §5 now requires all conversations
+  in the round to be complete first and defines a **majority-signal** table for
+  samples of 3 (2 of 3), 4 (3 of 4), and 5 (3 of 5); the Continue and Revise
+  rules reference it instead of a fixed "3 of 5".
+
+### Checks run
+
+- **Scope:** only the three owned paths changed; no product code, scoring, or
+  configuration touched.
+- **Whitespace:** `git diff --check` clean.
+- **Links:** all referenced documents resolve.
+- **Privacy/claims scan:** no prices, currency, %/ROI/savings claims, absolute
+  security guarantees, real names, or emails in the deliverables; residual
+  matches are guardrail text prohibiting such claims.
+- **Checks not run:** application lint/test/build — documentation only, per the
+  verification agreement.
+
+- **Status:** Ready for re-review by Codex.
+- **No merge or deployment occurred:** Yes — one commit on the builder branch;
+  nothing pushed, merged, deployed, deleted, or contacted.
+
 ## Owner decision
 
 - **Decision:** Pending implementation and review
