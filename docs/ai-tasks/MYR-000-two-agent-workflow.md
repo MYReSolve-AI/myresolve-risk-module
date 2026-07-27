@@ -95,13 +95,56 @@
 ## Reviewer report
 
 - **Reviewer:** Claude
-- **Reviewed commit or branch:**
-- **Compared with base commit:** `7cf9588`
-- **Blocking findings:**
+- **Reviewed commit or branch:** `39fc2e5` (range `7cf9588..39fc2e5`, commits
+  `ded001e` + `39fc2e5`); reviewed read-only from branch
+  `ai/claude/MYR-000-review-two-agent-workflow`.
+- **Compared with base commit:** `7cf9588` (verified: equals current
+  `origin/main` and is a true ancestor of `39fc2e5`).
+- **Blocking findings:** None. The change is 5 additive Markdown files
+  (397 insertions, 0 deletions); `git diff --check` is clean and no
+  application code, configuration, secrets, or generated files were touched.
+  User approval, branch/worktree isolation, and the prohibitions on
+  unauthorized merge / deploy / publish / delete / billing / destructive
+  actions are all covered across `AGENTS.md` (lines 16, 27, 55-63),
+  `CLAUDE.md` (lines 20-21), and `docs/TWO_AGENT_WORKFLOW.md`
+  (lines 28-29, 92-101, 104-111).
 - **Non-blocking findings:**
-- **Acceptance criteria result:**
-- **Residual risk:**
-- **Recommendation:** Pending
+  1. `AGENTS.md:9` and `AGENTS.md:13` keep Codex-specific wording ("Use Codex
+     repository tools only when…", "Start a fresh Codex task…") although
+     `AGENTS.md:3-4` broadens scope to "all AI-assisted work… including Codex
+     and Claude." Reads as if the cost/handover rules bind only Codex.
+     Recommend generalizing to "agent" / "AI-assisted task."
+  2. Reviewer-write path is under-specified. `docs/TWO_AGENT_WORKFLOW.md:88`
+     says "The reviewer adds its findings… to the same task record," but
+     lines 50-51 and 57-67 require the reviewer to stay off the builder's
+     branch. In practice (as here) the reviewer writes to its own branch copy,
+     producing two divergent copies of the record until the owner integrates.
+     Recommend one clarifying sentence: the reviewer records on its review
+     branch and the owner (or builder) integrates the report.
+  3. Worktree lifecycle is ungoverned. `docs/TWO_AGENT_WORKFLOW.md:31-42`
+     covers worktree creation but not removal; `git worktree list` already
+     shows an accumulating set including a `prunable` entry
+     (`/private/tmp/pr16-final-verify-855e`). Branch deletion needs approval,
+     but `git worktree remove --force` can discard uncommitted work and is not
+     addressed. Recommend a cleanup rule flagging forced worktree removal as a
+     destructive action.
+- **Acceptance criteria result:** Criteria 1-5 substantively satisfied by the
+  documents. Note these are advisory instructions, not mechanically enforced —
+  the builder disclosed this honestly (`MYR-000` handover, "do not mechanically
+  enforce every rule"). Criterion 6 (security-document work "preserved and
+  reconciled") is **not evidenced in the reviewed range** — the diff contains
+  only the 5 governance files. I independently confirmed the security work is
+  preserved on `origin/cursor/secure-subscription-pilot-blueprint-855e`
+  (`a70716c`), so "preserved" holds, but the reconciliation is separate git
+  state, not part of this commit. Recommend treating criterion 6 as satisfied
+  by that separate state (or splitting it into its own task), not by this PR.
+- **Residual risk:** Governance is advisory and relies on both agents and their
+  harnesses reading and honoring the docs; there is no mechanical gate (e.g. a
+  pre-commit or CI check blocking unauthorized merges). Acceptable for a
+  documentation task; a candidate for later hardening.
+- **Recommendation:** Ready for owner. No blocking findings. Non-blocking items
+  1-3 can be folded into a follow-up documentation pass; the criterion-6 note
+  is a scoping/evidence caveat, not a defect in the workflow.
 
 ## Owner decision
 
