@@ -22,8 +22,11 @@ those documents or the locked assessment scoring model.
 - Ask open questions, listen more than you talk, and capture the meaning of what
   the participant says in your own paraphrase — not distinctive verbatim quotes
   (see §6).
-- Record findings against **Partner A, Partner B, Partner C…**, never against a
-  real name (see §2 and §4).
+- In your **private notes only**, work against coded labels (**Partner A, B,
+  C…**), never a real name. Those labels must **never enter a committed file** —
+  a label reused across themes can re-link one participant's answers in a small
+  sample. Anything committed to the repository uses **aggregate counts only**
+  (see §2, §3, and §6).
 - The per-partner capture block in §6 is a **private, pseudonymised working
   record kept outside the repository**. Only redacted, paraphrased, aggregated
   evidence — with identifying combinations suppressed — is committed and scored
@@ -268,6 +271,9 @@ Thank them. Make no commitment about price, timing, or features.
 - [ ] Before committing, identifying combinations were suppressed so no partner
       is guessable in a three-to-five sample; only redacted, paraphrased,
       aggregated evidence moved to the repository.
+- [ ] Committed content uses aggregate counts only — no stable partner labels
+      (A, B, C…) in any committed file; labels stay in private notes, and the
+      Owner approved the aggregate before retention.
 - [ ] Notes separate evidence (what was said/done) from assumption (inference).
 
 ---
@@ -336,11 +342,13 @@ OVERALL
 ### 6b. Committed aggregate (repository)
 
 After each round, commit only a redacted, cross-partner summary — never the
-private blocks above. Suppress any combination that could identify a partner.
+private blocks above, and **never stable partner labels**. Use aggregate counts
+only, suppress any small or distinctive cell that could identify a partner, and
+have the Owner approve the summary before it is retained.
 
 ```
 Round / date band:
-Partners contributing (labels only, e.g. A, B, C):
+Number of partners contributing (count only, e.g. 4):
 Valued outcomes — themes and how many partners raised each:
 Buying context — themes (decision process, approvers, evidence bar, free-vs-paid):
 Trust blockers — themes and how many partners raised each:

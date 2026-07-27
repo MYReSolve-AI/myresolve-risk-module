@@ -341,6 +341,65 @@ part of this task.
   source-separation, and acceptance-criteria checks. Do not contact prospective
   partners, push, merge, or deploy.
 
+## Builder follow-up 2
+
+- **Builder:** Claude
+- **Responds to Codex review at:** `c7e7c48`. This section is additive; all prior
+  Builder and Codex reports above are unchanged.
+- **Scope:** Second bounded documentation batch addressing only the two remaining
+  blocking findings. Only the three owned paths edited; no product code, scoring,
+  pricing, configuration, or security implementation touched.
+
+### Finding 1 — Stable partner labels in committed records (RESOLVED)
+Repository-bound content now uses **aggregate counts only**; stable labels are
+confined to private notes.
+- `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md` §1 reframed: coded labels (A, B, C…)
+  are for **private notes only** and must never enter a committed file; committed
+  content uses aggregate counts.
+- §6b committed-aggregate template: "Partners contributing (labels only, e.g. A,
+  B, C)" replaced with "Number of partners contributing (count only)"; added
+  explicit no-labels, suppress small/distinctive cells, and Owner-approval-before
+  -retention instructions. (The §6a per-partner block remains an explicitly
+  **private, do-not-commit** template.)
+- §5 checklist gained an item requiring counts-only, no committed labels, and
+  Owner approval of the aggregate.
+- `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md` §1 now says record the
+  **aggregate count** (never labels); the three matrices' support column is
+  renamed **Partner count [C]**; the §6 decision record replaces "labels only,
+  e.g. A, B, C" with a count and adds suppression + Owner-approval fields.
+
+### Finding 2 — Combined [C]+[I] weighted ranking (RESOLVED)
+The single combined score is removed. Each option now has:
+- a **Customer-evidence subtotal [C]** = Σ([C] factor × weight), which is the
+  **primary ranking**; and
+- a separate **Internal-readiness gate [I]** = Pass / Concern / Fail read from the
+  [I] factor scores, reported alongside but **never added** to the rank.
+- Matrix §1 defines the two outputs and the gate rule and states there is no
+  combined total; all three matrix tables replace the `Weighted` column with
+  `Customer subtotal [C]` + `Internal gate [I]`; the [I] factor columns feed the
+  gate, not a weighted sum.
+- §5 Continue now **explicitly requires both** sufficient customer evidence
+  (highest [C] subtotal with majority signal) **and** a passing internal gate;
+  Revise/Stop reference the gate rather than a blended score.
+
+### Checks run
+- **Scope:** only the three owned paths changed; no product code, scoring,
+  pricing, configuration, or security implementation touched.
+- **Privacy / source-separation:** no stable partner labels in any committed
+  template, matrix, evidence field, or decision record (remaining A/B/C mentions
+  are prohibitions or the private-only §6a block); customer [C] and internal [I]
+  are scored and reported separately with no combined total.
+- **Acceptance criteria:** AC4 and AC5 (privacy of partner records) and AC6
+  (decision matrix) now addressed; AC1, AC2, AC3, AC7, AC8 remain satisfied.
+- **Links:** all referenced documents resolve.
+- **Whitespace:** `git diff --check` clean.
+- **Checks not run:** application lint/test/build — documentation only, per the
+  verification agreement.
+
+- **Status:** Ready for second re-review by Codex.
+- **No merge or deployment occurred:** Yes — one commit on the builder branch;
+  nothing pushed, merged, deployed, deleted, or contacted.
+
 ## Owner decision
 
 - **Decision:** Pending implementation and review

@@ -22,18 +22,23 @@ assume any security control that is not yet implemented and verified.
 ## 1. How to score (repeatable method)
 
 Score each factor **0–3**. Every factor has a declared **source**, and the two
-sources must never be mixed or supported by the same evidence:
+sources are scored, recorded, and reported **separately** — never combined into a
+single number:
 
-- **[C] Customer-evidence factor** — scored only from the aggregated discovery
-  evidence (the §6b committed aggregate in the discovery guide). Record the
-  **partner labels or count** that support the score. Design partners are the
-  evidence here.
+- **[C] Customer-evidence factor** — scored only from the §6b committed aggregate
+  in the discovery guide. Record the **aggregate count** of partners whose
+  evidence supports the score (for example "3 of 4"). **Never record stable
+  partner labels (A, B, C…) in this or any other committed file:** a label reused
+  across buying, trust, reporting, and system themes can link one participant's
+  answers and re-identify a person or company in a three-to-five sample. Labels
+  belong only in private notes outside the repository, and small or distinctive
+  cells are suppressed before the Owner approves what is retained.
 - **[I] Internal-assessment factor** — scored from MYReSolve's own technical and
   readiness judgement (build effort, architecture dependencies, security and
-  access feasibility). Record a short **internal basis and the owner** of that
-  judgement. Do **not** cite partner labels to support an [I] factor: design
-  partners cannot evidence internal build effort, architecture dependencies, or
-  verified security feasibility.
+  access feasibility). Record a short **internal basis and owner** in the
+  decision record (§6). Do **not** use customer evidence to support an [I]
+  factor: design partners cannot evidence internal build effort, architecture
+  dependencies, or verified security feasibility.
 
 | Score | Meaning ([C] = across partners; [I] = internal confidence) |
 |------:|-----------|
@@ -42,15 +47,22 @@ sources must never be mixed or supported by the same evidence:
 | 2 | Clear signal from some partners, or moderate internal confidence |
 | 3 | Strong repeated signal across most partners, or high internal confidence |
 
-- **Weighted score** = sum of (factor score × factor weight).
-- Each matrix keeps **two support columns**: *Partner support [C]* (labels/count)
-  and *Internal basis [I]* (rationale + owner). A [C] score with only one
-  supporting partner is a hypothesis, not evidence — treat it as such in §5.
-- The ranking shows both sources so the Owner can see where **customer demand**
-  and **internal feasibility** agree or diverge; a high overall score built only
-  on [I] factors is not customer validation.
-- Re-run the matrix whenever new discovery evidence arrives; it is meant to be
-  updated, not filled in once.
+Each option produces **two separate results — never add them together:**
+
+- **Customer-evidence subtotal [C]** = sum of ([C] factor score × weight). This is
+  the **primary ranking**; it reflects customer demand only.
+- **Internal-readiness gate [I]** = a **Pass / Concern / Fail** verdict read from
+  the [I] factor scores, reported alongside the rank but never folded into it:
+  - **Pass** — every [I] factor scores ≥ 2.
+  - **Concern** — an [I] factor scores 1; may proceed only with the risk noted for
+    the Owner.
+  - **Fail** — any [I] factor scores 0; blocks Continue for that option until
+    resolved.
+
+There is **no combined [C]+[I] total**. A strong internal gate never lifts an
+option's customer rank; it only says whether a customer-valued option is ready to
+build. A [C] subtotal resting on a single partner is a hypothesis, not evidence
+(see §5). Re-run the matrix whenever new discovery evidence arrives.
 
 ---
 
@@ -64,15 +76,15 @@ first paid step (×3) · Fit with a leader's felt problem (×2).
 **Internal-assessment factors [I]:** Deliverability before the security/foundation
 gates (×2) · Independence from unbuilt features (×1).
 
-| Candidate first package | Demand [C] ×3 | Adopt-first [C] ×3 | Problem fit [C] ×2 | Deliverable [I] ×2 | Independence [I] ×1 | Weighted | Partner support [C] | Internal basis [I] |
-|-------------------------|:---:|:---:|:---:|:---:|:---:|:--:|---|---|
+| Candidate first package | Demand [C] ×3 | Adopt-first [C] ×3 | Problem fit [C] ×2 | **Customer subtotal [C]** | Deliverable [I] | Independence [I] | **Internal gate [I]** | Partner count [C] |
+|-------------------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Subscription (tracking) | | | | | | | | |
 | Consultancy (expert support) | | | | | | | | |
 | Combined starter | | | | | | | | |
 
-*Do not enter a price. This ranks which offer to pursue first, not what to charge.
-Partner labels support only the [C] columns; the [I] columns cite an internal
-basis and owner.*
+*Do not enter a price. Primary rank = customer subtotal [C]; the internal gate is
+Pass/Concern/Fail and is never added to the rank. Record aggregate partner counts
+only — never labels — and record each [I] gate's basis and owner in §6.*
 
 ---
 
@@ -87,8 +99,8 @@ and §5) to separate "must have for a first paid pilot" from "later".
 low effort**) · Security/foundation dependency (×2, where **3 = few
 dependencies**).
 
-| Capability | Value [C] ×3 | Frequency [C] ×2 | Adoption-blocker [C] ×3 | Low effort [I] ×2 | Few deps [I] ×2 | Weighted | Partner support [C] | Internal basis [I] |
-|------------|:---:|:---:|:---:|:---:|:---:|:--:|---|---|
+| Capability | Value [C] ×3 | Frequency [C] ×2 | Adoption-blocker [C] ×3 | **Customer subtotal [C]** | Low effort [I] | Few deps [I] | **Internal gate [I]** | Partner count [C] |
+|------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Secure account + one company workspace | | | | | | | | |
 | Saved assessment history | | | | | | | | |
 | Repeat assessment + comparison over time | | | | | | | | |
@@ -97,11 +109,13 @@ dependencies**).
 | Invited leadership users | | | | | | | | |
 | Downloadable progress reports | | | | | | | | |
 
-**Reading the result:** high value **and** high adoption-blocker = candidate
-"must have"; high value but heavy dependency/effort = strong "fast follow". The
-KPI layer keeps leadership judgement and actual evidence visibly separate and must
-never blend into the locked assessment score (`docs/SUBSCRIPTION_MVP_BRIEF.md`
-§8).
+**Reading the result:** rank by **customer subtotal [C]** (high value + high
+adoption-blocker = candidate "must have"); the **internal gate [I]** then shows
+whether a customer-valued capability is buildable now (Pass) or a "fast follow"
+(Concern/Fail on effort or dependencies) — the gate never raises the customer
+rank. Record aggregate partner counts only, never labels. The KPI layer keeps
+leadership judgement and actual evidence visibly separate and must never blend
+into the locked assessment score (`docs/SUBSCRIPTION_MVP_BRIEF.md` §8).
 
 ---
 
@@ -118,8 +132,8 @@ hard *they* say read-only access is to grant (×2).
 feasibility (×2) · Security/permission risk (×2, where **3 = simplest & lowest
 risk**).
 
-| Connection category | Effort removed [C] ×3 | Partner spread [C] ×3 | Access reality [C] ×2 | Tech feasibility [I] ×2 | Low risk [I] ×2 | Weighted | Partner support [C] | Internal basis [I] |
-|---------------------|:---:|:---:|:---:|:---:|:---:|:--:|---|---|
+| Connection category | Effort removed [C] ×3 | Partner spread [C] ×3 | Access reality [C] ×2 | **Customer subtotal [C]** | Tech feasibility [I] | Low risk [I] | **Internal gate [I]** | Partner count [C] |
+|---------------------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | BI dashboard (e.g. Power BI / Tableau layer) | | | | | | | | |
 | Underlying data service behind a dashboard | | | | | | | | |
 | Finance / ERP summary | | | | | | | | |
@@ -156,22 +170,29 @@ approved sample is three to five, so do not judge thresholds mid-round.
 Thresholds below use **majority signal** as defined in this table, so they hold
 whether the round finished with three, four, or five partners.
 
+Continue requires **both** sufficient customer evidence **and** a passing internal
+gate for the chosen options — the two are judged separately and both must hold.
+
 ### Continue (proceed to the next planning step for the chosen option)
-- **A clear first package** ranks highest and has **majority-signal** [C] support
-  to adopt it as the first paid step, **and**
+- **A clear first package** has the highest **customer-evidence subtotal [C]**
+  with **majority-signal** support to adopt it as the first paid step, **and** its
+  **internal gate [I] = Pass** (a Concern may proceed only with the risk noted for
+  the Owner), **and**
 - **at least 2 capabilities** register as "must have" (high [C] value + high [C]
-  adoption-blocker) with **majority signal**, **and**
+  adoption-blocker) with **majority signal**, each with an **internal gate [I] of
+  Pass or Owner-noted Concern**, **and**
 - **at least 2 connection categories** show strong repeated-effort-removed [C]
-  signal with **majority signal** *and* an acceptable [I] technical/security
-  assessment (feasible read-only, minimum-data), **and**
+  signal with **majority signal** **and** an **internal gate [I] = Pass** (feasible
+  read-only, minimum-data), **and**
 - **no unresolved trust blocker** is severe enough that partners would refuse to
   store data even once the stated foundations exist.
 
 ### Revise (adjust the offer, capability set, or connection targets, then re-test)
 - Signal is **mixed or split** (e.g. no package reaches majority signal, or
   must-have capabilities disagree across partners), **or**
-- the valued connections have strong [C] demand but **fail the [I] feasibility or
-  security assessment** as read-only/minimum-data in most cases, **or**
+- the valued connections have strong [C] demand but the **internal gate [I] is
+  Fail or unresolved Concern** on read-only/minimum-data feasibility or security,
+  **or**
 - trust concerns are **specific and addressable** but currently block adoption.
 
   → Change only what the evidence points to, keep the boundaries, and run another
@@ -197,16 +218,20 @@ Owner decisions under the referenced briefs.
 
 ## 6. Decision record (complete per round)
 
+Use aggregate counts only in this committed record — never stable partner labels.
+
 ```
 Round / date band:
 Completed sample size (3–5) and majority bar used:   e.g. 4 partners → 3 of 4
-Partners contributing (labels only):                 e.g. A, B, C
-Chosen first package (weighted score / [C] partner support / [I] basis+owner):
-Must-have capabilities ([C] partner support):
-Selected 2–3 connections ([C] demand + reported access / [I] feasibility+risk):
+Number of partners contributing (count only):        e.g. 4
+Chosen first package — customer subtotal [C] + partner count / internal gate [I] + basis & owner:
+Must-have capabilities — customer subtotal [C] + partner count / internal gate [I]:
+Selected 2–3 connections — [C] demand + reported access count / internal gate [I] (feasibility, risk):
 Unresolved trust blockers:
 Threshold result:                                    Continue | Revise | Stop
-Rationale (which signal was [C] customer evidence vs [I] internal judgement):
+Rationale (customer evidence [C] and internal gate [I] stated separately):
+Small or distinctive cells suppressed:               Yes | No
+Owner approved this aggregate for retention:         Yes | No
 Next planning step (no build authorised):
 Owner sign-off required before any implementation:   Yes
 ```
