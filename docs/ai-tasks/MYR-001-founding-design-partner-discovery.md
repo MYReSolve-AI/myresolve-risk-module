@@ -290,6 +290,57 @@ part of this task.
 - **No merge or deployment occurred:** Yes — one commit on the builder branch;
   nothing pushed, merged, deployed, deleted, or contacted.
 
+## Follow-up reviewer verification
+
+- **Reviewer:** Codex
+- **Reviewed commit:** `e09d05d` on
+  `ai/claude/MYR-001-founding-design-partner-discovery`.
+- **Review basis:** Compared with the prior review commit `a75684f`; verified
+  that the follow-up descends from it, changes only the three owned paths, and
+  preserves the original reviewer report unchanged.
+- **Mechanical checks:** Pass. `git diff --check a75684f..e09d05d` is clean;
+  referenced documents resolve; no application code, scoring, configuration,
+  dependency, or generated file changed.
+- **Corrections verified:** The guide now treats planned security controls as
+  proposed and unverified, adds neutral buying-process questions, uses an
+  approximately 30–35 minute schedule, keeps detailed per-partner notes outside
+  the repository, and scales the majority threshold to completed samples of
+  three, four, or five. Customer-evidence and internal-assessment factors are
+  also labelled separately and require different supporting sources.
+- **Remaining blocking findings:**
+  1. **[P1] Stable partner labels remain in committed records.**
+     `docs/FOUNDING_DESIGN_PARTNER_DISCOVERY.md:336-350` correctly requires a
+     redacted cross-partner summary, but its repository template still records
+     contributing labels such as A, B, and C. The scoring method at
+     `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md:27-30` and the decision
+     record at lines 198-206 likewise permit partner labels. Reusing a stable
+     label across buying, trust, reporting, and system themes can link one
+     participant's answers across committed files. In a known sample of only
+     three to five, that linkage can re-identify a person or company even when
+     the private label mapping is not committed. Repository content must use
+     aggregate counts only, never stable partner labels; retain labels only in
+     private notes and suppress small or distinctive cells before Owner
+     approval.
+  2. **[P1] The primary ranking still combines customer evidence and internal
+     judgement into one score.**
+     `docs/FOUNDING_DESIGN_PARTNER_DECISION_MATRIX.md:24-36` says the two
+     sources must never be mixed, but line 45 defines a single weighted score,
+     and each matrix's `Weighted` column sums both [C] and [I] factors (for
+     example, lines 62-71). A strong internal-readiness score can therefore
+     lift an option with weak customer demand, making the rank look more
+     customer-validated than it is. Give each option a separate
+     customer-evidence subtotal and internal-readiness result or gate; do not
+     use a combined [C]+[I] total as the primary rank. Make Continue depend
+     explicitly on sufficient customer evidence and a passing internal gate.
+- **Acceptance-criteria result:** The security-claims, buying-context, timing,
+  and sample-threshold corrections pass. AC1, AC2, AC3, AC7, and AC8 pass.
+  AC4 and AC5 remain blocked by finding 1, and AC6 remains blocked by finding
+  2.
+- **Recommendation:** Changes requested. Return only these two findings to
+  Claude as a second bounded documentation correction, then repeat the privacy,
+  source-separation, and acceptance-criteria checks. Do not contact prospective
+  partners, push, merge, or deploy.
+
 ## Owner decision
 
 - **Decision:** Pending implementation and review
