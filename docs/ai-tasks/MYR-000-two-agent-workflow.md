@@ -199,11 +199,12 @@
 
 ## Owner decision
 
-- **Decision:** Approved for draft pull request
+- **Decision:** Approved for merge
 - **Decision notes:** Approved by the Owner on 2026-07-27 after Claude's
-  independent review and follow-up verification. This authorizes recording the
-  decision, pushing the reviewed workflow branch, and opening a draft pull
-  request. It does not authorize merge, deployment, publication, branch
-  deletion, or removal of the safety stash.
-- **Merge explicitly approved:** No
-- **Deployment explicitly approved:** No
+  independent review and follow-up verification. The Owner first authorized
+  the draft pull request, then explicitly approved merging PR 27 and the
+  automatic Vercel deployment triggered by that merge. Branch deletion,
+  worktree removal, and removal of the safety stash remain unapproved.
+- **Merge explicitly approved:** Yes — PR 27
+- **Deployment explicitly approved:** Yes — automatic Vercel deployment
+  triggered by merging PR 27
