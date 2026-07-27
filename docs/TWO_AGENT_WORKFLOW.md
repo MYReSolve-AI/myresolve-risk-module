@@ -40,6 +40,9 @@ deployment, publication, destructive actions, or material scope expansion.
 - Assign owned paths in the task brief. Shared or overlapping files require an
   explicit integration plan before editing.
 - Secrets and local environment files must remain uncommitted.
+- Confirm that a worktree is clean before removing it. Forced worktree removal
+  is a destructive action and requires explicit owner approval. Never remove a
+  worktree containing uncommitted work.
 
 ## Builder procedure
 
@@ -85,9 +88,13 @@ Every builder handover must include:
 - known limitations, residual risks, and unresolved decisions;
 - confirmation that no merge or deployment occurred.
 
-The reviewer adds its findings and recommendation to the same task record. The
-owner then decides whether to request changes, accept the draft pull request, or
-close the task.
+The reviewer records its findings and recommendation in its review-branch copy
+of the task record. The owner or assigned builder integrates that reviewer-only
+commit into the builder branch before the owner decision. The reviewer does not
+edit the builder branch directly.
+
+The owner then decides whether to request changes, accept the draft pull
+request, or close the task.
 
 ## Pull request and release gate
 

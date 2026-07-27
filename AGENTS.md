@@ -6,11 +6,13 @@ and Claude.
 ## Cost-control rules
 
 - Use ordinary conversation for ideas, wording, decisions, and planning.
-- Use Codex repository tools only when implementation, inspection, testing, or GitHub work is actually required.
+- Use repository tools only when implementation, inspection, testing, or
+  GitHub work is actually required.
 - Collect small wording and visual corrections into one approved batch before editing files.
 - Do not repeatedly rebuild, restart, recapture, or retest after every small correction.
 - Run focused checks while implementing. Run the full test, lint, and production-build suite once when an approved batch is ready for pull-request review, unless the change is high risk.
-- Start a fresh Codex task for each major feature or milestone. End the previous task with a short handover summary.
+- Start a fresh AI-assisted task for each major feature or milestone. End the
+  previous task with a short handover summary.
 - Keep updates concise and avoid loading or repeating large reports when a short result is sufficient.
 - If the product reports a usage limit, credit purchase, automatic reload, or billing prompt, stop billable work and tell the user before continuing.
 - Never purchase credits, enable automatic reload, or change billing settings without the user's explicit approval.

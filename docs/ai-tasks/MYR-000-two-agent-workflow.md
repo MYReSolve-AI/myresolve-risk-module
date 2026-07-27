@@ -146,6 +146,24 @@
   1-3 can be folded into a follow-up documentation pass; the criterion-6 note
   is a scoping/evidence caveat, not a defect in the workflow.
 
+## Approved builder follow-up
+
+- **Approved by:** User
+- **Approval date:** 2026-07-27
+- **Status:** Ready for independent verification
+- **Scope:** Address only the three non-blocking documentation findings from
+  Claude's review.
+- **Finding 1 addressed:** The two remaining Codex-specific cost and task rules
+  now apply consistently to all AI-assisted work.
+- **Finding 2 addressed:** The workflow now says that the reviewer records
+  findings on its review branch and the owner or assigned builder integrates
+  the reviewer-only commit before the owner decision.
+- **Finding 3 addressed:** The workflow now requires a clean worktree before
+  removal and treats forced removal as a destructive action requiring explicit
+  owner approval.
+- **Checks:** Documentation diff and whitespace validation passed.
+- **Next gate:** Claude verifies this follow-up before the Owner decision.
+
 ## Owner decision
 
 - **Decision:** Pending review
