@@ -208,6 +208,9 @@ describe("Landing Page V2", () => {
     expect(
       within(founder).getByText(/25\+ years navigating every level of business/i),
     ).toBeInTheDocument();
+    expect(screen.getByTestId("home-credibility")).toHaveTextContent(
+      "Built by Rob Pierce, drawing on leadership and operational experience with businesses including John Lewis, Rapha and Loaf.",
+    );
     expect(
       within(founder).getByText("“You can’t improve what you can’t see.”"),
     ).toBeInTheDocument();

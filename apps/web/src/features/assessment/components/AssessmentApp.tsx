@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { TOTAL_QUESTIONS, SECTIONS } from "@/src/domain/assessment";
 import { isProfileComplete } from "@/src/domain/organisationProfile";
 import { loadOrganisationProfile } from "@/src/lib/organisationProfilePersistence";
@@ -13,6 +13,7 @@ import { QuestionCard } from "./QuestionCard";
 import { AssessmentNavigation } from "./AssessmentNavigation";
 import { SaveStatus } from "./SaveStatus";
 import { ReviewAnswers } from "./ReviewAnswers";
+import { AssessmentCompletion } from "./AssessmentCompletion";
 import { saveAssessmentAnswers } from "@/src/lib/assessmentPersistence";
 import styles from "./AssessmentProfileGate.module.css";
 
@@ -27,6 +28,7 @@ function readProfileReady(): boolean {
 export function AssessmentApp() {
   const router = useRouter();
   const session = useAssessmentSession();
+  const [isComplete, setIsComplete] = useState(false);
   const profileReady = useSyncExternalStore(
     subscribeNoop,
     readProfileReady,
@@ -42,7 +44,7 @@ export function AssessmentApp() {
     const ok = session.attemptComplete();
     if (!ok) return;
     saveAssessmentAnswers(session.state);
-    router.push("/dashboard");
+    setIsComplete(true);
   };
 
   if (profileReady === null) {
@@ -85,7 +87,9 @@ export function AssessmentApp() {
 
   return (
     <AssessmentShell trailing={<SaveStatus status={session.saveStatus} />}>
-      {session.mode === "question" ? (
+      {isComplete ? (
+        <AssessmentCompletion />
+      ) : session.mode === "question" ? (
         <>
           <ProgressHeader
             departmentName={session.currentDepartment.name}

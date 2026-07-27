@@ -323,6 +323,11 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
                 {founder.heading}
               </h2>
               <p className={styles.founderBody}>{founder.body1}</p>
+              <p className={styles.founderBody} data-testid="home-credibility">
+                Built by Rob Pierce, drawing on leadership and operational
+                experience with businesses including John Lewis, Rapha and
+                Loaf.
+              </p>
               <p className={styles.founderBody}>{founder.body2}</p>
               <blockquote className={styles.founderQuote}>
                 “{founder.quote}”
