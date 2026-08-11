@@ -14,6 +14,8 @@ import {
   isProfileComplete,
 } from "@/src/domain/organisationProfile";
 import { loadOrganisationProfile } from "@/src/lib/organisationProfilePersistence";
+import { evidenceAssuranceSummary } from "@/src/domain/evidenceAssurance";
+import { loadEvidenceAssurance } from "@/src/lib/evidenceAssurancePersistence";
 import { ExecutiveDashboard } from "./ExecutiveDashboard";
 import styles from "./ExecutiveDashboard.module.css";
 
@@ -37,6 +39,10 @@ export function ExecutiveDashboardApp() {
     loadAssessmentAnswers(),
   );
   const developerMode = useMemo(() => isDeveloperModeEnabled(), []);
+  const assuranceSummary = useMemo(
+    () => evidenceAssuranceSummary(loadEvidenceAssurance()),
+    [],
+  );
   const companyName = useMemo(() => {
     const profile = loadOrganisationProfile();
     if (!isProfileComplete(profile)) return undefined;
@@ -48,6 +54,7 @@ export function ExecutiveDashboardApp() {
     <ExecutiveDashboard
       state={state}
       companyName={companyName}
+      assuranceSummary={assuranceSummary}
       actions={
         developerMode ? (
           <>

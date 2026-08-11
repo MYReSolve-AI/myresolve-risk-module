@@ -80,6 +80,13 @@ describe("ExecutiveDashboard", () => {
     );
     expect(screen.getByTestId("priorities-list").children).toHaveLength(3);
     expect(screen.queryByTestId("executive-narrative")).toBeNull();
+    expect(
+      screen.getByRole("heading", { name: "Evidence and Assurance" }),
+    ).toBeTruthy();
+    expect(screen.getByText("0 of 6 departments reviewed")).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Review department evidence" }),
+    ).toHaveAttribute("href", "/evidence-assurance");
     expect(screen.getByTestId("department-score-grid").children).toHaveLength(
       6,
     );

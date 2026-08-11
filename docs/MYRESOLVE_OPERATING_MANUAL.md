@@ -226,8 +226,10 @@ future overall confidence measure nor department assurance will change the
 Health Score, Risk Score or Estimated Annual Value at Risk. High-risk areas
 with low confidence or limited evidence will be prioritised for validation.
 
-The overall-confidence phase is implemented. Department-level Evidence and
-Assurance remains the next controlled product layer.
+The overall-confidence phase is implemented. A browser-local department-level
+Evidence and Assurance prototype is implemented under MR-ENG-007 for synthetic
+or redacted references only. It is not approved for real confidential customer
+evidence.
 
 ---
 
@@ -380,7 +382,21 @@ Labels such as “Operational Health” may appear as supporting copy next to Ex
 | Schema | `schemaVersion: 2` (A1 multi-select operating models) |
 | Load-time migration | Accepts legacy singular `operatingModel` → `operatingModels: [id]`; never writes to the assessment key |
 
-There is **no** server-side store in this baseline. Clearing site data removes profile and assessment results from that browser. Anyone using the same browser may access locally stored profile data. Avoid unnecessary confidential or personal information. Do not claim encryption, cloud backup, multi-device access or regulated retention.
+**Evidence and Assurance prototype** (separate key)
+
+| Item | Value |
+|------|-------|
+| Storage | Browser `localStorage` only; prototype use |
+| Key | `myresolve_evidence_assurance_v1` |
+| Schema | `schemaVersion: 1` |
+| Allowed content | Synthetic or redacted reviewer, date, evidence references/notes and gaps only |
+| Excluded | Uploads, confidential evidence, cloud sync, access control and multi-user review |
+
+There is **no** server-side store in this baseline. Clearing site data removes
+profile, assessment and prototype assurance results from that browser. Anyone
+using the same browser may access locally stored data. Avoid unnecessary
+confidential or personal information. Do not claim encryption, cloud backup,
+multi-device access or regulated retention.
 
 ### Operating policy
 

@@ -1,0 +1,7 @@
+.card { display: flex; justify-content: space-between; gap: 1.2rem; align-items: center; padding: 1.2rem 1.3rem; border: 1px solid rgba(221, 201, 167, 0.75); border-radius: var(--mr-radius); background: var(--mr-surface-elevated); box-shadow: var(--mr-shadow); }
+.eyebrow { margin: 0 0 0.3rem; color: var(--mr-gold); font-size: 0.72rem; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; }
+.card h2 { margin: 0; color: var(--mr-green-2); font-size: 1.25rem; }
+.progress { margin: 0.4rem 0 0; color: var(--mr-ink); font-weight: 750; }
+.copy { max-width: 44rem; margin: 0.3rem 0 0; color: var(--mr-muted); font-size: 0.9rem; line-height: 1.45; }
+.action { display: inline-flex; justify-content: center; align-items: center; min-height: 2.7rem; border: 1px solid var(--mr-green); border-radius: 999px; padding: 0.6rem 1rem; background: var(--mr-green); color: #fff; font-size: 0.88rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+@media (max-width: 700px) { .card { align-items: stretch; flex-direction: column; } }

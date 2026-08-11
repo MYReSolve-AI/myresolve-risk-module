@@ -14,8 +14,9 @@ recorded Product Owner decision.
 
 **Implementation update:** The overall-confidence phase, legacy browser-data
 migration and removal of the confidence multiplier are implemented in
-MR-ENG-006. Department-level Evidence and Assurance remains a separate future
-phase.
+MR-ENG-006. MR-ENG-007 adds a separate browser-local department Evidence and
+Assurance prototype for synthetic or redacted references only; secure customer
+evidence remains a future SaaS phase.
 
 ## Purpose
 

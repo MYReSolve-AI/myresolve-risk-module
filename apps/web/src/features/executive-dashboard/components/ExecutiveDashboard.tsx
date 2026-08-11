@@ -2,6 +2,11 @@
 
 import type { ReactNode } from "react";
 import type { AssessmentAnswers } from "@/src/domain/assessment";
+import {
+  createEmptyEvidenceAssuranceState,
+  evidenceAssuranceSummary,
+  type EvidenceAssuranceSummary,
+} from "@/src/domain/evidenceAssurance";
 import { buildExecutiveDashboard } from "../model/buildExecutiveDashboard";
 import { ExecutiveHealthScore } from "./ExecutiveHealthScore";
 import { AnnualValueAtRiskCard } from "./AnnualValueAtRiskCard";
@@ -9,6 +14,7 @@ import { AssessmentConfidenceCard } from "./AssessmentConfidenceCard";
 import { HighestRiskDepartmentCard } from "./HighestRiskDepartmentCard";
 import { DepartmentScoreGrid } from "./DepartmentScoreCard";
 import { PrioritiesPanel } from "./PrioritiesList";
+import { EvidenceAssuranceCard } from "./EvidenceAssuranceCard";
 import { DashboardSection } from "../ui/DashboardSection";
 import { SectionHeading } from "../ui/SectionHeading";
 import sr from "../ui/sr.module.css";
@@ -22,6 +28,7 @@ export type ExecutiveDashboardProps = {
   companyName?: string;
   /** Completion date when available; omit or leave empty to hide */
   assessmentDate?: string;
+  assuranceSummary?: EvidenceAssuranceSummary;
 };
 
 function hasDisplayValue(value: string | undefined): value is string {
@@ -35,6 +42,9 @@ export function ExecutiveDashboard({
   actions,
   companyName,
   assessmentDate,
+  assuranceSummary = evidenceAssuranceSummary(
+    createEmptyEvidenceAssuranceState(),
+  ),
 }: ExecutiveDashboardProps) {
   const model = buildExecutiveDashboard(state);
   const assessmentCompleted =
@@ -102,6 +112,8 @@ export function ExecutiveDashboard({
             department={model.highestRiskDepartment}
           />
         </section>
+
+        <EvidenceAssuranceCard summary={assuranceSummary} />
 
         <DashboardSection
           aria-labelledby="dept-heading"

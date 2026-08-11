@@ -92,6 +92,11 @@ flowchart LR
 
 - The public landing page may use Sanity for approved wording and SEO only.
 - The current free assessment remains browser-local until cloud migration is explicitly approved.
+- The MR-ENG-007 Evidence and Assurance prototype is browser-local and is
+  approved only for synthetic or redacted references. It must not collect
+  production customer evidence, confidential source content or file uploads.
+  Real evidence requires the secure SaaS controls and approval gates in this
+  blueprint.
 - The customer sees clear privacy information before entering company data.
 - No browser-local assessment is moved to the cloud without a clear choice and explicit confirmation.
 
