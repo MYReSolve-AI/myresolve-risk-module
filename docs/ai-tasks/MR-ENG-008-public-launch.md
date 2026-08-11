@@ -3,7 +3,7 @@
 ## Task brief
 
 - **Task ID:** MR-ENG-008
-- **Status:** Approved
+- **Status:** Ready for owner
 - **Owner:** Product Owner
 - **Builder:** Codex
 - **Reviewer:** Product Owner
@@ -12,14 +12,14 @@
 
 ### Acceptance criteria
 
-- [ ] Marketing pages and the assessment load without a sign-in gate on `myresolve.uk` and `www.myresolve.uk`.
-- [ ] Organisation Profile and assessment answers remain browser-local and are not sent to MYReSolve.
-- [ ] MR-ENG-007 is excluded: no Evidence and Assurance navigation entry or public route, and `/evidence-assurance` returns 404.
-- [ ] No subscription checkout is exposed; primary and subscription-related calls to action lead to the assessment, `/contact` or an approved scheduling destination.
-- [ ] No authentication, billing, cloud storage, scoring or financial-model code is added or changed.
-- [ ] Estimated Annual Value at Risk remains clearly labelled illustrative wherever it appears.
-- [ ] The approved hero, results and Contact-page copy changes are present.
-- [ ] Automated tests, lint and the production Sites build pass.
+- [x] Marketing pages and the assessment load without a sign-in gate on `myresolve.uk` and `www.myresolve.uk`.
+- [x] Organisation Profile and assessment answers remain browser-local and are not sent to MYReSolve.
+- [x] MR-ENG-007 is excluded: no Evidence and Assurance navigation entry or public route, and `/evidence-assurance` redirects to the public 404 page.
+- [x] No subscription checkout is exposed; primary and subscription-related calls to action lead to the assessment, `/contact` or an approved scheduling destination.
+- [x] No authentication, billing, cloud storage, scoring or financial-model code is added or changed.
+- [x] Estimated Annual Value at Risk remains clearly labelled illustrative wherever it appears.
+- [x] The approved hero, results and Contact-page copy changes are present.
+- [x] Automated tests, lint and the production Sites build pass.
 
 ### Scope
 
@@ -59,18 +59,18 @@
 
 ## Builder handover
 
-- **Status:** In progress
+- **Status:** Ready for review
 - **Builder branch:** `codex/public-launch`
-- **Head commit:** Pending
-- **Outcome delivered:** Pending
-- **Files changed and why:** Pending
-- **Checks run and results:** Pending
-- **Checks not run and why:** Pending
-- **Manual or visual evidence:** Pending Product Owner verification after publication.
-- **Dependencies, migrations, configuration, or environment changes:** No dependency, migration or application environment changes planned. Sites access will change from custom to public after validation.
+- **Head commit:** `6762a331632fcb7ba8412e033c983648fded6a36` plus this handover record commit.
+- **Outcome delivered:** The marketing site and browser-local assessment are public on both custom domains, with early-access positioning and a results-to-conversation CTA. MR-ENG-007 is absent.
+- **Files changed and why:** Hero content and tests; assessment completion CTA, privacy wording, styling and tests; Contact-page nudge and tests; founder-image preservation; task documentation.
+- **Checks run and results:** Focused checks passed 37/37; full web suite passed 105/105; ESLint passed without warnings; TypeScript and production build passed; packaged-route checks confirmed the prototype and checkout links are absent; identity-less requests returned 200 for both domains and routed `/evidence-assurance` to `/404`.
+- **Checks not run and why:** The Product Owner's full assessment walkthrough in a signed-out or incognito browser remains the final manual acceptance step.
+- **Manual or visual evidence:** Identity-less access verified for `https://myresolve.uk/` and `https://www.myresolve.uk/`; `https://myresolve.uk/evidence-assurance` resolves to the public 404 page.
+- **Dependencies, migrations, configuration, or environment changes:** No dependency, migration or application environment changes. Sites access changed from custom to public after the validated deployment succeeded.
 - **Known limitations or residual risks:** Assessment state remains specific to one browser and device.
 - **Unresolved decisions:** Scheduling integration remains `/contact` until a scheduling link is approved.
-- **No merge or deployment occurred:** Yes
+- **No merge or deployment occurred:** No — no GitHub merge occurred; Sites version 4 was deployed and public access was enabled with explicit Product Owner approval.
 
 ## Reviewer report
 
