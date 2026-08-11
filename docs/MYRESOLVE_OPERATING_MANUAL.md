@@ -205,6 +205,28 @@ Confidence adjusts the Estimated Annual Value at Risk estimate. It is **not** a 
 
 Future documents that describe confidence as “reliability” refer to **deferred** product versions and must not be applied to this baseline.
 
+### Approved future product direction
+
+**Governance status:** Product Owner approved and locked — 11 August 2026.
+Any change requires a new recorded Product Owner decision.
+
+The future product will replace per-question confidence with two separate
+levels:
+
+1. one overall Low, Medium or High self-rated confidence response after the
+   assessment; and
+2. a subsequent department-level Evidence and Assurance review using Not
+   reviewed, Partly evidenced and Evidence reviewed.
+
+Overall confidence will lead the customer into evidence review. Neither the
+future overall confidence measure nor department assurance will change the
+Health Score, Risk Score or Estimated Annual Value at Risk. High-risk areas
+with low confidence or limited evidence will be prioritised for validation.
+
+This is a governed future change only. The current per-question confidence
+behaviour and value-at-risk factors remain authoritative until an approved
+migration, implementation and scoring-test update is completed.
+
 ---
 
 ## 8. Health and risk calculations

@@ -17,7 +17,8 @@
 ## v0.5 — Executive reporting
 - Board-ready report
 - CEO, COO and CFO views
-- Confidence and evidence flags
+- One overall self-rated confidence measure
+- Department-level Evidence and Assurance review
 - 90-day action plan
 
 ## v0.6 — SaaS foundation
