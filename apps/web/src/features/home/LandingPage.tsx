@@ -314,6 +314,7 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
                 width={1024}
                 height={1024}
                 sizes="(max-width: 640px) 180px, 240px"
+                unoptimized
                 className={styles.founderPortrait}
               />
             </div>

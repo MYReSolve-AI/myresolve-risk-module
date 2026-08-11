@@ -46,6 +46,7 @@ export function ContactPage() {
               width={1024}
               height={1024}
               sizes="(max-width: 640px) 150px, 190px"
+              unoptimized
               className={styles.portrait}
               priority
             />
