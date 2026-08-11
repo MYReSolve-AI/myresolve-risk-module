@@ -11,6 +11,7 @@
     "web:test": "npm --prefix apps/web run test",
     "studio:dev": "npm --prefix apps/studio run dev",
     "studio:build": "npm --prefix apps/studio run build",
+    "sites:build": "npm run web:build -- --webpack && node scripts/build-sites-static.mjs",
     "lint": "npm run web:lint",
     "build": "npm run web:build",
     "test": "npm run web:test"

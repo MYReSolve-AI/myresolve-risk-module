@@ -8,6 +8,11 @@
 
 **Implementation status:** Not started
 
+**Locked Product Owner decision — 11 August 2026:** The customer journey will
+retain one overall self-rated confidence measure and use it to lead into a
+separate department-level Evidence and Assurance review. This decision may not
+be changed without a new recorded Product Owner approval.
+
 ## 1. Purpose
 
 MYReSolve should create an accessible first diagnosis, then give leaders two paid ways to continue:
@@ -34,7 +39,7 @@ The free journey should include:
 - Executive Health Score
 - Department Risk Overview
 - Top Three Risk Areas
-- Assessment Confidence
+- one overall Low, Medium or High self-rated confidence measure
 - illustrative Estimated Annual Value at Risk, with the approved qualification
 - a clear invitation to subscribe or request expert support
 
@@ -49,6 +54,7 @@ The first paid subscription should include:
 - secure cloud persistence of Organisation Profile and assessment data
 - saved assessment history
 - repeat assessments and comparison over time
+- department-level Evidence and Assurance reviews
 - KPI evidence tracking using **Current → Acceptable → Target**
 - a comparison between leadership judgement and actual KPI evidence
 - invited leadership users with controlled access
@@ -227,6 +233,20 @@ The KPI Evidence Layer is a major reason to subscribe. It must keep two inputs v
 - **Leadership judgement:** the structured assessment response.
 - **Actual evidence:** the KPI's measured current value.
 
+The customer journey between those inputs uses two separate measures:
+
+1. **Overall self-rated confidence** — one Low, Medium or High response after
+   the assessment, indicating how well the respondent believes the answers
+   reflect company practice.
+2. **Department-level Evidence and Assurance** — Not reviewed, Partly evidenced
+   or Evidence reviewed, supported by reviewer, date, evidence and identified
+   gaps.
+
+Overall confidence leads the customer into department evidence review. It must
+not be presented as independent assurance or used to inflate Estimated Annual
+Value at Risk. The dashboard should prioritise review where risk is high and
+confidence or evidence is low.
+
 Each selected KPI should support:
 
 - KPI name and definition
@@ -289,6 +309,7 @@ The product must not advertise a price, saving, return or business outcome that 
 
 - saved assessment history
 - comparison over time
+- department-level Evidence and Assurance
 - KPI Evidence Layer
 - multi-user collaboration
 - progress reports

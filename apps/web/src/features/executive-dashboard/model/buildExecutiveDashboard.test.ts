@@ -7,7 +7,6 @@ import {
   mixedAssessment,
 } from "@/src/domain/assessment/__fixtures__/states";
 import {
-  criticalLow,
   leadingHigh,
   mixed,
 } from "@/src/domain/assessment/__fixtures__/golden";
@@ -23,8 +22,8 @@ describe("buildExecutiveDashboard", () => {
       high: 0,
       current: 0,
     });
-    expect(model.assessmentConfidence.answeredCount).toBe(0);
-    expect(model.assessmentConfidence.predominant).toBeNull();
+    expect(model.assessmentConfidence.value).toBeNull();
+    expect(model.assessmentConfidence.label).toBeNull();
     expect(model.highestRiskDepartment).toBeNull();
     expect(model.topPriorities).toEqual([]);
     expect(model.departments).toHaveLength(6);
@@ -36,7 +35,7 @@ describe("buildExecutiveDashboard", () => {
     expect(model.executiveHealth.score).toBe(mixed.overall);
     expect(model.executiveHealth.riskRating).toBe(mixed.overallRating);
     expect(model.executiveHealth.maturityLevel).toBe(mixed.overallMaturity);
-    expect(model.annualValueAtRisk.current).toBe(mixed.totalCost);
+    expect(model.annualValueAtRisk.current).toBe(7_946_000);
     expect(model.highestRiskDepartment?.name).toBe(mixed.top3[0]);
     expect(model.topPriorities.map((p) => p.name)).toEqual(mixed.top3);
     expect(model.priorityCount).toBe(mixed.priorityCount);
@@ -54,38 +53,29 @@ describe("buildExecutiveDashboard", () => {
     );
   });
 
-  it("derives assessment confidence counts from domain answer confidence", () => {
+  it("surfaces the one overall self-rated confidence response", () => {
     const model = buildExecutiveDashboard(mixedAssessment());
-    // mixed fixture: People 4 low, Process 4 medium, Customer 4 high,
-    // Operations 4 medium, Technology 4 high, Finance 1 low + 2 medium + 1 high
-    expect(model.assessmentConfidence.counts).toEqual({
-      low: 5,
-      medium: 10,
-      high: 9,
+    expect(model.assessmentConfidence).toEqual({
+      value: "medium",
+      label: "Medium",
     });
-    expect(model.assessmentConfidence.answeredCount).toBe(24);
-    expect(model.assessmentConfidence.predominant).toBe("Medium");
-    expect(model.assessmentConfidence.averageFactor).toBeCloseTo(
-      (5 * 1.15 + 10 * 1.07 + 9 * 1.0) / 24,
-      5,
-    );
   });
 
-  it("uses critical/leading golden totals for current VaR", () => {
+  it("keeps confidence separate from current VaR", () => {
     expect(
       buildExecutiveDashboard(allCriticalLow).annualValueAtRisk.current,
-    ).toBe(criticalLow.totalCost);
+    ).toBe(10_700_000);
     expect(
       buildExecutiveDashboard(allLeadingHigh).annualValueAtRisk.current,
-    ).toBe(leadingHigh.totalCost);
+    ).toBe(4_750_000);
     expect(
       buildExecutiveDashboard(allLeadingHigh).annualValueAtRisk.low,
     ).toBe(leadingHigh.totalCost);
     expect(
-      buildExecutiveDashboard(allCriticalLow).assessmentConfidence.predominant,
+      buildExecutiveDashboard(allCriticalLow).assessmentConfidence.label,
     ).toBe("Low");
     expect(
-      buildExecutiveDashboard(allLeadingHigh).assessmentConfidence.predominant,
+      buildExecutiveDashboard(allLeadingHigh).assessmentConfidence.label,
     ).toBe("High");
   });
 });

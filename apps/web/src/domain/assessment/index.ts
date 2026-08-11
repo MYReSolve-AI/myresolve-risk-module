@@ -23,8 +23,6 @@ export {
 
 export {
   CONFIDENCE_LEVELS,
-  DEFAULT_CONFIDENCE,
-  confidenceFactorForValue,
 } from "./confidence";
 
 export {
@@ -45,7 +43,6 @@ export {
   overallScore,
   progressPercent,
   rating,
-  sectionConfidenceFactor,
   sectionCost,
   sectionHasAnswers,
   sectionRisk,

@@ -47,7 +47,7 @@ This document does not approve a supplier or authorise development. It turns the
 | Account identity | name, work email, verified status, role, MFA status | Personal / Confidential | Sign-in and access control |
 | Company membership | company identifier, user identifier, role, invitation status | Confidential | Separate companies and control access |
 | Organisation Profile | company name, sector, scale, operating models | Confidential Company Data | Provide assessment context |
-| Assessment evidence | answers, confidence selections, dates and calculated results | Confidential Company Data | Produce and compare assessments |
+| Assessment evidence | answers, one overall self-rated confidence response, department assurance statuses, reviewers, review dates, evidence gaps and calculated results | Confidential Company Data | Produce, validate and compare assessments |
 | KPI evidence | definition, owner, period, Current, Acceptable, Target, source, quality note | Confidential Company Data | Track actual performance |
 | Financial context | approved cost ranges and model inputs | Highly Confidential Company Data | Produce illustrative exposure estimates |
 | Improvement activity | priorities, owners, target dates, progress notes | Confidential Company Data | Track improvement over time |

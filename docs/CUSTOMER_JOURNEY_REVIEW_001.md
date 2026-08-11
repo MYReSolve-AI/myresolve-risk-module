@@ -6,6 +6,17 @@
 
 **Implementation baseline:** `origin/main` at `ec3085d`
 
+**Locked Product Owner decision — 11 August 2026:** Approved a two-level
+journey comprising one overall self-rated confidence measure followed by
+department-level Evidence and Assurance. This update supersedes the earlier
+proposal to replace self-rated confidence entirely. Any change requires a new
+recorded Product Owner decision.
+
+**Implementation update:** The overall-confidence phase, legacy browser-data
+migration and removal of the confidence multiplier are implemented in
+MR-ENG-006. Department-level Evidence and Assurance remains a separate future
+phase.
+
 ## Purpose
 
 This record captures the end-to-end Product Owner walkthrough of the current MYReSolve experience, from the landing page and Organisation Profile through the assessment, answer review and executive dashboard.
@@ -35,9 +46,16 @@ These changes are approved in principle but must not be treated as cosmetic work
 
 - Remove confidence selection from all 24 questions.
 - Remove the confidence multiplier from the value-at-risk calculation.
-- Replace self-rated confidence with a separate Evidence and Assurance review by department.
+- Add one overall Low, Medium or High self-rated confidence question after the
+  assessment, asking how well the answers reflect company practice.
+- Use the overall confidence result to lead into a separate Evidence and
+  Assurance review by department.
 - Record reviewer, review date, evidence status and missing information.
 - Show `Self-assessed, not yet independently verified` until evidence is reviewed.
+- Keep overall confidence and department assurance visibly separate from each
+  other and from Health Scores, risk ratings and financial calculations.
+- Prioritise evidence review where department risk is high and overall
+  confidence or available evidence is low.
 - Review possible overlapping exposure before presenting a combined annual value-at-risk total.
 - Define how verified company financial data can produce company-specific estimates.
 
@@ -114,9 +132,16 @@ The paid design includes:
 
 ### Evidence and assurance
 
-- Replace one overall confidence label with `Evidence and assurance by department`.
+- Retain one overall Low, Medium or High self-rated confidence measure after the
+  assessment.
+- Present the overall measure as leadership judgement, not verified evidence or
+  a statistical reliability percentage.
+- Use the result as the entry point to `Evidence and assurance by department`.
 - Use the statuses `Not reviewed`, `Partly evidenced` and `Evidence reviewed`.
-- Keep assurance separate from Health Scores, risk ratings and financial calculations.
+- Show both measures on the dashboard, for example `Leadership confidence:
+  Medium — self-rated` and `Evidence assurance: 2 of 6 departments reviewed`.
+- Keep confidence and assurance separate from Health Scores, risk ratings and
+  financial calculations.
 
 ### Customer and brand measures
 

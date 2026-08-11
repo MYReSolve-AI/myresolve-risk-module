@@ -1,19 +1,14 @@
 import {
-  CONFIDENCE_LEVELS,
-  DEFAULT_CONFIDENCE,
   TOTAL_QUESTIONS,
   allDepartmentResults,
   completedCount,
-  confidenceFactorForValue,
   departmentCostRange,
-  isAnswered,
   maturityNameFromScore,
   overallScore,
   priorityCount,
   progressPercent,
   rankDepartmentsByRisk,
   rating,
-  sectionConfidenceFactor,
   topPriorities,
   totalActiveCost,
   type AssessmentAnswers,
@@ -38,22 +33,13 @@ export type AnnualValueAtRisk = {
   low: number;
   /** Sum of domain department cost-range highs for departments with answers */
   high: number;
-  /** Domain totalActiveCost — confidence-adjusted point estimate */
+  /** Domain totalActiveCost — risk-position point estimate */
   current: number;
 };
 
 export type AssessmentConfidenceSummary = {
-  answeredCount: number;
-  counts: Record<ConfidenceValue, number>;
-  /** Mean of domain confidenceFactorForValue across answered questions */
-  averageFactor: number;
-  predominant: ConfidenceLabel | null;
-  /** Per-department domain sectionConfidenceFactor for answered departments */
-  departmentFactors: ReadonlyArray<{
-    name: string;
-    factor: number;
-    hasAnswers: boolean;
-  }>;
+  value: ConfidenceValue | null;
+  label: ConfidenceLabel | null;
 };
 
 export type RiskHeatCell = {
@@ -101,58 +87,14 @@ function annualValueAtRiskEnvelope(
     );
 }
 
-function resolveConfidenceValue(
-  raw: string | undefined,
-): ConfidenceValue {
-  const match = CONFIDENCE_LEVELS.find((c) => c.value === raw);
-  return match ? match.value : DEFAULT_CONFIDENCE;
-}
-
 function buildAssessmentConfidence(
   state: AssessmentAnswers,
-  departments: DepartmentResult[],
 ): AssessmentConfidenceSummary {
-  const counts: Record<ConfidenceValue, number> = {
-    low: 0,
-    medium: 0,
-    high: 0,
-  };
-  const factors: number[] = [];
-
-  Object.keys(state.answers).forEach((key) => {
-    if (!isAnswered(state.answers, key)) return;
-    const value = resolveConfidenceValue(state.confidence[key]);
-    counts[value] += 1;
-    factors.push(confidenceFactorForValue(value));
-  });
-
-  const answeredCount = factors.length;
-  const averageFactor = answeredCount
-    ? factors.reduce((a, b) => a + b, 0) / answeredCount
-    : 1;
-
-  let predominant: ConfidenceLabel | null = null;
-  if (answeredCount > 0) {
-    const top = (Object.keys(counts) as ConfidenceValue[]).sort(
-      (a, b) => counts[b] - counts[a] || a.localeCompare(b),
-    )[0];
-    predominant =
-      CONFIDENCE_LEVELS.find((c) => c.value === top)?.label ?? null;
-  }
-
-  const departmentFactors = departments.map((d) => ({
-    name: d.name,
-    factor: sectionConfidenceFactor(d.index, state.answers, state.confidence),
-    hasAnswers: d.hasAnswers,
-  }));
-
-  return {
-    answeredCount,
-    counts,
-    averageFactor,
-    predominant,
-    departmentFactors,
-  };
+  const value = state.overallConfidence ?? null;
+  const label = value
+    ? (`${value.charAt(0).toUpperCase()}${value.slice(1)}` as ConfidenceLabel)
+    : null;
+  return { value, label };
 }
 
 export function buildExecutiveDashboard(
@@ -190,7 +132,7 @@ export function buildExecutiveDashboard(
       high: envelope.high,
       current: totalActiveCost(state),
     },
-    assessmentConfidence: buildAssessmentConfidence(state, departments),
+    assessmentConfidence: buildAssessmentConfidence(state),
     highestRiskDepartment: ranked[0] ?? null,
     departments,
     riskHeatMap,

@@ -2,13 +2,13 @@
 
 import { useCallback, useMemo, useState } from "react";
 import {
-  DEFAULT_CONFIDENCE,
   TOTAL_QUESTIONS,
   allQuestions,
   isAnswered,
   type AssessmentAnswers,
   type AssessmentQuestion,
   type MaturityValue,
+  type ConfidenceValue,
   SECTIONS,
 } from "@/src/domain/assessment";
 import {
@@ -17,7 +17,7 @@ import {
   type SaveStatus,
 } from "@/src/lib/assessmentPersistence";
 
-export type AssessmentMode = "question" | "review";
+export type AssessmentMode = "question" | "review" | "confidence";
 
 export type UnansweredItem = {
   index: number;
@@ -75,13 +75,9 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     (value: MaturityValue) => {
       const key = currentQuestion.id;
       setState((prev) => {
-        const confidence = { ...prev.confidence };
-        if (!confidence[key]) {
-          confidence[key] = DEFAULT_CONFIDENCE;
-        }
         const next = {
           answers: { ...prev.answers, [key]: value },
-          confidence,
+          overallConfidence: prev.overallConfidence,
         };
         persist(next);
         return next;
@@ -117,6 +113,17 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     persist(state);
   }, [persist, state]);
 
+  const setOverallConfidence = useCallback(
+    (value: ConfidenceValue) => {
+      setState((prev) => {
+        const next = { ...prev, overallConfidence: value };
+        persist(next);
+        return next;
+      });
+    },
+    [persist],
+  );
+
   const attemptComplete = useCallback((): boolean => {
     persist(state);
     if (!isComplete) {
@@ -148,6 +155,7 @@ export function useAssessmentSession(initial?: AssessmentAnswers) {
     saveStatus,
     showValidation,
     setMaturity,
+    setOverallConfidence,
     goNext,
     goPrevious,
     openReview,

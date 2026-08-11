@@ -90,7 +90,7 @@ describe("ExecutiveDashboard Company display (Sprint 005)", () => {
       `${mixed.overall}/100`,
     );
     expect(screen.getByTestId("metric-var")).toHaveTextContent(
-      formatGbp(mixed.totalCost),
+      formatGbp(7_946_000),
     );
   });
 });

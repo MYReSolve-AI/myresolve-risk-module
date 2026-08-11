@@ -27,7 +27,7 @@ export function buildCsvRows(state: AssessmentAnswers): CsvCell[][] {
       score,
       maturityNameFromScore(score),
       rating(score),
-      sectionCost(i, state.answers, state.confidence),
+      sectionCost(i, state.answers),
     ]);
   });
   return rows;
