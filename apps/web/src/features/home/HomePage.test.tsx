@@ -42,8 +42,9 @@ describe("Landing Page V2", () => {
       "Experience a clearer way to understand your business. MYReSolve brings leadership knowledge together in one structured view, helping you see what is working, what needs attention and where value may be at risk.",
     );
     expect(screen.getByTestId("home-support")).toHaveTextContent(
-      "Subscribe to MYReSolve to track performance, focus improvement and keep leadership aligned. Expert support is available whenever you want help turning insight into action.",
+      "MYReSolve is in private early access. Try the assessment free, and join the small group of leaders shaping what comes next.",
     );
+    expect(screen.queryByRole("link", { name: /subscribe/i })).not.toBeInTheDocument();
     expect(screen.getByTestId("home-hero-tag")).toHaveTextContent(
       "One shared starting point for a better leadership conversation.",
     );

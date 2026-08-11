@@ -46,6 +46,7 @@ export function ContactPage() {
               width={1024}
               height={1024}
               sizes="(max-width: 640px) 150px, 190px"
+              unoptimized
               className={styles.portrait}
               priority
             />
@@ -59,6 +60,10 @@ export function ContactPage() {
               Have questions about your assessment results, want expert
               support, or are curious about the future MYReSolve platform?
               Reach out to Rob directly; he’s here to help you move forward.
+            </p>
+            <p className={styles.lead} data-testid="contact-organisation-nudge">
+              Tell me a little about your organisation and the biggest
+              operational question on your mind.
             </p>
             <p className={styles.founder}>
               <strong>Rob Pierce</strong>

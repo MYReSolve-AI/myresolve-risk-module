@@ -237,10 +237,19 @@ describe("AssessmentApp", () => {
       "href",
       "/contact",
     );
-    expect(screen.getByTestId("completion-updates")).toHaveAttribute(
-      "href",
-      "mailto:rob.myresolve@gmail.com?subject=MYReSolve%20updates",
+    expect(screen.getByTestId("completion-booking")).toHaveTextContent(
+      "Want to go deeper on your results?",
     );
+    expect(screen.getByTestId("completion-booking")).toHaveTextContent(
+      "book a free 30-minute conversation",
+    );
+    expect(screen.getByTestId("completion-contact")).toHaveTextContent(
+      "Book a 30-minute conversation",
+    );
+    expect(screen.getByTestId("completion-privacy")).toHaveTextContent(
+      "Your Organisation Profile and assessment answers stay on this device",
+    );
+    expect(screen.queryByTestId("completion-updates")).not.toBeInTheDocument();
     expect(pushMock).not.toHaveBeenCalled();
 
     const saved = loadAssessmentAnswers();

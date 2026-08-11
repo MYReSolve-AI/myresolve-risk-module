@@ -1,8 +1,6 @@
 import Link from "next/link";
+import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
 import styles from "./AssessmentCompletion.module.css";
-
-const UPDATES_EMAIL =
-  "mailto:rob.myresolve@gmail.com?subject=MYReSolve%20updates";
 
 export function AssessmentCompletion() {
   return (
@@ -15,9 +13,7 @@ export function AssessmentCompletion() {
         Assessment complete
       </h2>
       <p className={styles.copy}>
-        Your responses have been saved and your dashboard is ready. You can
-        review your results now, contact Rob to discuss what they mean, or
-        register your interest in future updates.
+        Your responses have been saved and your dashboard is ready.
       </p>
       <div className={styles.actions}>
         <Link
@@ -27,21 +23,26 @@ export function AssessmentCompletion() {
         >
           View dashboard
         </Link>
+      </div>
+      <div className={styles.booking} data-testid="completion-booking">
+        <h3 className={styles.bookingTitle}>Want to go deeper on your results?</h3>
+        <p className={styles.bookingCopy}>
+          I&apos;m working directly with a small number of leaders as MYReSolve
+          develops. If your assessment surfaced something worth acting on,
+          book a free 30-minute conversation — no pitch, just a closer look at
+          your priorities and what would actually help.
+        </p>
         <Link
           href="/contact"
-          className={`${styles.action} ${styles.secondary}`}
+          className={`${styles.action} ${styles.primary}`}
           data-testid="completion-contact"
         >
-          Contact Rob
+          Book a 30-minute conversation
         </Link>
-        <a
-          href={UPDATES_EMAIL}
-          className={`${styles.action} ${styles.secondary}`}
-          data-testid="completion-updates"
-        >
-          Register interest
-        </a>
       </div>
+      <p className={styles.privacy} data-testid="completion-privacy">
+        <strong>Private preview.</strong> {ORGANISATION_PROFILE_PRIVACY_COPY}
+      </p>
     </section>
   );
 }
