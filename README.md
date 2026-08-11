@@ -15,7 +15,9 @@ A commercial SaaS platform in progress. The approved executive risk and cost ass
 | `legacy/v0.3.1/index.html` | Locked golden baseline assessment (do not edit) |
 | `legacy/v0.3.1/archive/` | Official v0.3.1 ZIP snapshot |
 | `apps/web` | Next.js App Router application (migration host) |
+| `workers/booking` | Isolated Cloudflare booking endpoint |
 | `docs/GOLDEN_BASELINE.md` | Baseline behaviour contract |
+| `docs/BOOKING_TO_NOTION.md` | Booking data boundary and release runbook |
 | `docs/MIGRATION_PLAN.md` | Phased migration plan |
 | `PRODUCT_SPEC.md` / `ROADMAP.md` / `SCORING_MODEL.md` | Product docs |
 

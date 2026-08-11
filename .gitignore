@@ -19,6 +19,7 @@ yarn-error.log*
 # Env
 .env*
 !.env.example
+workers/booking/.dev.vars
 
 # Vercel
 .vercel

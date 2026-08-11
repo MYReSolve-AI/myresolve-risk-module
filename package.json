@@ -12,8 +12,10 @@
     "studio:dev": "npm --prefix apps/studio run dev",
     "studio:build": "npm --prefix apps/studio run build",
     "sites:build": "npm run web:build -- --webpack && node scripts/build-sites-static.mjs",
-    "lint": "npm run web:lint",
+    "booking:test": "node --test workers/booking/src/index.test.mjs",
+    "booking:check": "node --check workers/booking/src/index.mjs && node --check workers/booking/src/index.test.mjs",
+    "lint": "npm run web:lint && npm run booking:check",
     "build": "npm run web:build",
-    "test": "npm run web:test"
+    "test": "npm run web:test && npm run booking:test"
   }
 }

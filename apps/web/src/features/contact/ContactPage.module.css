@@ -129,6 +129,128 @@
   margin-top: 4rem;
 }
 
+.booking {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  margin-top: 4rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid rgba(221, 201, 167, 0.9);
+  border-radius: var(--mr-radius);
+  background: rgba(255, 252, 247, 0.92);
+  box-shadow: var(--mr-shadow);
+}
+
+.bookingIntro p:not(.eyebrow) {
+  color: var(--mr-muted);
+  line-height: 1.6;
+}
+
+.form,
+.field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.form {
+  gap: 1.2rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field span {
+  color: var(--mr-green-2);
+  font-weight: 700;
+}
+
+.field small,
+.formNotice,
+.privacyNote {
+  color: var(--mr-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid rgba(65, 84, 72, 0.35);
+  border-radius: var(--mr-radius-sm);
+  padding: 0.78rem 0.85rem;
+  background: #fff;
+  color: var(--mr-ink);
+  font: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible,
+.submitButton:focus-visible {
+  outline: 2px solid var(--mr-amber);
+  outline-offset: 2px;
+}
+
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.privacyNote,
+.formNotice,
+.successMessage,
+.errorMessage {
+  margin: 0;
+}
+
+.submitButton {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.9rem 1.35rem;
+  background: var(--mr-green);
+  color: #fff;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--mr-green-2);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.successMessage {
+  color: var(--mr-green-2);
+  font-weight: 700;
+}
+
+.errorMessage {
+  color: #8a2e24;
+  font-weight: 650;
+}
+
+.errorMessage a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .sectionTitle {
   margin: 0 0 1.5rem;
   color: var(--mr-green-2);
@@ -231,6 +353,10 @@
 }
 
 @media (max-width: 760px) {
+  .booking {
+    grid-template-columns: 1fr;
+  }
+
   .cardGrid {
     grid-template-columns: 1fr;
   }
@@ -256,6 +382,10 @@
 
   .enquiries {
     margin-top: 3rem;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
   }
 
   .stickyEmail {

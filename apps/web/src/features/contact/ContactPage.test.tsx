@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { ContactPage } from "./ContactPage";
 
 describe("Contact page", () => {
-  it("offers the three agreed enquiry routes through email", () => {
+  it("offers the three agreed enquiry routes and the booking form", () => {
     render(<ContactPage />);
 
     expect(
@@ -35,16 +35,22 @@ describe("Contact page", () => {
       "mailto:rob.myresolve@gmail.com?subject=MYReSolve%20enquiry",
     );
     expect(screen.getAllByText("Email Rob")).toHaveLength(1);
+    expect(screen.getByTestId("booking-form")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Your assessment answers and Organisation Profile stay on this device/i),
+    ).toBeInTheDocument();
   });
 
-  it("warns customers not to email confidential company information", () => {
+  it("warns customers not to submit confidential company information", () => {
     render(<ContactPage />);
 
     expect(
       screen.getByText(/Please don’t include confidential company/i),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Name" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Request a 30-minute conversation" }),
+    ).toBeDisabled();
     expect(screen.queryByRole("link", { name: /subscribe|checkout|pay/i })).not.toBeInTheDocument();
   });
 });
