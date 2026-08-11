@@ -30,6 +30,34 @@
   margin-top: 1.4rem;
 }
 
+.booking {
+  max-width: 38rem;
+  margin: 1.5rem auto 0;
+  border-top: 1px solid rgba(221, 201, 167, 0.75);
+  padding-top: 1.5rem;
+}
+
+.bookingTitle {
+  margin: 0;
+  color: var(--mr-green-2);
+  font-size: 1.2rem;
+}
+
+.bookingCopy {
+  margin: 0.7rem auto 1rem;
+  color: var(--mr-muted);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+.privacy {
+  max-width: 38rem;
+  margin: 1.25rem auto 0;
+  color: var(--mr-muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
 .action {
   display: inline-flex;
   align-items: center;

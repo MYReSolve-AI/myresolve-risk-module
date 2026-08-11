@@ -25,6 +25,9 @@ describe("Contact page", () => {
         name: "Learn More About the MYReSolve Platform",
       }),
     ).toBeInTheDocument();
+    expect(screen.getByTestId("contact-organisation-nudge")).toHaveTextContent(
+      "Tell me a little about your organisation and the biggest operational question on your mind.",
+    );
 
     const emailRob = screen.getByRole("link", { name: "Email Rob" });
     expect(emailRob).toHaveAttribute(
@@ -42,5 +45,6 @@ describe("Contact page", () => {
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /subscribe|checkout|pay/i })).not.toBeInTheDocument();
   });
 });

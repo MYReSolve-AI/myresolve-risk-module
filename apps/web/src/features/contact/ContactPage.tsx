@@ -61,6 +61,10 @@ export function ContactPage() {
               support, or are curious about the future MYReSolve platform?
               Reach out to Rob directly; he’s here to help you move forward.
             </p>
+            <p className={styles.lead} data-testid="contact-organisation-nudge">
+              Tell me a little about your organisation and the biggest
+              operational question on your mind.
+            </p>
             <p className={styles.founder}>
               <strong>Rob Pierce</strong>
               <br />
