@@ -1,0 +1,5 @@
+NOTION_TOKEN=replace-with-local-development-token
+NOTION_DATABASE_ID=d43affc3cfca4f21aee7b4f71d964d19
+TURNSTILE_SECRET_KEY=replace-with-turnstile-secret-key
+ALLOWED_ORIGINS=http://localhost:3000
+TURNSTILE_HOSTNAMES=localhost

@@ -1,8 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BookingForm } from "./BookingForm";
 import styles from "./ContactPage.module.css";
 
 const CONTACT_EMAIL = "rob.myresolve@gmail.com";
+const BOOKING_API_URL =
+  process.env.NEXT_PUBLIC_BOOKING_API_URL ??
+  "https://api.myresolve.uk/booking";
+const TURNSTILE_SITE_KEY =
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
 const ENQUIRIES = [
   {
@@ -72,6 +78,11 @@ export function ContactPage() {
             </p>
           </div>
         </section>
+
+        <BookingForm
+          apiUrl={BOOKING_API_URL}
+          turnstileSiteKey={TURNSTILE_SITE_KEY}
+        />
 
         <section className={styles.enquiries} aria-labelledby="enquiry-heading">
           <h2 id="enquiry-heading" className={styles.sectionTitle}>
