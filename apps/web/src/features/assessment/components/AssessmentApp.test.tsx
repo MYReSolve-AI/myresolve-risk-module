@@ -202,7 +202,7 @@ describe("AssessmentApp", () => {
     ).toBeTruthy();
   });
 
-  it("routes to dashboard when complete and persists answers for dashboard", async () => {
+  it("shows clear next steps when complete and persists answers for dashboard", async () => {
     const user = userEvent.setup();
     const answers: Record<string, number> = {};
     allQuestions().forEach((q) => {
@@ -220,7 +220,28 @@ describe("AssessmentApp", () => {
     await user.click(screen.getByRole("radio", { name: /Medium/ }));
     await user.click(screen.getByTestId("confidence-complete"));
 
-    expect(pushMock).toHaveBeenCalledWith("/dashboard");
+    const completion = screen.getByTestId("assessment-completion");
+    expect(
+      within(completion).getByRole("heading", {
+        name: "Assessment complete",
+      }),
+    ).toBeInTheDocument();
+    expect(completion).toHaveTextContent(
+      "Your responses have been saved and your dashboard is ready.",
+    );
+    expect(screen.getByTestId("completion-dashboard")).toHaveAttribute(
+      "href",
+      "/dashboard",
+    );
+    expect(screen.getByTestId("completion-contact")).toHaveAttribute(
+      "href",
+      "/contact",
+    );
+    expect(screen.getByTestId("completion-updates")).toHaveAttribute(
+      "href",
+      "mailto:rob.myresolve@gmail.com?subject=MYReSolve%20updates",
+    );
+    expect(pushMock).not.toHaveBeenCalled();
 
     const saved = loadAssessmentAnswers();
     const model = buildExecutiveDashboard(saved);

@@ -1,5 +1,13 @@
 # Product roadmap
 
+## Customer feedback batch 001 — Complete
+
+- [x] Record the first external MYReSolve review.
+- [x] Add text-only credibility wording for Rob's leadership and operational experience.
+- [x] Add a clear post-assessment completion message.
+- [x] Offer dashboard, contact and update-interest next steps without collecting information inside MYReSolve.
+- [x] Product Owner approval and merge.
+
 ## v0.3 — Locked baseline
 - Original MYReSolve layout
 - Five-level maturity scale

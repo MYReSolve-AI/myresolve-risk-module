@@ -175,12 +175,12 @@ The first subscription should use a small permission model.
 | Invite or remove Members | Yes | Yes | No | No |
 | Change Admin roles | Yes | No | No | No |
 | Change or transfer Owner | Yes, with re-authentication | No | No | Controlled recovery only |
-| Manage subscription | Yes | Optional, if approved | No | Billing support metadata only |
-| Export company data | Yes | If approved | No | No |
-| Request company deletion | Yes, with re-authentication | No | No | Execute verified process only |
+| Manage subscription | Yes | No | No | No |
+| Export company data | Yes, with re-authentication | No | No | No |
+| Request company deletion | Yes, with re-authentication | No | No | No |
 | Access production company content | Yes | Yes | Yes | Exceptional, approved and audited |
 
-Support access must be exceptional, time-limited, justified, approved and logged. Support staff should use metadata and customer-shared redacted information wherever possible.
+Support may see the minimum subscription status needed to answer a billing query but cannot act as the customer to change the subscription. Access to customer workspace content must be exceptional, time-limited, justified, customer-approved, visible, revocable and logged. Support staff should use metadata and customer-shared redacted information wherever possible.
 
 ## 7. Technical security controls
 
@@ -437,7 +437,7 @@ The launch record must contain:
 The Product Owner must approve:
 
 1. the initial customer type and data sensitivity assumptions
-2. the exact account roles and whether an Admin may manage billing or exports
+2. confirmation of the proposed Owner, Admin and Member permissions, including Owner-only billing, export and deletion
 3. the identity-provider shortlist
 4. the hosting and database shortlist, including data location
 5. the hosted payment-provider shortlist
