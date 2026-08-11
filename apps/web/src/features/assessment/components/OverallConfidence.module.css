@@ -1,0 +1,45 @@
+.panel {
+  background: var(--mr-surface-elevated);
+  border: 1px solid rgba(221, 201, 167, 0.75);
+  border-radius: var(--mr-radius);
+  box-shadow: var(--mr-shadow);
+  padding: 1.6rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--mr-gold);
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title { margin: 0; color: var(--mr-green-2); font-size: 1.45rem; }
+.lede { max-width: 46rem; color: var(--mr-muted); line-height: 1.55; }
+.fieldset { margin: 1.35rem 0 0; padding: 0; border: 0; }
+.legend { margin-bottom: 0.65rem; color: var(--mr-ink); font-weight: 700; }
+.options { display: grid; gap: 0.7rem; }
+
+.option {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(221, 201, 167, 0.8);
+  border-radius: 12px;
+  background: #fffcf8;
+  cursor: pointer;
+}
+
+.selected { border-color: var(--mr-green); box-shadow: 0 0 0 2px rgba(23, 87, 70, 0.14); }
+.option input { margin-top: 0.18rem; accent-color: var(--mr-green); }
+.option strong, .option small { display: block; }
+.option strong { color: var(--mr-ink); }
+.option small { margin-top: 0.2rem; color: var(--mr-muted); line-height: 1.4; }
+.nextStep { margin: 1.1rem 0 0; color: var(--mr-green-2); font-size: 0.9rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+.primary, .secondary { border-radius: 999px; padding: 0.68rem 1.1rem; font: inherit; cursor: pointer; }
+.primary { border: 1px solid var(--mr-green); background: var(--mr-green); color: #fff; }
+.primary:disabled { cursor: not-allowed; opacity: 0.5; }
+.secondary { border: 1px solid var(--mr-green); background: transparent; color: var(--mr-green); }

@@ -73,12 +73,12 @@ describe("AssessmentApp", () => {
     storage().clear();
     saveAssessmentAnswers({
       answers: { "0-0": 4 },
-      confidence: { "0-0": "high" },
+      overallConfidence: "high",
     });
     render(<AssessmentApp />);
     expect(await screen.findByTestId("assessment-profile-gate")).toBeTruthy();
     expect(loadAssessmentAnswers().answers["0-0"]).toBe(4);
-    expect(loadAssessmentAnswers().confidence["0-0"]).toBe("high");
+    expect(loadAssessmentAnswers().overallConfidence).toBe("high");
   });
 
   it("renders all 24 questions in correct domain order via navigation", async () => {
@@ -131,7 +131,7 @@ describe("AssessmentApp", () => {
     expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
   });
 
-  it("selects maturity and autosaves the locked default confidence", async () => {
+  it("selects maturity without creating per-question confidence", async () => {
     const user = userEvent.setup();
     render(<AssessmentApp />);
     await waitFor(() => expect(screen.getByTestId("maturity-3")).toBeTruthy());
@@ -140,23 +140,14 @@ describe("AssessmentApp", () => {
 
     const stored = JSON.parse(storage().getItem(STORAGE_KEY) || "{}");
     expect(stored.answers["0-0"]).toBe(3);
-    expect(stored.confidence["0-0"]).toBe("medium");
+    expect(stored.confidence).toBeUndefined();
+    expect(stored.overallConfidence).toBeUndefined();
     expect(screen.getByTestId("save-status")).toHaveTextContent("Saved");
     expect(screen.queryByTestId("confidence-selector")).toBeNull();
 
     const restored = loadAssessmentAnswers();
     expect(restored.answers["0-0"]).toBe(3);
-    expect(restored.confidence["0-0"]).toBe("medium");
-  });
-
-  it("defaults confidence to medium when maturity is chosen first", async () => {
-    const user = userEvent.setup();
-    render(<AssessmentApp />);
-    await waitFor(() => expect(screen.getByTestId("maturity-4")).toBeTruthy());
-    await user.click(screen.getByTestId("maturity-4"));
-    const stored = JSON.parse(storage().getItem(STORAGE_KEY) || "{}");
-    expect(stored.answers["0-0"]).toBe(4);
-    expect(stored.confidence["0-0"]).toBe("medium");
+    expect(restored.overallConfidence).toBeUndefined();
   });
 
   it("supports next/previous navigation", async () => {
@@ -179,7 +170,6 @@ describe("AssessmentApp", () => {
   it("restores an incomplete assessment from localStorage", async () => {
     saveAssessmentAnswers({
       answers: { "0-0": 2, "1-0": 5 },
-      confidence: { "0-0": "low", "1-0": "high" },
     });
     render(<AssessmentApp />);
     await waitFor(() => expect(screen.getByTestId("maturity-2")).toBeTruthy());
@@ -215,17 +205,20 @@ describe("AssessmentApp", () => {
   it("routes to dashboard when complete and persists answers for dashboard", async () => {
     const user = userEvent.setup();
     const answers: Record<string, number> = {};
-    const confidence: Record<string, string> = {};
     allQuestions().forEach((q) => {
       answers[q.id] = 3;
-      confidence[q.id] = "medium";
     });
-    saveAssessmentAnswers({ answers, confidence });
+    saveAssessmentAnswers({ answers });
 
     render(<AssessmentApp />);
     await waitFor(() => expect(screen.getByTestId("nav-review")).toBeTruthy());
     await user.click(screen.getByTestId("nav-review"));
     await user.click(screen.getByTestId("review-complete"));
+
+    expect(screen.getByTestId("overall-confidence-step")).toBeTruthy();
+    expect(screen.getByTestId("confidence-complete")).toBeDisabled();
+    await user.click(screen.getByRole("radio", { name: /Medium/ }));
+    await user.click(screen.getByTestId("confidence-complete"));
 
     expect(pushMock).toHaveBeenCalledWith("/dashboard");
 
@@ -233,6 +226,7 @@ describe("AssessmentApp", () => {
     const model = buildExecutiveDashboard(saved);
     expect(model.executiveHealth.score).toBe(overallScore(saved.answers));
     expect(model.departments).toHaveLength(6);
+    expect(saved.overallConfidence).toBe("medium");
 
     render(<ExecutiveDashboard state={saved} />);
     expect(screen.getByTestId("metric-health")).toHaveTextContent(
@@ -252,12 +246,10 @@ describe("AssessmentApp", () => {
 
   it("does not duplicate scoring logic in the assessment UI", async () => {
     const answers: Record<string, number> = {};
-    const confidence: Record<string, string> = {};
     allQuestions().forEach((q) => {
       answers[q.id] = 5;
-      confidence[q.id] = "high";
     });
-    const state = { answers, confidence };
+    const state = { answers, overallConfidence: "high" as const };
     expect(buildExecutiveDashboard(state).executiveHealth.score).toBe(
       overallScore(state.answers),
     );

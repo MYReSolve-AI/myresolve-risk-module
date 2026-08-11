@@ -37,8 +37,6 @@ export interface MaturityLevel {
 export interface ConfidenceLevel {
   value: ConfidenceValue;
   label: ConfidenceLabel;
-  /** Cost multiplier applied in sectionCost */
-  factor: number;
 }
 
 export interface AssessmentQuestion {
@@ -61,12 +59,14 @@ export interface AssessmentSection {
 /** Persisted payload shape under STORAGE_KEY */
 export interface StoredAssessmentState {
   answers: Record<string, number>;
-  confidence: Record<string, string>;
+  overallConfidence?: string;
+  /** Legacy v0.3.1 field accepted during migration but no longer written. */
+  confidence?: Record<string, string>;
 }
 
 export interface AssessmentAnswers {
   answers: Record<string, number>;
-  confidence: Record<string, ConfidenceValue | string>;
+  overallConfidence?: ConfidenceValue;
 }
 
 export interface DepartmentResult {

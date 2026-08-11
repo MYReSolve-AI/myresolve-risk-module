@@ -12,21 +12,19 @@ export type AssessmentConfidenceCardProps = {
 export function AssessmentConfidenceCard({
   confidence,
 }: AssessmentConfidenceCardProps) {
-  const hasAnswers = confidence.answeredCount > 0;
-
   return (
     <MetricCard
-      title="Assessment Confidence"
+      title="Leadership Confidence"
       valueFirst
       data-testid="metric-confidence"
     >
       <MetricHeadline>
-        {hasAnswers ? `${confidence.predominant} confidence` : "—"}
+        {confidence.label ? `${confidence.label} — self-rated` : "—"}
       </MetricHeadline>
       <MetricSupport>
-        {hasAnswers
-          ? `${confidence.answeredCount} responses`
-          : "Awaiting assessment responses"}
+        {confidence.label
+          ? "Next: validate the highest-risk departments with evidence"
+          : "Complete the overall confidence step after reviewing answers"}
       </MetricSupport>
     </MetricCard>
   );

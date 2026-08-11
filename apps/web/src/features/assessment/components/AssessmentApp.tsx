@@ -13,6 +13,7 @@ import { QuestionCard } from "./QuestionCard";
 import { AssessmentNavigation } from "./AssessmentNavigation";
 import { SaveStatus } from "./SaveStatus";
 import { ReviewAnswers } from "./ReviewAnswers";
+import { OverallConfidence } from "./OverallConfidence";
 import { saveAssessmentAnswers } from "@/src/lib/assessmentPersistence";
 import styles from "./AssessmentProfileGate.module.css";
 
@@ -41,6 +42,11 @@ export function AssessmentApp() {
   const handleComplete = () => {
     const ok = session.attemptComplete();
     if (!ok) return;
+    session.setMode("confidence");
+  };
+
+  const handleConfidenceComplete = () => {
+    if (!session.state.overallConfidence) return;
     saveAssessmentAnswers(session.state);
     router.push("/dashboard");
   };
@@ -112,7 +118,7 @@ export function AssessmentApp() {
             onReview={session.openReview}
           />
         </>
-      ) : (
+      ) : session.mode === "review" ? (
         <ReviewAnswers
           questions={session.questions}
           state={session.state}
@@ -121,6 +127,13 @@ export function AssessmentApp() {
           departmentNameFor={(i) => SECTIONS[i]!.name}
           onBackToQuestions={() => session.setMode("question")}
           onComplete={handleComplete}
+        />
+      ) : (
+        <OverallConfidence
+          value={session.state.overallConfidence}
+          onChange={session.setOverallConfidence}
+          onBack={() => session.setMode("review")}
+          onComplete={handleConfidenceComplete}
         />
       )}
     </AssessmentShell>

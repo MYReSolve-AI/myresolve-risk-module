@@ -1,6 +1,5 @@
 import {
   MATURITY_LEVELS,
-  CONFIDENCE_LEVELS,
   type AssessmentAnswers,
   type AssessmentQuestion,
 } from "@/src/domain/assessment";
@@ -38,12 +37,6 @@ function maturityClass(value: number): string {
     default:
       return "";
   }
-}
-
-function confidenceLabel(value: string | undefined): string {
-  return (
-    CONFIDENCE_LEVELS.find((c) => c.value === value)?.label ?? "Medium"
-  );
 }
 
 export function ReviewAnswers({
@@ -105,9 +98,6 @@ export function ReviewAnswers({
                     >
                       {maturity} · {maturityLabel(maturity)}
                     </span>
-                    <span className={styles.confidence}>
-                      Confidence {confidenceLabel(state.confidence[question.id])}
-                    </span>
                   </div>
                 ) : (
                   <p className={styles.qAnswer}>Unanswered</p>
@@ -138,7 +128,7 @@ export function ReviewAnswers({
           onClick={onComplete}
           data-testid="review-complete"
         >
-          Finish and view dashboard
+          Continue to confidence
         </button>
       </div>
     </section>

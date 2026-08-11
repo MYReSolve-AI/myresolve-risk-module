@@ -12,6 +12,11 @@ department-level Evidence and Assurance. This update supersedes the earlier
 proposal to replace self-rated confidence entirely. Any change requires a new
 recorded Product Owner decision.
 
+**Implementation update:** The overall-confidence phase, legacy browser-data
+migration and removal of the confidence multiplier are implemented in
+MR-ENG-006. Department-level Evidence and Assurance remains a separate future
+phase.
+
 ## Purpose
 
 This record captures the end-to-end Product Owner walkthrough of the current MYReSolve experience, from the landing page and Organisation Profile through the assessment, answer review and executive dashboard.

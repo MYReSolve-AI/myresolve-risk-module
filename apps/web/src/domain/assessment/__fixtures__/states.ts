@@ -1,21 +1,19 @@
 import type { AssessmentAnswers, ConfidenceValue, MaturityValue } from "../types";
 import { SECTIONS, answerKey } from "../questions";
 
-/** Fill every question with the same maturity + confidence */
+/** Fill every question with the same maturity and one overall confidence. */
 export function fillAll(
   maturity: MaturityValue,
-  confidence: ConfidenceValue,
+  overallConfidence: ConfidenceValue,
 ): AssessmentAnswers {
   const answers: Record<string, number> = {};
-  const conf: Record<string, string> = {};
   SECTIONS.forEach((s, i) => {
     s.questions.forEach((_, q) => {
       const key = answerKey(i, q);
       answers[key] = maturity;
-      conf[key] = confidence;
     });
   });
-  return { answers, confidence: conf };
+  return { answers, overallConfidence };
 }
 
 /** Set one question */
@@ -24,19 +22,18 @@ export function setAnswer(
   sectionIndex: number,
   questionIndex: number,
   maturity: MaturityValue,
-  confidence: ConfidenceValue = "medium",
+  overallConfidence?: ConfidenceValue,
 ): AssessmentAnswers {
   const key = answerKey(sectionIndex, questionIndex);
   return {
     answers: { ...state.answers, [key]: maturity },
-    confidence: { ...state.confidence, [key]: confidence },
+    overallConfidence: overallConfidence ?? state.overallConfidence,
   };
 }
 
 /** Empty incomplete state */
 export const emptyAssessment: AssessmentAnswers = {
   answers: {},
-  confidence: {},
 };
 
 /**
@@ -57,21 +54,20 @@ export function mixedAssessment(): AssessmentAnswers {
   const applySection = (
     i: number,
     values: MaturityValue[],
-    conf: ConfidenceValue[],
   ) => {
     values.forEach((v, q) => {
-      state = setAnswer(state, i, q, v, conf[q] ?? "medium");
+      state = setAnswer(state, i, q, v);
     });
   };
 
-  applySection(0, [1, 1, 1, 1], ["low", "low", "low", "low"]);
-  applySection(1, [2, 2, 2, 2], ["medium", "medium", "medium", "medium"]);
-  applySection(2, [3, 3, 3, 3], ["high", "high", "high", "high"]);
-  applySection(3, [4, 4, 4, 4], ["medium", "medium", "medium", "medium"]);
-  applySection(4, [5, 5, 5, 5], ["high", "high", "high", "high"]);
-  applySection(5, [1, 2, 3, 4], ["low", "medium", "high", "medium"]);
+  applySection(0, [1, 1, 1, 1]);
+  applySection(1, [2, 2, 2, 2]);
+  applySection(2, [3, 3, 3, 3]);
+  applySection(3, [4, 4, 4, 4]);
+  applySection(4, [5, 5, 5, 5]);
+  applySection(5, [1, 2, 3, 4]);
 
-  return state;
+  return { ...state, overallConfidence: "medium" };
 }
 
 /**

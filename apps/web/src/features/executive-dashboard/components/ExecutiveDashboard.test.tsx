@@ -41,16 +41,16 @@ describe("ExecutiveDashboard", () => {
       "LeadingStrongEstablishedDevelopingCritical",
     );
     expect(screen.getByTestId("metric-var")).toHaveTextContent(
-      formatGbp(mixed.totalCost),
+      formatGbp(7_946_000),
     );
     expect(screen.getByTestId("metric-var")).toHaveTextContent(
       "not an audited loss calculation or financial forecast",
     );
     expect(screen.getByTestId("metric-confidence")).toHaveTextContent(
-      "Medium confidence",
+      "Medium — self-rated",
     );
     expect(screen.getByTestId("metric-confidence")).toHaveTextContent(
-      "24 responses",
+      "validate the highest-risk departments with evidence",
     );
     expect(screen.queryByLabelText("Confidence mix")).toBeNull();
     expect(screen.getByTestId("metric-confidence").textContent).not.toMatch(

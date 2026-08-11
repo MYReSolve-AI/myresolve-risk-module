@@ -117,10 +117,6 @@
   border-color: #70ab8b;
 }
 
-.confidence {
-  color: var(--mr-muted);
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;

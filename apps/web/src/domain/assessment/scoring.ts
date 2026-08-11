@@ -1,9 +1,7 @@
-import { confidenceFactorForValue, DEFAULT_CONFIDENCE } from "./confidence";
 import { maturityNameFromScore } from "./maturity";
 import { SECTIONS } from "./questions";
 import type {
   AssessmentAnswers,
-  ConfidenceValue,
   DepartmentResult,
   RiskRating,
 } from "./types";
@@ -53,49 +51,18 @@ export function sectionRisk(
 }
 
 /**
- * Average confidence cost-factor for answered questions in the section.
- * Missing confidence defaults to medium (1.07).
- * Returns 1 when no questions are answered (matches v0.3.1).
- */
-export function sectionConfidenceFactor(
-  sectionIndex: number,
-  answers: Record<string, number>,
-  confidence: Record<string, string>,
-): number {
-  const section = SECTIONS[sectionIndex];
-  if (!section) return 1;
-
-  const vals: number[] = [];
-  section.questions.forEach((_, q) => {
-    const k = `${sectionIndex}-${q}`;
-    if (isAnswered(answers, k)) {
-      vals.push(
-        confidenceFactorForValue(
-          (confidence[k] as ConfidenceValue | undefined) || DEFAULT_CONFIDENCE,
-        ),
-      );
-    }
-  });
-  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 1;
-}
-
-/**
  * Estimated annual cost for a department (GBP).
- * Math.round((lo + (hi - lo) * riskRatio) * confidenceFactor)
+ * Math.round(lo + (hi - lo) * riskRatio)
  */
 export function sectionCost(
   sectionIndex: number,
   answers: Record<string, number>,
-  confidence: Record<string, string>,
 ): number {
   const section = SECTIONS[sectionIndex];
   if (!section) return 0;
   const risk = sectionRisk(sectionIndex, answers) / 100;
   const [lo, hi] = section.cost;
-  return Math.round(
-    (lo + (hi - lo) * risk) *
-      sectionConfidenceFactor(sectionIndex, answers, confidence),
-  );
+  return Math.round(lo + (hi - lo) * risk);
 }
 
 /**
@@ -156,7 +123,7 @@ export function departmentResult(
     name: section.name,
     score,
     risk: sectionRisk(sectionIndex, state.answers),
-    cost: sectionCost(sectionIndex, state.answers, state.confidence),
+    cost: sectionCost(sectionIndex, state.answers),
     hasAnswers: sectionHasAnswers(sectionIndex, state.answers),
     maturityLevel: maturityNameFromScore(score),
     riskRating: rating(score),

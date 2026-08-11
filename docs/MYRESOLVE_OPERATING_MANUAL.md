@@ -50,7 +50,9 @@ See [`docs/ORGANISATION_PROFILE_ENGINE.md`](./ORGANISATION_PROFILE_ENGINE.md).
 
 ### Current capability
 
-MYReSolve helps leadership assess operational maturity across six departments, express confidence in each response, and view modelled health, risk and Estimated Annual Value at Risk on an executive dashboard.
+MYReSolve helps leadership assess operational maturity across six departments,
+record one overall self-rated confidence response, and view modelled health,
+risk and Estimated Annual Value at Risk on an executive dashboard.
 
 It provides **operational decision support**: structured questioning, a locked calculation model, and an executive dashboard for results already captured.
 
@@ -58,7 +60,7 @@ It provides **operational decision support**: structured questioning, a locked c
 
 - A fixed 24-question assessment (six departments × four questions)
 - An Organisation Profile context step before assessment (browser-local; separate storage)
-- Saved answers in the browser using a locked storage schema
+- Saved answers and overall confidence in the browser using an approved storage schema
 - Calculable Health Scores, risk ratings, maturity bands and Estimated Annual Value at Risk
 - An executive dashboard that consumes the assessment **domain engine only** (Company name may display from a completed profile; it is contextual display only)
 
@@ -69,7 +71,7 @@ It provides **operational decision support**: structured questioning, a locked c
 - Assessment completion **Date** on the dashboard (not recorded in Sprint 005)
 - AI-generated executive narrative or recommendations
 - Multi-tenant SaaS hosting, authentication or cloud persistence
-- A changed scoring model beyond locked v0.3.1 behaviour
+- Scoring changes beyond the approved removal of the legacy confidence multiplier
 
 ---
 
@@ -103,11 +105,13 @@ This is repository-level policy. It does **not** invent named individuals or cla
 1. Open `/` (platform entry). Primary CTA: **Organisation Profile**, then assessment and dashboard.
 2. Complete **`/organisation-profile`** (required context). Data saves only in this browser on this device — not synced to a cloud account.
 3. Start **`/assessment`**. If the profile is incomplete, an accessible setup gate directs the user back to the Organisation Profile; existing assessment answers are preserved.
-4. For each question: select a **maturity response** (1–5) and a **confidence** (Low / Medium / High).
+4. For each question, select a **maturity response** (1–5).
 5. Answers autosave to assessment browser storage. Optional **Save and exit** returns to `/`.
 6. Navigate Previous / Next. **Review answers** is available before finish.
-7. When all 24 questions are answered, **Finish and view dashboard** saves and opens **`/dashboard`**.
-8. Dashboard loads assessment storage for scoring. When a valid completed Organisation Profile exists, **Company** shows `organisation.name` as read-only context. **Date** stays hidden.
+7. When all 24 questions are answered, continue from answer review to one
+   required overall **Leadership Confidence** response (Low / Medium / High).
+8. **View executive dashboard** saves the response and opens **`/dashboard`**.
+9. Dashboard loads assessment storage for scoring. When a valid completed Organisation Profile exists, **Company** shows `organisation.name` as read-only context. **Date** stays hidden.
 
 ### Operating policy
 
@@ -189,29 +193,28 @@ The assessment and answer review use matching red, orange, amber and green prese
 
 ### Current capability
 
-| Selection | Factor applied to department Estimated Annual Value at Risk |
-|-----------|--------------------------------------------------------------|
-| Low | 1.15 |
-| Medium | 1.07 |
-| High | 1.00 |
+After answer review, the respondent records one overall Low, Medium or High
+confidence response describing how well the assessment reflects company
+practice.
 
-- If maturity is chosen without confidence, **Medium** is applied by default.
-- The department confidence factor is the **mean** of per-answer factors for answered questions in that department.
-- Confidence **does not** change the Health Score.
+- Confidence is self-rated leadership judgement, not independent assurance.
+- A response is required before the executive dashboard is opened.
+- Confidence does not change Health Score, Risk Score, prioritisation or
+  Estimated Annual Value at Risk.
+- The dashboard uses confidence to introduce the later department-level
+  Evidence and Assurance journey.
 
 ### Operating policy / disclaimer (D3)
 
-Confidence adjusts the Estimated Annual Value at Risk estimate. It is **not** a statistical probability or reliability percentage.
+Confidence is **not** a statistical probability, reliability percentage or
+financial multiplier.
 
-Future documents that describe confidence as “reliability” refer to **deferred** product versions and must not be applied to this baseline.
-
-### Approved future product direction
+### Approved product direction
 
 **Governance status:** Product Owner approved and locked — 11 August 2026.
 Any change requires a new recorded Product Owner decision.
 
-The future product will replace per-question confidence with two separate
-levels:
+The product uses or plans two separate levels:
 
 1. one overall Low, Medium or High self-rated confidence response after the
    assessment; and
@@ -223,9 +226,8 @@ future overall confidence measure nor department assurance will change the
 Health Score, Risk Score or Estimated Annual Value at Risk. High-risk areas
 with low confidence or limited evidence will be prioritised for validation.
 
-This is a governed future change only. The current per-question confidence
-behaviour and value-at-risk factors remain authoritative until an approved
-migration, implementation and scoring-test update is completed.
+The overall-confidence phase is implemented. Department-level Evidence and
+Assurance remains the next controlled product layer.
 
 ---
 
@@ -242,7 +244,10 @@ avg = sum(maturityValuesWithVGreaterOrEqual1) / count
 HealthScore = count === 0 ? 0 : Math.round(((avg - 1) / 4) * 100)
 ```
 
-**Known limitation:** completion checks and confidence averaging use the stricter `answered()` rule (**1 ≤ value ≤ 5**). Out-of-range values above 5 are not produced by the current UI; if ever present in storage they can diverge between score averaging and completion.
+**Known limitation:** completion checks use the stricter `answered()` rule
+(**1 ≤ value ≤ 5**). Out-of-range values above 5 are not produced by the
+current UI; if ever present in storage they can diverge between score averaging
+and completion.
 
 ### Overall Health Score (Executive Health Score)
 
@@ -275,7 +280,11 @@ On the Sprint 004 dashboard, the Executive Health Score card still shows the num
 
 ### Disclaimer (approved)
 
-Estimated Annual Value at Risk is an illustrative modelled estimate derived from assessment responses, configured departmental cost ranges and confidence selections. It is not an audited loss calculation, financial forecast, valuation, accounting opinion or guarantee of future outcomes.
+Estimated Annual Value at Risk is an illustrative modelled estimate derived
+from assessment responses and configured departmental cost ranges. Overall
+confidence is displayed separately and does not change the estimate. It is not
+an audited loss calculation, financial forecast, valuation, accounting opinion
+or guarantee of future outcomes.
 
 MYReSolve provides operational decision support and does not replace professional financial, legal, regulatory or risk advice. Results should be interpreted alongside organisational evidence and executive judgement.
 
@@ -285,7 +294,7 @@ Using locked departmental low/high cost ranges:
 
 ```
 riskRatio = RiskScore / 100
-EstimatedAnnualVaR = Math.round((lo + (hi − lo) × riskRatio) × confidenceFactor)
+EstimatedAnnualVaR = Math.round(lo + (hi − lo) × riskRatio)
 ```
 
 ### Dashboard presentation
@@ -336,7 +345,7 @@ The Top Three Risk Areas list presents **domain-backed facts** (band, rating, Es
 | Date | Hidden — assessment completion timestamp is not recorded in Sprint 005 |
 | Executive Health Score | Overall Health Score, related band / rating and position on the five-level MYReSolve maturity scale. It is not an industry benchmark. |
 | Total Estimated Annual Value at Risk | Illustrative modelled estimate formed from six department scenario ranges (see disclaimer) |
-| Assessment Confidence | Predominant Low / Medium / High language and response counts — not raw cost factors |
+| Leadership Confidence | One overall Low / Medium / High self-rated response, shown separately from scores and financial estimates |
 | Highest Risk Department | Top of the risk-ranked list |
 | Department Risk Overview | All six departments: Health Score, maturity band, risk rating, Est. VaR |
 | Top Three Risk Areas | Three separate priority cards for the highest Risk Score departments among those with answers |
@@ -357,9 +366,10 @@ Labels such as “Operational Health” may appear as supporting copy next to Ex
 |------|--------|
 | Storage | Browser `localStorage` only |
 | Key | `myresolve_answers_v03` |
-| Payload | `{ answers, confidence }` |
+| Payload | `{ answers, overallConfidence? }` |
 | Answer values | Maturity responses `1`–`5` |
-| Confidence values | `low` \| `medium` \| `high` |
+| Overall confidence values | `low` \| `medium` \| `high` |
+| Legacy migration | Existing answers load unchanged; legacy per-question confidence is not converted into an invented overall response and is no longer written |
 
 **Organisation Profile** (separate key)
 
@@ -395,7 +405,7 @@ Domain CSV behaviour (used for behavioural parity with the legacy export) differ
 | Topic | Live dashboard / priorities | Domain CSV export behaviour |
 |-------|-----------------------------|-----------------------------|
 | Departments included in totals / ranking | Departments with **at least one** answer | **All six** departments always appear |
-| Unanswered department cost in CSV | Not included in live total | Exports high-band cost (risk 100%, confidence factor 1) with Health Score 0 |
+| Unanswered department cost in CSV | Not included in live total | Exports high-band cost (risk 100%) with Health Score 0 |
 
 Operators comparing a CSV artifact to the dashboard must allow for that difference. Presence of CSV domain logic does not, by itself, assert that a polished export control is the primary executive workflow in this Next.js UI.
 
@@ -427,7 +437,7 @@ Do not describe deferred items as current capability.
 
 ### Operating policy
 
-1. No silent formula, threshold, confidence-factor or cost-range changes.
+1. No silent formula, threshold, confidence-model or cost-range changes.
 2. Scoring-model changes require Product Owner approval, rationale, updated parity expectations and tests.
 3. UX or implementation changes must preserve approved behaviour unless a product change is separately approved.
 4. Aspirational root roadmaps do not authorise formula drift.
@@ -531,7 +541,7 @@ Explicitly **out of** the current product surfaces (or deferred beyond Sprint 00
 
 - Assessment completion **Date** on the dashboard
 - AI-generated narrative or recommendations
-- Scoring evolution beyond locked v0.3.1 / Phase 2 parity (including future “reliability” confidence models)
+- Scoring evolution beyond the approved overall-confidence and confidence-multiplier change
 - SaaS foundation features (authentication, cloud persistence, billing, multi-user tenancy)
 - Board PDF / commercial report packages as finished products
 - Using Organisation Profile data to change Health Score, risk, prioritisation or VaR
@@ -549,8 +559,9 @@ Organisation Profile (route, domain, feature, persistence, and `docs/ORGANISATIO
 | **Maturity band** | Critical, Developing, Established, Strong or Leading derived from Health Score |
 | **Risk Score** | `100 − Health Score` |
 | **Risk rating** | LOW / MODERATE / HIGH / CRITICAL from Health Score thresholds |
-| **Confidence** | Low / Medium / High selection that scales Estimated Annual Value at Risk only |
-| **Estimated Annual Value at Risk (VaR)** | Illustrative modelled GBP estimate from cost ranges, Risk Score and confidence |
+| **Leadership Confidence** | One overall Low / Medium / High self-rated judgement, separate from scoring and assurance |
+| **Evidence and Assurance** | Planned department-level validation using evidence, reviewer and review status |
+| **Estimated Annual Value at Risk (VaR)** | Illustrative modelled GBP estimate from cost ranges and Risk Score |
 | **Top Three Risk Areas** | Highest Risk Score departments among those with answers (max three) |
 | **Domain engine** | `apps/web/src/domain/assessment/` — sole scoring business-logic source for product surfaces |
 | **Golden baseline** | Locked `legacy/v0.3.1` assessment prototype and its documented behaviour |

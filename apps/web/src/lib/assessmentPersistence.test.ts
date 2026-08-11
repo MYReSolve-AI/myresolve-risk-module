@@ -16,22 +16,36 @@ describe("assessmentPersistence", () => {
     }
   });
 
-  it("round-trips the locked v0.3.1 storage schema", () => {
+  it("round-trips answers and one overall confidence response", () => {
     saveAssessmentAnswers({
       answers: { "0-0": 2, "5-3": 4 },
-      confidence: { "0-0": "low", "5-3": "high" },
+      overallConfidence: "high",
     });
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     expect(STORAGE_KEY).toBe("myresolve_answers_v03");
     expect(raw).toEqual({
       answers: { "0-0": 2, "5-3": 4 },
-      confidence: { "0-0": "low", "5-3": "high" },
+      overallConfidence: "high",
     });
     expect(loadAssessmentAnswers()).toEqual({
       answers: { "0-0": 2, "5-3": 4 },
-      confidence: { "0-0": "low", "5-3": "high" },
+      overallConfidence: "high",
     });
     clearAssessmentAnswers();
-    expect(loadAssessmentAnswers()).toEqual({ answers: {}, confidence: {} });
+    expect(loadAssessmentAnswers()).toEqual({ answers: {} });
+  });
+
+  it("preserves legacy answers without inventing an overall confidence", () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        answers: { "0-0": 4 },
+        confidence: { "0-0": "low" },
+      }),
+    );
+    expect(loadAssessmentAnswers()).toEqual({
+      answers: { "0-0": 4 },
+      overallConfidence: undefined,
+    });
   });
 });
