@@ -75,17 +75,17 @@
 ## Reviewer report
 
 - **Reviewer:** Product Owner
-- **Reviewed commit or branch:** Pending
+- **Reviewed commit or branch:** `codex/booking-to-notion` at `f44157e1f102fa76ecb3f18b49cb062bbfa0ed0f`
 - **Compared with base commit:** `0fc2102e2cc134d8dbe759ad424840d592f15b0f`
-- **Blocking findings:** Pending
-- **Non-blocking findings:** Pending
-- **Acceptance criteria result:** Pending
-- **Residual risk:** Pending
-- **Recommendation:** Pending
+- **Blocking findings:** None reported.
+- **Non-blocking findings:** None reported.
+- **Acceptance criteria result:** Implementation and automated verification accepted. Live Notion-row and browser-network checks remain release verification after secrets are configured.
+- **Residual risk:** Production behavior still depends on the separately approved Notion connection, Turnstile keys, Worker secrets and deployment verification.
+- **Recommendation:** Ready for owner
 
 ## Owner decision
 
-- **Decision:** Pending
-- **Decision notes:** Pending
-- **Merge explicitly approved:** No
+- **Decision:** Accept draft PR
+- **Decision notes:** Product Owner approved the reviewed MR-ENG-009 batch and then explicitly instructed Codex to merge PR #31 on 11 August 2026. Deployment remains a separate decision.
+- **Merge explicitly approved:** Yes
 - **Deployment explicitly approved:** No
