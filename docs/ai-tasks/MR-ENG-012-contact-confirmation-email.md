@@ -126,13 +126,32 @@
 ## Reviewer report
 
 - **Reviewer:** Claude
-- **Reviewed commit or branch:** Pending
+- **Reviewed commit or branch:** `f701842` on
+  `ai/codex/MR-ENG-012-contact-confirmation-email`
 - **Compared with base commit:** `ebb261f`
-- **Blocking findings:** Pending
-- **Non-blocking findings:** Pending
-- **Acceptance criteria result:** Pending
-- **Residual risk:** Pending
-- **Recommendation:** Pending
+- **Review method:** Read-only review of the complete `ebb261f..f701842` diff;
+  all seven owned files read; Worker tests independently rerun (12/12 pass).
+- **Blocking findings:** None.
+- **Non-blocking findings:**
+  1. The submitted email controls the Resend recipient. Turnstile and the
+     per-IP rate limit mitigate abuse; retain a domain-restricted sending-only
+     key and monitor bounces.
+  2. `NOTION_DATABASE_ID` is labelled as a secret while the identifier appears
+     in tests and documentation. Reclassify it as non-secret configuration or
+     scrub it in a later bounded maintenance task.
+  3. The modal background is not inert or `aria-hidden`; adding inert behaviour
+     would further strengthen modal accessibility.
+  4. `cleanText` does not strip CR/LF. This is minor hygiene with no current
+     email-header injection path.
+  5. The per-submission Resend idempotency key prevents retry duplication for
+     that booking reference but not deliberate new form submissions; consider
+     a client-side duplicate guard if real use shows a problem.
+- **Acceptance criteria result:** AC1–AC8 pass.
+- **Residual risk:** Low.
+- **Recommendation:** Ready for Owner merge decision. Deployment remains a
+  separate Owner decision requiring the runbook production steps: verify the
+  Resend sender domain, create a domain-restricted sending-only key, configure
+  encrypted Worker secrets, then stage and verify the release.
 
 ## Owner decision
 
