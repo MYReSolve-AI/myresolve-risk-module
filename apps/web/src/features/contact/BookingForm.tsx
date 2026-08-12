@@ -48,7 +48,6 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
 
     const payload = {
       name: fieldValue(form, "name"),
-      code: fieldValue(form, "code"),
       email: fieldValue(form, "email"),
       organisationRole: fieldValue(form, "organisationRole"),
       companySize: fieldValue(form, "companySize"),
@@ -108,16 +107,6 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
           <label className={styles.field}>
             <span>Name</span>
             <input name="name" autoComplete="name" maxLength={100} required />
-          </label>
-          <label className={styles.field}>
-            <span>Name or short code</span>
-            <input
-              name="code"
-              maxLength={80}
-              required
-              aria-describedby="code-help"
-            />
-            <small id="code-help">A short reference for our conversation.</small>
           </label>
           <label className={styles.field}>
             <span>Email</span>

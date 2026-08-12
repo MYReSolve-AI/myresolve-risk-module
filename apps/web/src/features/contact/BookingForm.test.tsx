@@ -15,7 +15,6 @@ function addTurnstileToken() {
 async function completeRequiredFields() {
   const user = userEvent.setup();
   await user.type(screen.getByLabelText("Name"), "Alex Leader");
-  await user.type(screen.getByLabelText(/Name or short code/), "AL-01");
   await user.type(screen.getByLabelText("Email"), "alex@example.com");
   await user.type(
     screen.getByLabelText("Organisation and role"),
@@ -58,7 +57,6 @@ describe("Booking form", () => {
     const body = JSON.parse(options.body);
     expect(Object.keys(body).sort()).toEqual(
       [
-        "code",
         "companySize",
         "email",
         "message",
@@ -71,6 +69,7 @@ describe("Booking form", () => {
       ].sort(),
     );
     expect(JSON.stringify(body)).not.toMatch(/assessment|organisationProfile|answer/i);
+    expect(screen.queryByLabelText(/Name or short code/i)).not.toBeInTheDocument();
     expect(
       await screen.findByText(/Your request has been received/i),
     ).toBeInTheDocument();
