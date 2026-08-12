@@ -23,7 +23,6 @@ const EXPECTED_NOTION_PROPERTIES = {
 
 const FIELD_LIMITS = {
   name: 100,
-  code: 80,
   email: 254,
   organisationRole: 200,
   companySize: 20,
@@ -90,7 +89,6 @@ function validatePayload(raw) {
 
   const required = [
     "name",
-    "code",
     "email",
     "organisationRole",
     "companySize",
@@ -112,6 +110,12 @@ function validatePayload(raw) {
 
 function notionText(content) {
   return { rich_text: content ? [{ type: "text", text: { content } }] : [] };
+}
+
+function bookingReference(date, uuid = crypto.randomUUID()) {
+  const day = date.toISOString().slice(0, 10).replaceAll("-", "");
+  const suffix = uuid.replaceAll("-", "").slice(0, 8).toUpperCase();
+  return `MYR-${day}-${suffix}`;
 }
 
 function notionPayload(values, dataSourceId, date) {
@@ -141,7 +145,11 @@ function notionHeaders(token) {
   };
 }
 
-export function createBookingHandler({ fetchImpl = fetch, now = () => new Date() } = {}) {
+export function createBookingHandler({
+  fetchImpl = fetch,
+  now = () => new Date(),
+  createReference = bookingReference,
+} = {}) {
   let cachedDataSource;
 
   function validateNotionSchema(dataSource) {
@@ -297,11 +305,16 @@ export function createBookingHandler({ fetchImpl = fetch, now = () => new Date()
 
     try {
       const dataSourceId = await resolveDataSourceId(env);
-      const date = now().toISOString().slice(0, 10);
+      const bookedAt = now();
+      const date = bookedAt.toISOString().slice(0, 10);
+      const bookingValues = {
+        ...values,
+        code: createReference(bookedAt),
+      };
       const response = await fetchImpl("https://api.notion.com/v1/pages", {
         method: "POST",
         headers: notionHeaders(env.NOTION_TOKEN),
-        body: JSON.stringify(notionPayload(values, dataSourceId, date)),
+        body: JSON.stringify(notionPayload(bookingValues, dataSourceId, date)),
       });
       if (!response.ok) throw new Error(`Notion page creation failed (${response.status})`);
       return json({ ok: true }, 201, corsOrigin);
@@ -328,4 +341,4 @@ export default {
   },
 };
 
-export { notionPayload, validatePayload };
+export { bookingReference, notionPayload, validatePayload };

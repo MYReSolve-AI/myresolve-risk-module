@@ -1,13 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createBookingHandler, notionPayload, validatePayload } from "./index.mjs";
+import {
+  bookingReference,
+  createBookingHandler,
+  notionPayload,
+  validatePayload,
+} from "./index.mjs";
 
 const ORIGIN = "https://myresolve.uk";
 
 function validPayload(overrides = {}) {
   return {
     name: "Alex Leader",
-    code: "AL-01",
     email: "alex@example.com",
     organisationRole: "Example Ltd, Operations Director",
     companySize: "50-249",
@@ -90,6 +94,7 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
   const handle = createBookingHandler({
     fetchImpl,
     now: () => new Date("2026-08-11T15:00:00.000Z"),
+    createReference: () => "MYR-20260811-A1B2C3D4",
   });
 
   const response = await handle(request(validPayload()), env());
@@ -99,7 +104,15 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
   const pageCalls = calls.filter(({ url }) => url.endsWith("/v1/pages"));
   assert.equal(pageCalls.length, 1);
   const body = JSON.parse(pageCalls[0].options.body);
-  assert.deepEqual(body, notionPayload(validPayload(), "data-source-id", "2026-08-11"));
+  assert.deepEqual(
+    body,
+    notionPayload(
+      { ...validPayload(), code: "MYR-20260811-A1B2C3D4" },
+      "data-source-id",
+      "2026-08-11",
+    ),
+  );
+  assert.equal(body.properties.Code.title[0].text.content, "MYR-20260811-A1B2C3D4");
   assert.equal(body.properties.Source.select.name, "Assessment");
   assert.equal(body.properties.Status.select.name, "New");
   assert.equal(body.properties["Booked on"].date.start, "2026-08-11");
@@ -238,4 +251,12 @@ test("validation enforces field caps and exact company-size options", () => {
   assert.equal(validatePayload(validPayload()).ok, true);
   assert.equal(validatePayload(validPayload({ question: "x".repeat(1501) })).ok, false);
   assert.equal(validatePayload(validPayload({ companySize: "10 to 49" })).ok, false);
+});
+
+test("booking references are generated internally without personal data", () => {
+  const reference = bookingReference(
+    new Date("2026-08-12T10:30:00.000Z"),
+    "12345678-90ab-cdef-1234-567890abcdef",
+  );
+  assert.equal(reference, "MYR-20260812-12345678");
 });

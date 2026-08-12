@@ -4,7 +4,7 @@
 
 The public Contact page sends only details a visitor types into the booking form. The request contains:
 
-- name and short reference code
+- name
 - email
 - organisation and role
 - company-size band
@@ -25,8 +25,9 @@ The static MYReSolve site posts directly to the isolated Cloudflare Worker at `h
 5. silently discards honeypot submissions;
 6. validates the single-use Turnstile token server-side;
 7. resolves the Notion data source and validates its property schema;
-8. creates one Notion page; and
-9. returns success only after Notion confirms creation.
+8. generates a non-identifying internal booking reference for the Notion `Code` field;
+9. creates one Notion page; and
+10. returns success only after Notion confirms creation.
 
 No submitted values are written to Worker logs. A Notion failure returns a retry message and the email contact route; it does not claim that the enquiry was saved.
 
