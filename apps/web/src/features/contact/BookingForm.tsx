@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import styles from "./ContactPage.module.css";
 
 const COMPANY_SIZES = [
@@ -20,7 +20,7 @@ type BookingFormProps = {
 type SubmissionState =
   | { kind: "idle" }
   | { kind: "submitting" }
-  | { kind: "success"; message: string }
+  | { kind: "success"; email: string; emailSent: boolean; message: string }
   | { kind: "error"; message: string };
 
 function fieldValue(form: FormData, name: string) {
@@ -30,7 +30,32 @@ function fieldValue(form: FormData, name: string) {
 
 export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
   const [state, setState] = useState<SubmissionState>({ kind: "idle" });
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const configured = Boolean(turnstileSiteKey);
+
+  useEffect(() => {
+    if (state.kind !== "success") return;
+    closeButtonRef.current?.focus();
+    function handleDialogKeyDown(event: KeyboardEvent) {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+        return;
+      }
+      if (event.key === "Escape") {
+        setState({ kind: "idle" });
+        submitButtonRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleDialogKeyDown);
+    return () => window.removeEventListener("keydown", handleDialogKeyDown);
+  }, [state.kind]);
+
+  function closeConfirmation() {
+    setState({ kind: "idle" });
+    submitButtonRef.current?.focus();
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -66,6 +91,7 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
         body: JSON.stringify(payload),
       });
       const result = (await response.json().catch(() => ({}))) as {
+        emailSent?: boolean;
         message?: string;
       };
       if (!response.ok) {
@@ -76,7 +102,11 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
       formElement.reset();
       setState({
         kind: "success",
-        message: "Thank you. Your request has been received and I’ll be in touch.",
+        email: payload.email,
+        emailSent: result.emailSent === true,
+        message:
+          result.message ??
+          "Thank you. Your request has been received and I’ll be in touch.",
       });
     } catch (error) {
       setState({
@@ -183,11 +213,14 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
         <p className={styles.privacyNote}>
           Only the details you enter in this form are sent to MYReSolve and
           stored in its private enquiry tracker so Rob can respond. Your
-          assessment answers and Organisation Profile stay on this device. Do
-          not include confidential assessment, financial or company information.
+          name and email are also passed to Resend solely to send your
+          confirmation. Your assessment answers and Organisation Profile stay
+          on this device. Do not include confidential assessment, financial or
+          company information.
         </p>
 
         <button
+          ref={submitButtonRef}
           type="submit"
           className={styles.submitButton}
           disabled={!configured || state.kind === "submitting"}
@@ -197,11 +230,6 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
             : "Request a 30-minute conversation"}
         </button>
 
-        {state.kind === "success" && (
-          <p className={styles.successMessage} role="status">
-            {state.message}
-          </p>
-        )}
         {state.kind === "error" && (
           <p className={styles.errorMessage} role="alert">
             {state.message}{" "}
@@ -209,6 +237,45 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
           </p>
         )}
       </form>
+
+      {state.kind === "success" && (
+        <div className={styles.confirmationBackdrop}>
+          <section
+            className={styles.confirmationDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmation-title"
+            aria-describedby="confirmation-message confirmation-email-status"
+            data-testid="booking-confirmation"
+          >
+            <p className={styles.eyebrow}>Request received</p>
+            <h2 id="confirmation-title" className={styles.confirmationTitle}>
+              Thank you — your request is complete
+            </h2>
+            <p id="confirmation-message">{state.message}</p>
+            <p
+              id="confirmation-email-status"
+              className={
+                state.emailSent
+                  ? styles.confirmationEmailSent
+                  : styles.confirmationEmailWarning
+              }
+            >
+              {state.emailSent
+                ? `A confirmation email has been sent to ${state.email}.`
+                : "Your request is safely recorded, but the confirmation email could not be sent. Rob will still be in touch."}
+            </p>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className={styles.submitButton}
+              onClick={closeConfirmation}
+            >
+              Close confirmation
+            </button>
+          </section>
+        </div>
+      )}
     </section>
   );
 }
