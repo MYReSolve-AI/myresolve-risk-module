@@ -334,4 +334,28 @@ test("confirmation email escapes the name and excludes submitted enquiry details
     JSON.stringify(email),
     /Where should we focus|Make priorities visible|Tuesday mornings/,
   );
+  assert.match(email.text, /Thank you for contacting MYReSolve/);
+  assert.match(email.text, /Reference: MYR-20260812-12345678/);
+  assert.match(email.text, /confidential assessment, financial or company information/);
+});
+
+test("confirmation email applies the approved MYReSolve brand without external content", () => {
+  const email = confirmationEmail(
+    validPayload(),
+    "MYR-20260812-12345678",
+    env(),
+  );
+
+  assert.match(email.html, /<html lang="en">/);
+  assert.match(email.html, /role="presentation"/);
+  assert.match(email.html, /width="600"/);
+  assert.match(email.html, /background:#f7f3ec/);
+  assert.match(email.html, /background:#173f35/);
+  assert.match(email.html, /border-bottom:4px solid #c68b35/);
+  assert.match(email.html, />MYReSolve</);
+  assert.match(email.html, />Your request has been received</);
+  assert.match(email.html, />MYR-20260812-12345678</);
+  assert.doesNotMatch(email.html, /<(?:img|script|link)\b/i);
+  assert.doesNotMatch(email.html, /(?:src|href)\s*=/i);
+  assert.doesNotMatch(email.html, /https?:\/\//i);
 });
