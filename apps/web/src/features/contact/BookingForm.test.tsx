@@ -33,7 +33,7 @@ describe("Booking form", () => {
 
   it("sends only the approved contact fields and shows confirmed success", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ ok: true }), {
+      new Response(JSON.stringify({ ok: true, emailSent: true }), {
         status: 201,
         headers: { "Content-Type": "application/json" },
       }),
@@ -70,9 +70,44 @@ describe("Booking form", () => {
     );
     expect(JSON.stringify(body)).not.toMatch(/assessment|organisationProfile|answer/i);
     expect(screen.queryByLabelText(/Name or short code/i)).not.toBeInTheDocument();
-    expect(
-      await screen.findByText(/Your request has been received/i),
-    ).toBeInTheDocument();
+    const dialog = await screen.findByRole("dialog", {
+      name: "Thank you — your request is complete",
+    });
+    expect(dialog).toHaveTextContent(/Your request has been received/i);
+    expect(dialog).toHaveTextContent(
+      "A confirmation email has been sent to alex@example.com.",
+    );
+    expect(screen.getByRole("button", { name: "Close confirmation" })).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: "Close confirmation" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("confirms storage honestly when the email provider could not send", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            ok: true,
+            emailSent: false,
+            message: "Thank you. Your request has been received and Rob will be in touch.",
+          }),
+          { status: 201, headers: { "Content-Type": "application/json" } },
+        ),
+      ),
+    );
+    render(<BookingForm apiUrl="/booking" turnstileSiteKey="public-site-key" />);
+    const user = await completeRequiredFields();
+    addTurnstileToken();
+    await user.click(
+      screen.getByRole("button", { name: "Request a 30-minute conversation" }),
+    );
+
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog).toHaveTextContent(/request is safely recorded/i);
+    expect(dialog).toHaveTextContent(/confirmation email could not be sent/i);
+    expect(dialog).not.toHaveTextContent(/has been sent to/i);
   });
 
   it("shows a retry route when the Worker does not confirm storage", async () => {

@@ -194,7 +194,8 @@
 .field input:focus-visible,
 .field select:focus-visible,
 .field textarea:focus-visible,
-.submitButton:focus-visible {
+.submitButton:focus-visible,
+.confirmationDialog button:focus-visible {
   outline: 2px solid var(--mr-amber);
   outline-offset: 2px;
 }
@@ -236,11 +237,6 @@
   opacity: 0.6;
 }
 
-.successMessage {
-  color: var(--mr-green-2);
-  font-weight: 700;
-}
-
 .errorMessage {
   color: #8a2e24;
   font-weight: 650;
@@ -249,6 +245,56 @@
 .errorMessage a {
   color: inherit;
   text-decoration: underline;
+}
+
+.confirmationBackdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 46, 39, 0.62);
+}
+
+.confirmationDialog {
+  width: min(100%, 34rem);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  border: 1px solid var(--mr-line);
+  border-radius: var(--mr-radius);
+  background: var(--mr-surface);
+  box-shadow: 0 24px 70px rgba(15, 46, 39, 0.28);
+  color: var(--mr-ink);
+}
+
+.confirmationDialog p {
+  line-height: 1.6;
+}
+
+.confirmationTitle {
+  margin: 0.3rem 0 1rem;
+  color: var(--mr-green-2);
+  font-family: var(--mr-font);
+  font-size: clamp(1.75rem, 5vw, 2.35rem);
+  line-height: 1.12;
+}
+
+.confirmationEmailSent,
+.confirmationEmailWarning {
+  margin: 1rem 0 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--mr-radius-sm);
+  font-weight: 700;
+}
+
+.confirmationEmailSent {
+  background: rgba(23, 63, 53, 0.08);
+  color: var(--mr-green-2);
+}
+
+.confirmationEmailWarning {
+  background: rgba(198, 139, 53, 0.12);
+  color: #744a12;
 }
 
 .sectionTitle {

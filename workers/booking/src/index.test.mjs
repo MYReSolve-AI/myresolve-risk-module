@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   bookingReference,
+  confirmationEmail,
   createBookingHandler,
   notionPayload,
   validatePayload,
@@ -42,6 +43,9 @@ function env(overrides = {}) {
     NOTION_TOKEN: "server-only-notion-token",
     NOTION_DATABASE_ID: "d43affc3cfca4f21aee7b4f71d964d19",
     TURNSTILE_SECRET_KEY: "server-only-turnstile-secret",
+    RESEND_API_KEY: "server-only-resend-key",
+    RESEND_FROM_EMAIL: "MYReSolve <hello@myresolve.uk>",
+    RESEND_REPLY_TO: "rob.myresolve@gmail.com",
     BOOKING_RATE_LIMITER: { limit: async () => ({ success: true }) },
     ...overrides,
   };
@@ -89,6 +93,9 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
     if (String(url).endsWith("/v1/pages")) {
       return Response.json({ object: "page", id: "new-page-id" });
     }
+    if (String(url) === "https://api.resend.com/emails") {
+      return Response.json({ id: "email-id" });
+    }
     throw new Error(`Unexpected URL: ${url}`);
   };
   const handle = createBookingHandler({
@@ -99,7 +106,11 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
 
   const response = await handle(request(validPayload()), env());
   assert.equal(response.status, 201);
-  assert.deepEqual(await response.json(), { ok: true });
+  assert.deepEqual(await response.json(), {
+    ok: true,
+    emailSent: true,
+    message: "Thank you. Your request has been received and Rob will be in touch.",
+  });
 
   const pageCalls = calls.filter(({ url }) => url.endsWith("/v1/pages"));
   assert.equal(pageCalls.length, 1);
@@ -116,6 +127,22 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
   assert.equal(body.properties.Source.select.name, "Assessment");
   assert.equal(body.properties.Status.select.name, "New");
   assert.equal(body.properties["Booked on"].date.start, "2026-08-11");
+
+  const emailCalls = calls.filter(({ url }) => url === "https://api.resend.com/emails");
+  assert.equal(emailCalls.length, 1);
+  const email = JSON.parse(emailCalls[0].options.body);
+  assert.equal(email.to[0], "alex@example.com");
+  assert.equal(email.from, "MYReSolve <hello@myresolve.uk>");
+  assert.equal(email.reply_to, "rob.myresolve@gmail.com");
+  assert.match(email.subject, /received your MYReSolve conversation request/i);
+  assert.doesNotMatch(
+    JSON.stringify(email),
+    /Where should we focus|Example Ltd|50-249|Tuesday mornings/,
+  );
+  assert.equal(
+    emailCalls[0].options.headers["Idempotency-Key"],
+    "booking-confirmation/MYR-20260811-A1B2C3D4",
+  );
 });
 
 test("the honeypot blocks storage without calling Turnstile or Notion", async () => {
@@ -128,6 +155,7 @@ test("the honeypot blocks storage without calling Turnstile or Notion", async ()
   });
   const response = await handle(request(validPayload({ website: "spam.example" })), env());
   assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), { ok: true, emailSent: true });
   assert.equal(externalCalls, 0);
 });
 
@@ -219,6 +247,40 @@ test("a Notion failure returns a retry response rather than false success", asyn
   }
 });
 
+test("a Resend failure keeps the stored request successful without claiming email delivery", async () => {
+  const calls = [];
+  const handle = createBookingHandler({
+    fetchImpl: async (url) => {
+      calls.push(String(url));
+      if (String(url).includes("siteverify")) {
+        return Response.json({ success: true, action: "booking", hostname: "myresolve.uk" });
+      }
+      if (String(url).includes("/v1/databases/")) {
+        return Response.json({ data_sources: [{ id: "data-source-id" }] });
+      }
+      if (String(url).includes("/v1/data_sources/")) return Response.json(notionSchema());
+      if (String(url).endsWith("/v1/pages")) return Response.json({ object: "page" });
+      if (String(url) === "https://api.resend.com/emails") {
+        return new Response("Email unavailable", { status: 503 });
+      }
+      throw new Error(`Unexpected URL: ${url}`);
+    },
+  });
+  const originalError = console.error;
+  console.error = () => {};
+  try {
+    const response = await handle(request(validPayload()), env());
+    assert.equal(response.status, 201);
+    const body = await response.json();
+    assert.equal(body.ok, true);
+    assert.equal(body.emailSent, false);
+    assert.equal(calls.filter((url) => url.endsWith("/v1/pages")).length, 1);
+    assert.equal(calls.filter((url) => url === "https://api.resend.com/emails").length, 1);
+  } finally {
+    console.error = originalError;
+  }
+});
+
 test("a mismatched Notion schema fails closed without creating a page", async () => {
   const urls = [];
   const handle = createBookingHandler({
@@ -259,4 +321,17 @@ test("booking references are generated internally without personal data", () => 
     "12345678-90ab-cdef-1234-567890abcdef",
   );
   assert.equal(reference, "MYR-20260812-12345678");
+});
+
+test("confirmation email escapes the name and excludes submitted enquiry details", () => {
+  const email = confirmationEmail(
+    validPayload({ name: '<Alex & "Sam">' }),
+    "MYR-20260812-12345678",
+    env(),
+  );
+  assert.match(email.html, /&lt;Alex &amp; &quot;Sam&quot;&gt;/);
+  assert.doesNotMatch(
+    JSON.stringify(email),
+    /Where should we focus|Make priorities visible|Tuesday mornings/,
+  );
 });

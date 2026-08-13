@@ -1,4 +1,5 @@
 const NOTION_VERSION = "2026-03-11";
+const RESEND_EMAILS_URL = "https://api.resend.com/emails";
 const MAX_BODY_BYTES = 12_000;
 const ALLOWED_COMPANY_SIZES = new Set([
   "Just me / <10",
@@ -145,6 +146,27 @@ function notionHeaders(token) {
   };
 }
 
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function confirmationEmail(values, reference, env) {
+  const safeName = escapeHtml(values.name);
+  return {
+    from: env.RESEND_FROM_EMAIL,
+    to: [values.email],
+    reply_to: env.RESEND_REPLY_TO || "rob.myresolve@gmail.com",
+    subject: "We’ve received your MYReSolve conversation request",
+    text: `Hi ${values.name},\n\nThank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.\n\nReference: ${reference}\n\nPlease do not reply with confidential assessment, financial or company information.\n\nBest,\nMYReSolve`,
+    html: `<p>Hi ${safeName},</p><p>Thank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.</p><p><strong>Reference:</strong> ${reference}</p><p>Please do not reply with confidential assessment, financial or company information.</p><p>Best,<br>MYReSolve</p>`,
+  };
+}
+
 export function createBookingHandler({
   fetchImpl = fetch,
   now = () => new Date(),
@@ -246,6 +268,8 @@ export function createBookingHandler({
       !env.NOTION_TOKEN ||
       !env.NOTION_DATABASE_ID ||
       !env.TURNSTILE_SECRET_KEY ||
+      !env.RESEND_API_KEY ||
+      !env.RESEND_FROM_EMAIL ||
       !env.BOOKING_RATE_LIMITER
     ) {
       console.error("Booking Worker is missing required server configuration");
@@ -285,7 +309,9 @@ export function createBookingHandler({
     const values = validation.values;
 
     // Silently accept honeypot submissions without contacting third parties.
-    if (values.website) return json({ ok: true }, 201, corsOrigin);
+    if (values.website) {
+      return json({ ok: true, emailSent: true }, 201, corsOrigin);
+    }
 
     let human;
     try {
@@ -303,11 +329,12 @@ export function createBookingHandler({
       return json({ ok: false, message: "The security check expired or was not completed. Please try again." }, 400, corsOrigin);
     }
 
+    let bookingValues;
     try {
       const dataSourceId = await resolveDataSourceId(env);
       const bookedAt = now();
       const date = bookedAt.toISOString().slice(0, 10);
-      const bookingValues = {
+      bookingValues = {
         ...values,
         code: createReference(bookedAt),
       };
@@ -317,7 +344,6 @@ export function createBookingHandler({
         body: JSON.stringify(notionPayload(bookingValues, dataSourceId, date)),
       });
       if (!response.ok) throw new Error(`Notion page creation failed (${response.status})`);
-      return json({ ok: true }, 201, corsOrigin);
     } catch (error) {
       // Never log form values or Notion response bodies.
       console.error("Booking submission could not be stored", error instanceof Error ? error.message : "unknown error");
@@ -327,6 +353,47 @@ export function createBookingHandler({
           message: "We couldn’t save your request. Please try again, or email rob.myresolve@gmail.com.",
         },
         502,
+        corsOrigin,
+      );
+    }
+
+    try {
+      const emailResponse = await fetchImpl(RESEND_EMAILS_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": `booking-confirmation/${bookingValues.code}`,
+          "User-Agent": "MYReSolve-Booking/1.0",
+        },
+        body: JSON.stringify(confirmationEmail(values, bookingValues.code, env)),
+      });
+      if (!emailResponse.ok) {
+        throw new Error(`Resend API returned ${emailResponse.status}`);
+      }
+      return json(
+        {
+          ok: true,
+          emailSent: true,
+          message: "Thank you. Your request has been received and Rob will be in touch.",
+        },
+        201,
+        corsOrigin,
+      );
+    } catch (error) {
+      // The enquiry is already safely stored. Do not tell the visitor to retry
+      // and risk creating a duplicate. Never log recipient or form values.
+      console.error(
+        "Booking confirmation email could not be sent",
+        error instanceof Error ? error.message : "unknown error",
+      );
+      return json(
+        {
+          ok: true,
+          emailSent: false,
+          message: "Thank you. Your request has been received and Rob will be in touch.",
+        },
+        201,
         corsOrigin,
       );
     }
@@ -341,4 +408,4 @@ export default {
   },
 };
 
-export { bookingReference, notionPayload, validatePayload };
+export { bookingReference, confirmationEmail, notionPayload, validatePayload };
