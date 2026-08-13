@@ -60,7 +60,7 @@
 
 - **Status:** Ready for review
 - **Builder branch:** `ai/codex/MR-ENG-012A-branded-confirmation-email`
-- **Head commit:** Pending
+- **Head commit:** `91c7f2a` (implementation; followed by the handover-record commit)
 - **Outcome delivered:** The existing transactional confirmation now has a restrained, email-safe MYReSolve HTML presentation while retaining the approved subject, meaning, privacy reminder and plain-text fallback.
 - **Files changed and why:** `workers/booking/src/index.mjs` adds the branded inline HTML template; `workers/booking/src/index.test.mjs` covers the palette, email-safe structure, content boundary and fallback copy; this task record captures scope and evidence.
 - **Checks run and results:** Worker tests 13/13 passed; both Worker files passed JavaScript syntax checks; `git diff --check` passed; changed-path and external-content/privacy scans passed.
