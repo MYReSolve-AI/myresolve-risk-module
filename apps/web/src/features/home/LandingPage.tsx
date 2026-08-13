@@ -366,7 +366,7 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
           <p className={styles.footerContact}>
             <Link href="/contact">Contact MYReSolve</Link>
             <span aria-hidden="true"> · </span>
-            <a href="mailto:rob.myresolve@gmail.com">rob.myresolve@gmail.com</a>
+            <a href="mailto:hello@myresolve.uk">hello@myresolve.uk</a>
           </p>
         </div>
       </footer>
