@@ -155,15 +155,57 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function confirmationEmail(values, reference, env) {
-  const safeName = escapeHtml(values.name);
+function confirmationEmail({ name, email }, reference, env) {
+  const safeName = escapeHtml(name);
+  const safeReference = escapeHtml(reference);
   return {
     from: env.RESEND_FROM_EMAIL,
-    to: [values.email],
+    to: [email],
     reply_to: env.RESEND_REPLY_TO || "rob.myresolve@gmail.com",
     subject: "We’ve received your MYReSolve conversation request",
-    text: `Hi ${values.name},\n\nThank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.\n\nReference: ${reference}\n\nPlease do not reply with confidential assessment, financial or company information.\n\nBest,\nMYReSolve`,
-    html: `<p>Hi ${safeName},</p><p>Thank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.</p><p><strong>Reference:</strong> ${reference}</p><p>Please do not reply with confidential assessment, financial or company information.</p><p>Best,<br>MYReSolve</p>`,
+    text: `Hi ${name},\n\nThank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.\n\nReference: ${reference}\n\nPlease do not reply with confidential assessment, financial or company information.\n\nBest,\nMYReSolve`,
+    html: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MYReSolve conversation request received</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f7f3ec;color:#1e2825;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">Your MYReSolve conversation request has been received.</div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#f7f3ec;border-collapse:collapse;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;background:#fffcf7;border:1px solid #ddc9a7;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;">
+            <tr>
+              <td style="padding:28px 32px;background:#173f35;border-bottom:4px solid #c68b35;">
+                <p style="margin:0;color:#fffcf7;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:0.2px;">MYReSolve</p>
+                <p style="margin:8px 0 0;color:#f7f3ec;font-size:14px;line-height:1.5;">Conversation request received</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p style="margin:0 0 20px;font-size:16px;line-height:1.6;">Hi ${safeName},</p>
+                <h1 style="margin:0 0 16px;color:#0f2e27;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:700;">Your request has been received</h1>
+                <p style="margin:0 0 24px;font-size:16px;line-height:1.6;">Thank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.</p>
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#f7f3ec;border-left:4px solid #c68b35;border-collapse:separate;">
+                  <tr>
+                    <td style="padding:16px 18px;">
+                      <p style="margin:0 0 4px;color:#66716d;font-size:12px;line-height:1.4;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Booking reference</p>
+                      <p style="margin:0;color:#173f35;font-family:'Courier New',Courier,monospace;font-size:16px;line-height:1.5;font-weight:700;">${safeReference}</p>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:24px 0 0;padding-top:20px;border-top:1px solid #ddc9a7;color:#66716d;font-size:14px;line-height:1.6;">Please do not reply with confidential assessment, financial or company information.</p>
+                <p style="margin:24px 0 0;color:#1e2825;font-size:16px;line-height:1.6;">Best,<br><strong style="color:#173f35;">MYReSolve</strong></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`,
   };
 }
 
@@ -366,7 +408,13 @@ export function createBookingHandler({
           "Idempotency-Key": `booking-confirmation/${bookingValues.code}`,
           "User-Agent": "MYReSolve-Booking/1.0",
         },
-        body: JSON.stringify(confirmationEmail(values, bookingValues.code, env)),
+        body: JSON.stringify(
+          confirmationEmail(
+            { name: values.name, email: values.email },
+            bookingValues.code,
+            env,
+          ),
+        ),
       });
       if (!emailResponse.ok) {
         throw new Error(`Resend API returned ${emailResponse.status}`);
