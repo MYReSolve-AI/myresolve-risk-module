@@ -74,17 +74,17 @@
 ## Reviewer report
 
 - **Reviewer:** Claude
-- **Reviewed commit or branch:** Pending
+- **Reviewed commit or branch:** `2d80e814d9e7cfd818b7e53512f0e9aca678e523`
 - **Compared with base commit:** `9d40d7b676427505fc25a8bfc9af205d4a91ac96`
-- **Blocking findings:** Pending
-- **Non-blocking findings:** Pending
-- **Acceptance criteria result:** Pending
-- **Residual risk:** Pending
-- **Recommendation:** Pending
+- **Blocking findings:** None.
+- **Non-blocking findings:** The Resend boundary held, but the email function received the complete validated form object and tests did not structurally lock the payload keys or cover all five prohibited enquiry fields. Additional rendering observations were non-blocking and remain outside this focused hardening follow-up.
+- **Acceptance criteria result:** 7/7 met; Worker tests independently reproduced at 13/13, syntax checks passed and `git diff --check` was clean.
+- **Residual risk:** Low email-client rendering variance; no data-boundary breach identified.
+- **Recommendation:** Ready for Owner, with the short data-boundary hardening preferred before merge.
 
 ## Owner decision
 
-- **Decision:** Pending
-- **Decision notes:**
+- **Decision:** Approved short data-boundary hardening before merge decision.
+- **Decision notes:** Restrict the email builder to name and email, lock the Resend payload key set, and test exclusion of all five prohibited enquiry fields. Styling observations remain outside this follow-up.
 - **Merge explicitly approved:** No
 - **Deployment explicitly approved:** No

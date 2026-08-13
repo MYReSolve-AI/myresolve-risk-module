@@ -155,15 +155,15 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function confirmationEmail(values, reference, env) {
-  const safeName = escapeHtml(values.name);
+function confirmationEmail({ name, email }, reference, env) {
+  const safeName = escapeHtml(name);
   const safeReference = escapeHtml(reference);
   return {
     from: env.RESEND_FROM_EMAIL,
-    to: [values.email],
+    to: [email],
     reply_to: env.RESEND_REPLY_TO || "rob.myresolve@gmail.com",
     subject: "We’ve received your MYReSolve conversation request",
-    text: `Hi ${values.name},\n\nThank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.\n\nReference: ${reference}\n\nPlease do not reply with confidential assessment, financial or company information.\n\nBest,\nMYReSolve`,
+    text: `Hi ${name},\n\nThank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.\n\nReference: ${reference}\n\nPlease do not reply with confidential assessment, financial or company information.\n\nBest,\nMYReSolve`,
     html: `<!doctype html>
 <html lang="en">
   <head>
@@ -408,7 +408,13 @@ export function createBookingHandler({
           "Idempotency-Key": `booking-confirmation/${bookingValues.code}`,
           "User-Agent": "MYReSolve-Booking/1.0",
         },
-        body: JSON.stringify(confirmationEmail(values, bookingValues.code, env)),
+        body: JSON.stringify(
+          confirmationEmail(
+            { name: values.name, email: values.email },
+            bookingValues.code,
+            env,
+          ),
+        ),
       });
       if (!emailResponse.ok) {
         throw new Error(`Resend API returned ${emailResponse.status}`);

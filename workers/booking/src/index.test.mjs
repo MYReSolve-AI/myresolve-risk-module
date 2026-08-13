@@ -134,10 +134,18 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
   assert.equal(email.to[0], "alex@example.com");
   assert.equal(email.from, "MYReSolve <hello@myresolve.uk>");
   assert.equal(email.reply_to, "rob.myresolve@gmail.com");
+  assert.deepEqual(Object.keys(email).sort(), [
+    "from",
+    "html",
+    "reply_to",
+    "subject",
+    "text",
+    "to",
+  ]);
   assert.match(email.subject, /received your MYReSolve conversation request/i);
   assert.doesNotMatch(
     JSON.stringify(email),
-    /Where should we focus|Example Ltd|50-249|Tuesday mornings/,
+    /Example Ltd|50-249|Where should we focus|Make priorities visible|Tuesday mornings/,
   );
   assert.equal(
     emailCalls[0].options.headers["Idempotency-Key"],
@@ -332,7 +340,7 @@ test("confirmation email escapes the name and excludes submitted enquiry details
   assert.match(email.html, /&lt;Alex &amp; &quot;Sam&quot;&gt;/);
   assert.doesNotMatch(
     JSON.stringify(email),
-    /Where should we focus|Make priorities visible|Tuesday mornings/,
+    /Example Ltd|50-249|Where should we focus|Make priorities visible|Tuesday mornings/,
   );
   assert.match(email.text, /Thank you for contacting MYReSolve/);
   assert.match(email.text, /Reference: MYR-20260812-12345678/);
