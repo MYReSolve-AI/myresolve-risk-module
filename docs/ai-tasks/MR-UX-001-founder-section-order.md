@@ -61,7 +61,7 @@
 
 - **Status:** Ready for review
 - **Builder branch:** `ai/codex/MR-UX-001-founder-section-order`
-- **Head commit:** Pending
+- **Implementation commit:** `1f43ed0`
 - **Outcome delivered:** Founder credibility now follows problem recognition and
   precedes the detailed solution sections.
 - **Files changed and why:** `LandingPage.tsx` reorders the existing founder
