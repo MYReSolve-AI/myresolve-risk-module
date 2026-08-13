@@ -160,6 +160,45 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
         </section>
 
         <section
+          id="why-myresolve"
+          className={styles.section}
+          aria-labelledby="founder-heading"
+          data-testid="home-founder"
+        >
+          <div className={styles.founderInner}>
+            <div className={styles.founderPortraitWrap}>
+              <Image
+                src="/images/rob-pierce-founder.png"
+                alt="Rob Pierce, founder of MYReSolve"
+                width={1024}
+                height={1024}
+                sizes="(max-width: 640px) 180px, 240px"
+                unoptimized
+                className={styles.founderPortrait}
+              />
+            </div>
+            <div className={styles.founderCopy}>
+              <p className={styles.eyebrow}>{founder.eyebrow}</p>
+              <h2 id="founder-heading" className={styles.sectionTitle}>
+                {founder.heading}
+              </h2>
+              <p className={styles.founderBody}>{founder.body1}</p>
+              <p className={styles.founderBody} data-testid="home-credibility">
+                Built by Rob Pierce, drawing on leadership and operational
+                experience with businesses including John Lewis, Rapha and
+                Loaf.
+              </p>
+              <p className={styles.founderBody}>{founder.body2}</p>
+              <blockquote className={styles.founderQuote}>
+                “{founder.quote}”
+              </blockquote>
+              <p className={styles.founderName}>{founder.name}</p>
+              <p className={styles.founderRole}>{founder.role}</p>
+            </div>
+          </div>
+        </section>
+
+        <section
           id="from-to"
           className={`${styles.section} ${styles.sectionContrast}`}
           aria-labelledby="from-to-heading"
@@ -297,45 +336,6 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
             >
               {VAR_QUALIFICATION}
             </p>
-          </div>
-        </section>
-
-        <section
-          id="why-myresolve"
-          className={styles.section}
-          aria-labelledby="founder-heading"
-          data-testid="home-founder"
-        >
-          <div className={styles.founderInner}>
-            <div className={styles.founderPortraitWrap}>
-              <Image
-                src="/images/rob-pierce-founder.png"
-                alt="Rob Pierce, founder of MYReSolve"
-                width={1024}
-                height={1024}
-                sizes="(max-width: 640px) 180px, 240px"
-                unoptimized
-                className={styles.founderPortrait}
-              />
-            </div>
-            <div className={styles.founderCopy}>
-              <p className={styles.eyebrow}>{founder.eyebrow}</p>
-              <h2 id="founder-heading" className={styles.sectionTitle}>
-                {founder.heading}
-              </h2>
-              <p className={styles.founderBody}>{founder.body1}</p>
-              <p className={styles.founderBody} data-testid="home-credibility">
-                Built by Rob Pierce, drawing on leadership and operational
-                experience with businesses including John Lewis, Rapha and
-                Loaf.
-              </p>
-              <p className={styles.founderBody}>{founder.body2}</p>
-              <blockquote className={styles.founderQuote}>
-                “{founder.quote}”
-              </blockquote>
-              <p className={styles.founderName}>{founder.name}</p>
-              <p className={styles.founderRole}>{founder.role}</p>
-            </div>
           </div>
         </section>
 

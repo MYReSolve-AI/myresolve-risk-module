@@ -200,7 +200,11 @@ describe("Landing Page V2", () => {
   it("shows the founder experience and signature brand line", () => {
     render(<LandingPage />);
 
+    const familiar = screen.getByTestId("home-familiar");
     const founder = screen.getByTestId("home-founder");
+    const fromTo = screen.getByTestId("home-from-to");
+    expect(familiar.nextElementSibling).toBe(founder);
+    expect(founder.nextElementSibling).toBe(fromTo);
     expect(
       within(founder).getByRole("heading", {
         name: "Decades of Expertise, One Clear Vision.",
