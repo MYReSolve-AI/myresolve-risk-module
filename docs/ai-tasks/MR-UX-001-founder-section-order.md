@@ -19,10 +19,13 @@
 - [x] "Why MYReSolve?" appears immediately after "Sound familiar?".
 - [x] The solution sections follow the founder section in their existing order.
 - [x] Founder copy, portrait, links, styling and anchor remain unchanged.
+- [x] The hero "See how it works" button is removed while the navigation link
+  and final assessment action remain available.
 
 ### Scope
 
-- **Included:** Homepage section order and a focused regression assertion.
+- **Included:** Homepage section order, removal of the hero jump button and
+  focused regression assertions.
 - **Excluded:** Copy, design, contact flow, email, infrastructure and deployment.
 - **Owned paths:** `apps/web/src/features/home/LandingPage.tsx`,
   `apps/web/src/features/home/HomePage.test.tsx`, this task record.
@@ -55,7 +58,8 @@
 
 - **Approved by:** Rob Pierce
 - **Approval date:** 2026-08-13
-- **Approved scope notes:** Move founder confidence before solution detail.
+- **Approved scope notes:** Move founder confidence before solution detail;
+  follow-up approval removed the hero "See how it works" jump button.
 
 ## Builder handover
 
@@ -65,8 +69,9 @@
 - **Outcome delivered:** Founder credibility now follows problem recognition and
   precedes the detailed solution sections.
 - **Files changed and why:** `LandingPage.tsx` reorders the existing founder
-  section; `HomePage.test.tsx` locks the agreed sequence; this record captures
-  scope and verification.
+  section and removes the hero jump button; `LandingPage.module.css` removes
+  now-unused button styles; `HomePage.test.tsx` locks the agreed sequence and
+  retained navigation path; this record captures scope and verification.
 - **Checks run and results:** Homepage tests 10/10 passed; full web suite 109/109
   passed; `git diff --check` passed.
 - **Checks not run and why:** Lint and build were not repeated because the

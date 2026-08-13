@@ -73,9 +73,10 @@ describe("Landing Page V2", () => {
     const how = screen.getByTestId("how-it-works");
     expect(how).toHaveAttribute("id", "how-it-works");
 
-    const secondary = screen.getByTestId("home-secondary-cta");
-    expect(secondary).toHaveAttribute("href", "#how-it-works");
-    expect(secondary).toHaveTextContent("See how it works");
+    expect(screen.queryByTestId("home-secondary-cta")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "How it works" }),
+    ).toHaveAttribute("href", "#how-it-works");
 
     expect(screen.getByTestId("home-step-org-profile")).toHaveAttribute(
       "href",

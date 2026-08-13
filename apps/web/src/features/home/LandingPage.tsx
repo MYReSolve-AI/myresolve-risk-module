@@ -19,7 +19,6 @@ type LandingPageProps = {
 export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProps) {
   const {
     hero,
-    secondaryCta,
     campaign,
     familiar,
     fromTo,
@@ -96,15 +95,6 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
             <p className={styles.support} data-testid="home-support">
               {hero.supportText}
             </p>
-            <div className={styles.ctaRow}>
-              <a
-                href="#how-it-works"
-                className={styles.ctaSecondary}
-                data-testid="home-secondary-cta"
-              >
-                {secondaryCta.label}
-              </a>
-            </div>
             {hero.supportingLine ? (
               <p className={styles.heroTag} data-testid="home-hero-tag">
                 {hero.supportingLine}
