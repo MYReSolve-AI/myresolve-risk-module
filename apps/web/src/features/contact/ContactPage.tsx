@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BookingForm } from "./BookingForm";
 import styles from "./ContactPage.module.css";
 
-const CONTACT_EMAIL = "rob.myresolve@gmail.com";
+const CONTACT_EMAIL = "hello@myresolve.uk";
 const BOOKING_API_URL =
   process.env.NEXT_PUBLIC_BOOKING_API_URL ??
   "https://api.myresolve.uk/booking";
