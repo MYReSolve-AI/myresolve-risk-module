@@ -84,7 +84,7 @@
 
 ## Owner decision
 
-- **Decision:** Approved short data-boundary hardening before merge decision.
-- **Decision notes:** Restrict the email builder to name and email, lock the Resend payload key set, and test exclusion of all five prohibited enquiry fields. Styling observations remain outside this follow-up.
-- **Merge explicitly approved:** No
-- **Deployment explicitly approved:** No
+- **Decision:** Approved for merge and production deployment after the short data-boundary hardening and Claude's focused re-review passed.
+- **Decision notes:** Commit `763d47e` passed Claude's independent read-only re-review with no blocking findings and 7/7 acceptance criteria met. The remaining email-client rendering observations are accepted as low-risk follow-up work and do not block this release.
+- **Merge explicitly approved:** Yes — 2026-08-13
+- **Deployment explicitly approved:** Yes — 2026-08-13
