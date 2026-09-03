@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
+import { BOOK_PAGE_HREF } from "@/src/features/book/bookContent";
 import { LandingPage } from "./LandingPage";
 import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
@@ -54,6 +55,10 @@ describe("Landing Page V2", () => {
     expect(
       screen.getByRole("link", { name: "Why MYReSolve?" }),
     ).toHaveAttribute("href", "#why-myresolve");
+    expect(screen.getByRole("link", { name: "The book" })).toHaveAttribute(
+      "href",
+      BOOK_PAGE_HREF,
+    );
     expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
       "href",
       "/contact",
@@ -173,7 +178,10 @@ describe("Landing Page V2", () => {
     for (const link of links) {
       const href = link.getAttribute("href") ?? "";
       const text = link.textContent?.toLowerCase() ?? "";
-      expect(href).not.toMatch(/book|calendly|schedule/i);
+      // /book is the marketing page for the paid book, not a meeting booking route.
+      if (href !== BOOK_PAGE_HREF) {
+        expect(href).not.toMatch(/book|calendly|schedule/i);
+      }
       expect(text).not.toMatch(/book a|schedule a|book demo|book a call/);
     }
 

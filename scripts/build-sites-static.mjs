@@ -12,6 +12,7 @@ await cp(exportedSite, resolve(dist, "client"), { recursive: true });
 
 const worker = `const HTML_ROUTES = new Set([
   "/assessment",
+  "/book",
   "/contact",
   "/dashboard",
   "/organisation-profile",
