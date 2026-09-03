@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
+import { BOOK_PAGE_HREF } from "@/src/features/book/bookContent";
 import {
   LANDING_PAGE_FALLBACK,
   type LandingPageContent,
@@ -52,6 +53,9 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
             <a href="#why-myresolve" className={styles.navLink}>
               Why MYReSolve?
             </a>
+            <Link href={BOOK_PAGE_HREF} className={styles.navLink}>
+              The book
+            </Link>
             <Link href="/contact" className={styles.navLink}>
               Contact
             </Link>
