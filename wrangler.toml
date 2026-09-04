@@ -1,0 +1,10 @@
+# Cloudflare Worker config for the MYReSolve marketing site (myresolve.uk).
+# Built by `npm run sites:build` -> dist/client (static) + dist/server/index.js (worker).
+# Deployed by .github/workflows/deploy.yml on push to main.
+name = "myresolve-site"
+main = "dist/server/index.js"
+compatibility_date = "2025-05-01"
+
+[assets]
+directory = "dist/client"
+binding = "ASSETS"
