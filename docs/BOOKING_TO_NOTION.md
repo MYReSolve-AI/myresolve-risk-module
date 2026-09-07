@@ -1,4 +1,4 @@
-# Booking form to Notion and Resend confirmation
+# Booking form to Notion, owner notification and visitor confirmation
 
 ## Purpose and data boundary
 
@@ -14,10 +14,27 @@ The public Contact page sends only details a visitor types into the booking form
 
 The form does not import, read or send Organisation Profile data, assessment answers, scores or dashboard values. Those remain in browser storage on the visitor's device.
 
-After Notion confirms storage, the Worker sends Resend only the visitor's name
-and email, a non-identifying booking reference and generic confirmation copy.
-The operational question, organisation and role, company-size band, optional
-tool outcome and optional message are not included in the email request.
+After Notion confirms storage, the Worker sends two separate emails through
+Resend. Their data boundaries differ deliberately.
+
+**Visitor confirmation** — sent to the enquirer. Resend receives only the
+visitor's name and email, a non-identifying booking reference and generic
+confirmation copy. The operational question, organisation and role,
+company-size band, optional tool outcome and optional message are not included
+in this request.
+
+**Owner notification** — sent to `hello@myresolve.uk`, the MYReSolve inbox.
+This one carries the full enquiry: name, email, organisation and role,
+company-size band, operational question, optional tool outcome, optional
+message, the booking reference and a link to the Notion page. Its `reply_to` is
+the enquirer's address so that replying answers them directly.
+
+Enquiry content therefore does pass through Resend, to a MYReSolve-controlled
+address only, so that an enquiry is not missed while it waits in the tracker.
+Two values are never emailed in either message: the Turnstile token, which is a
+credential, and the honeypot field. Assessment answers, Organisation Profile
+data, scores and dashboard values are never sent to Resend at all, because the
+form never collects them.
 
 ## Architecture
 
@@ -32,15 +49,29 @@ The static MYReSolve site posts directly to the isolated Cloudflare Worker at `h
 7. resolves the Notion data source and validates its property schema;
 8. generates a non-identifying internal booking reference for the Notion `Code` field;
 9. creates one Notion page;
-10. asks Resend to send a generic transactional confirmation using an
-    idempotency key based on the internal booking reference; and
-11. returns success only after Notion confirms creation, explicitly reporting
-    whether the email was sent.
+10. asks Resend to notify the owner at `hello@myresolve.uk` with the full
+    enquiry and a link to the new Notion page;
+11. asks Resend to send the visitor a generic transactional confirmation; and
+12. returns success only after Notion confirms creation, explicitly reporting
+    whether the visitor's confirmation was sent.
+
+Both email requests use an idempotency key derived from the internal booking
+reference, prefixed `booking-owner-notification/` and `booking-confirmation/`
+respectively.
 
 No submitted values are written to Worker logs. A Notion failure returns a retry message and the email contact route; it does not claim that the enquiry was saved.
 If Notion succeeds but Resend fails, the response confirms that the request is
 stored but does not claim that an email was delivered and does not invite a
 retry that could duplicate the enquiry.
+
+The owner notification can never change the visitor's outcome. It is attempted
+after the Notion page exists, and any failure is logged and swallowed: the
+visitor still receives a success response, and the reported `emailSent` flag
+describes the visitor's confirmation only, never the owner notification.
+
+The notification subject is collapsed to a single line before sending. Field
+cleaning deliberately preserves newlines in free-text answers, so a name
+containing one must not be allowed to reach an email header.
 
 ## Required configuration
 
@@ -101,15 +132,23 @@ Deployment remains a separate Product Owner decision.
 1. Product Owner completes the Notion connection and Turnstile widget.
 2. Verify the approved sender domain in Resend and create a sending-only API
    key.
-3. Configure Worker secrets and deploy the Worker from `workers/booking`.
+3. Configure Worker secrets. The Worker then deploys from `workers/booking`
+   automatically via `.github/workflows/deploy-booking.yml` on pushes to `main`
+   touching that path, or on demand through `workflow_dispatch`. That workflow
+   runs `booking:check` and `booking:test` before uploading, and never sets or
+   reads Worker secrets.
 4. Verify an invalid Turnstile request is rejected and Worker logs contain no submitted values.
 5. Build the site with the public Turnstile key and deploy a review version.
 6. Submit one Owner-approved synthetic test enquiry to an approved recipient.
 7. Confirm exactly one Notion row, every field mapping, the on-screen
-   confirmation window and one delivered confirmation email.
-8. Confirm the Resend payload contains only name, email, booking reference and
-   generic confirmation copy.
-9. In browser network tools, confirm the public request contains only the documented booking keys.
-10. Approve production deployment separately.
+   confirmation window, one delivered visitor confirmation and one delivered
+   owner notification at `hello@myresolve.uk`.
+8. Confirm the visitor confirmation payload contains only name, email, booking
+   reference and generic confirmation copy.
+9. Confirm the owner notification carries the full enquiry, the booking
+   reference and a working link to the Notion page, that its `reply_to` is the
+   enquirer's address, and that it contains no Turnstile token.
+10. In browser network tools, confirm the public request contains only the documented booking keys.
+11. Approve production deployment separately.
 
 If the Worker is unavailable or its schema check fails, the form provides the existing direct-email route. There is no automatic email fallback or secondary data store.
