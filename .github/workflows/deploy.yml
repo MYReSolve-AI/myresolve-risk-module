@@ -46,6 +46,41 @@ jobs:
           # sufficient, but see the PR description for the alternative.
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
         run: npm run sites:build
+      # Reports what actually got baked into the artifact about to be uploaded.
+      # The contact form silently shipped disabled for three weeks because
+      # nothing surfaced it; this makes that visible in the deploy log.
+      # Report-only: it never fails the build.
+      - name: Verify build output
+        run: |
+          set -uo pipefail
+          contact=dist/client/contact.html
+          home=dist/client/index.html
+          echo "== Contact form =="
+          if grep -q "Online booking is being configured" "$contact"; then
+            echo "  Turnstile:  NOT configured - booking form is DISABLED"
+          else
+            echo "  Turnstile:  configured"
+          fi
+          if grep -q 'class="cf-turnstile"' "$contact"; then
+            echo "  Widget:     present"
+          else
+            echo "  Widget:     absent"
+          fi
+          # Must match the submit button itself: a disabled <option> in the
+          # company-size select also contains disabled="".
+          if grep -o '<button[^>]*submitButton[^>]*>' "$contact" | grep -q disabled; then
+            echo "  Submit:     disabled"
+          else
+            echo "  Submit:     enabled"
+          fi
+          echo "== Landing page =="
+          # Marker string from content/landing-page-v2.json, the built-in
+          # fallback served whenever the Sanity config is incomplete.
+          if grep -q "Transform Your Business with MYReSolve" "$home"; then
+            echo "  Content:    built-in fallback (Sanity NOT in use)"
+          else
+            echo "  Content:    fetched from Sanity"
+          fi
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
