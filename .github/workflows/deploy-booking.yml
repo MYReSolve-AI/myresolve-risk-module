@@ -34,8 +34,15 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Deploys workers/booking/wrangler.jsonc only. This never sets or
-          # reads Worker secrets: NOTION_TOKEN, TURNSTILE_SECRET_KEY,
-          # RESEND_API_KEY, RESEND_FROM_EMAIL and RESEND_REPLY_TO stay exactly
-          # as configured in Cloudflare and are left untouched by the deploy.
-          workingDirectory: workers/booking
+          # wrangler-action installs 3.90.0 by default. That version does not
+          # recognise "ratelimits", so it drops BOOKING_RATE_LIMITER silently
+          # and the Worker then 503s on every request for want of the binding.
+          # Pin a version that understands the config this Worker actually uses.
+          wranglerVersion: "4.129.0"
+          # Name the config explicitly rather than relying on the working
+          # directory: left to discover one, wrangler walked up to the site's
+          # root wrangler.toml and tried to deploy that instead.
+          command: deploy --config workers/booking/wrangler.jsonc
+          # This never sets or reads Worker secrets: NOTION_TOKEN,
+          # TURNSTILE_SECRET_KEY, RESEND_API_KEY, RESEND_FROM_EMAIL and
+          # RESEND_REPLY_TO stay exactly as configured in Cloudflare.
