@@ -1,5 +1,6 @@
 const NOTION_VERSION = "2026-03-11";
 const RESEND_EMAILS_URL = "https://api.resend.com/emails";
+const OWNER_NOTIFICATION_EMAIL = "hello@myresolve.uk";
 const MAX_BODY_BYTES = 12_000;
 const ALLOWED_COMPANY_SIZES = new Set([
   "Just me / <10",
@@ -209,6 +210,47 @@ function confirmationEmail({ name, email }, reference, env) {
   };
 }
 
+// cleanText() strips most control characters but deliberately leaves newlines
+// and tabs intact for the free-text fields. A name carrying one of those must
+// not reach an email header, so collapse it to a single line here.
+function singleLine(value) {
+  return String(value).replace(/[\r\n\t]+/g, " ").replace(/\s{2,}/g, " ").trim();
+}
+
+function ownerNotificationEmail(values, reference, notionPageUrl, env) {
+  const optional = (value) => (value ? value : "(not answered)");
+  const text = [
+    "A new enquiry has been submitted through the MYReSolve contact form.",
+    "",
+    `Reference:     ${reference}`,
+    `Name:          ${values.name}`,
+    `Email:         ${values.email}`,
+    `Organisation:  ${values.organisationRole}`,
+    `Company size:  ${values.companySize}`,
+    "",
+    "Biggest operational question:",
+    values.question,
+    "",
+    "One thing a tool could fix:",
+    optional(values.toolFix),
+    "",
+    "Anything else:",
+    optional(values.message),
+    "",
+    `Notion page:   ${notionPageUrl || "(link unavailable - open the enquiry tracker)"}`,
+    "",
+    `Reply to this email to respond directly to ${values.email}.`,
+  ].join("\n");
+
+  return {
+    from: env.RESEND_FROM_EMAIL,
+    to: [OWNER_NOTIFICATION_EMAIL],
+    reply_to: values.email,
+    subject: `New enquiry: ${singleLine(values.name)} - ${singleLine(values.companySize)}`,
+    text,
+  };
+}
+
 export function createBookingHandler({
   fetchImpl = fetch,
   now = () => new Date(),
@@ -372,6 +414,7 @@ export function createBookingHandler({
     }
 
     let bookingValues;
+    let notionPageUrl = "";
     try {
       const dataSourceId = await resolveDataSourceId(env);
       const bookedAt = now();
@@ -386,6 +429,10 @@ export function createBookingHandler({
         body: JSON.stringify(notionPayload(bookingValues, dataSourceId, date)),
       });
       if (!response.ok) throw new Error(`Notion page creation failed (${response.status})`);
+      // Only the page URL is read, so the owner notification can link to it.
+      // A malformed body must not fail an enquiry that is already stored.
+      const page = await response.json().catch(() => null);
+      if (typeof page?.url === "string") notionPageUrl = page.url;
     } catch (error) {
       // Never log form values or Notion response bodies.
       console.error("Booking submission could not be stored", error instanceof Error ? error.message : "unknown error");
@@ -396,6 +443,34 @@ export function createBookingHandler({
         },
         502,
         corsOrigin,
+      );
+    }
+
+    // Owner notification. The enquiry is already stored, so this must never
+    // change the visitor's outcome: any failure is logged and swallowed, and
+    // it does not affect the emailSent flag, which describes the visitor's
+    // confirmation only.
+    try {
+      const ownerResponse = await fetchImpl(RESEND_EMAILS_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": `booking-owner-notification/${bookingValues.code}`,
+          "User-Agent": "MYReSolve-Booking/1.0",
+        },
+        body: JSON.stringify(
+          ownerNotificationEmail(values, bookingValues.code, notionPageUrl, env),
+        ),
+      });
+      if (!ownerResponse.ok) {
+        throw new Error(`Resend API returned ${ownerResponse.status}`);
+      }
+    } catch (error) {
+      // Never log form values or recipient details.
+      console.error(
+        "Booking owner notification could not be sent",
+        error instanceof Error ? error.message : "unknown error",
       );
     }
 
@@ -456,4 +531,10 @@ export default {
   },
 };
 
-export { bookingReference, confirmationEmail, notionPayload, validatePayload };
+export {
+  bookingReference,
+  confirmationEmail,
+  notionPayload,
+  ownerNotificationEmail,
+  validatePayload,
+};

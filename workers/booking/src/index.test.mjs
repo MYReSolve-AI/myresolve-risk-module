@@ -5,6 +5,7 @@ import {
   confirmationEmail,
   createBookingHandler,
   notionPayload,
+  ownerNotificationEmail,
   validatePayload,
 } from "./index.mjs";
 
@@ -129,8 +130,13 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
   assert.equal(body.properties["Booked on"].date.start, "2026-08-11");
 
   const emailCalls = calls.filter(({ url }) => url === "https://api.resend.com/emails");
-  assert.equal(emailCalls.length, 1);
-  const email = JSON.parse(emailCalls[0].options.body);
+  // One confirmation to the enquirer, one notification to the owner.
+  assert.equal(emailCalls.length, 2);
+  const confirmationCall = emailCalls.find(({ options }) =>
+    options.headers["Idempotency-Key"].startsWith("booking-confirmation/"),
+  );
+  assert.ok(confirmationCall);
+  const email = JSON.parse(confirmationCall.options.body);
   assert.equal(email.to[0], "alex@example.com");
   assert.equal(email.from, "MYReSolve <hello@myresolve.uk>");
   assert.equal(email.reply_to, "rob.myresolve@gmail.com");
@@ -148,8 +154,17 @@ test("a valid submission creates exactly one correctly mapped Notion page", asyn
     /Example Ltd|50-249|Where should we focus|Make priorities visible|Tuesday mornings/,
   );
   assert.equal(
-    emailCalls[0].options.headers["Idempotency-Key"],
+    confirmationCall.options.headers["Idempotency-Key"],
     "booking-confirmation/MYR-20260811-A1B2C3D4",
+  );
+
+  const ownerCall = emailCalls.find(({ options }) =>
+    options.headers["Idempotency-Key"].startsWith("booking-owner-notification/"),
+  );
+  assert.ok(ownerCall);
+  assert.equal(
+    ownerCall.options.headers["Idempotency-Key"],
+    "booking-owner-notification/MYR-20260811-A1B2C3D4",
   );
 });
 
@@ -283,7 +298,9 @@ test("a Resend failure keeps the stored request successful without claiming emai
     assert.equal(body.ok, true);
     assert.equal(body.emailSent, false);
     assert.equal(calls.filter((url) => url.endsWith("/v1/pages")).length, 1);
-    assert.equal(calls.filter((url) => url === "https://api.resend.com/emails").length, 1);
+    // Owner notification and visitor confirmation are both attempted, and both
+    // fail here; neither retries and neither changes the stored enquiry.
+    assert.equal(calls.filter((url) => url === "https://api.resend.com/emails").length, 2);
   } finally {
     console.error = originalError;
   }
@@ -366,4 +383,143 @@ test("confirmation email applies the approved MYReSolve brand without external c
   assert.doesNotMatch(email.html, /<(?:img|script|link)\b/i);
   assert.doesNotMatch(email.html, /(?:src|href)\s*=/i);
   assert.doesNotMatch(email.html, /https?:\/\//i);
+});
+
+test("the owner notification carries every submitted field, the reference and the Notion link", () => {
+  const email = ownerNotificationEmail(
+    validPayload(),
+    "MYR-20260812-12345678",
+    "https://www.notion.so/new-page-id",
+    env(),
+  );
+
+  assert.deepEqual(email.to, ["hello@myresolve.uk"]);
+  assert.equal(email.from, "MYReSolve <hello@myresolve.uk>");
+  // Replying to the notification must reach the enquirer, not the owner.
+  assert.equal(email.reply_to, "alex@example.com");
+  assert.equal(email.subject, "New enquiry: Alex Leader - 50-249");
+  assert.deepEqual(Object.keys(email).sort(), [
+    "from",
+    "reply_to",
+    "subject",
+    "text",
+    "to",
+  ]);
+
+  for (const value of [
+    "Alex Leader",
+    "alex@example.com",
+    "Example Ltd, Operations Director",
+    "50-249",
+    "Where should we focus first?",
+    "Make priorities visible",
+    "Tuesday mornings work well.",
+    "MYR-20260812-12345678",
+    "https://www.notion.so/new-page-id",
+  ]) {
+    assert.ok(email.text.includes(value), `owner email is missing: ${value}`);
+  }
+});
+
+test("the owner notification never carries the Turnstile token", () => {
+  const email = ownerNotificationEmail(
+    validPayload({ turnstileToken: "super-secret-turnstile-token" }),
+    "MYR-20260812-12345678",
+    "https://www.notion.so/new-page-id",
+    env(),
+  );
+  assert.doesNotMatch(JSON.stringify(email), /super-secret-turnstile-token/);
+});
+
+test("the owner notification keeps the subject on one line and labels blank optional fields", () => {
+  const email = ownerNotificationEmail(
+    validPayload({ name: "Alex\r\nBcc: attacker@example.com", toolFix: "", message: "" }),
+    "MYR-20260812-12345678",
+    "",
+    env(),
+  );
+  assert.doesNotMatch(email.subject, /[\r\n]/);
+  assert.equal(email.subject, "New enquiry: Alex Bcc: attacker@example.com - 50-249");
+  assert.match(email.text, /One thing a tool could fix:\n\(not answered\)/);
+  assert.match(email.text, /Anything else:\n\(not answered\)/);
+  assert.match(email.text, /link unavailable/);
+});
+
+test("a failed owner notification still returns success and still sends the confirmation", async () => {
+  const calls = [];
+  const handle = createBookingHandler({
+    fetchImpl: async (url, options = {}) => {
+      calls.push({ url: String(url), options });
+      if (String(url).includes("siteverify")) {
+        return Response.json({ success: true, action: "booking", hostname: "myresolve.uk" });
+      }
+      if (String(url).includes("/v1/databases/")) {
+        return Response.json({ data_sources: [{ id: "data-source-id" }] });
+      }
+      if (String(url).includes("/v1/data_sources/")) return Response.json(notionSchema());
+      if (String(url).endsWith("/v1/pages")) {
+        return Response.json({ object: "page", url: "https://www.notion.so/new-page-id" });
+      }
+      if (String(url) === "https://api.resend.com/emails") {
+        const key = options.headers["Idempotency-Key"];
+        if (key.startsWith("booking-owner-notification/")) {
+          return new Response("Owner email unavailable", { status: 500 });
+        }
+        return Response.json({ id: "email-id" });
+      }
+      throw new Error(`Unexpected URL: ${url}`);
+    },
+    now: () => new Date("2026-08-11T15:00:00.000Z"),
+    createReference: () => "MYR-20260811-A1B2C3D4",
+  });
+
+  const originalError = console.error;
+  console.error = () => {};
+  try {
+    const response = await handle(request(validPayload()), env());
+    assert.equal(response.status, 201);
+    // The visitor's outcome is unchanged by the owner notification failing.
+    assert.deepEqual(await response.json(), {
+      ok: true,
+      emailSent: true,
+      message: "Thank you. Your request has been received and Rob will be in touch.",
+    });
+    const emailCalls = calls.filter(({ url }) => url === "https://api.resend.com/emails");
+    assert.equal(emailCalls.length, 2);
+  } finally {
+    console.error = originalError;
+  }
+});
+
+test("the owner notification links to the Notion page returned by the create call", async () => {
+  const calls = [];
+  const handle = createBookingHandler({
+    fetchImpl: async (url, options = {}) => {
+      calls.push({ url: String(url), options });
+      if (String(url).includes("siteverify")) {
+        return Response.json({ success: true, action: "booking", hostname: "myresolve.uk" });
+      }
+      if (String(url).includes("/v1/databases/")) {
+        return Response.json({ data_sources: [{ id: "data-source-id" }] });
+      }
+      if (String(url).includes("/v1/data_sources/")) return Response.json(notionSchema());
+      if (String(url).endsWith("/v1/pages")) {
+        return Response.json({ object: "page", url: "https://www.notion.so/real-page" });
+      }
+      return Response.json({ id: "email-id" });
+    },
+    now: () => new Date("2026-08-11T15:00:00.000Z"),
+    createReference: () => "MYR-20260811-A1B2C3D4",
+  });
+
+  await handle(request(validPayload()), env());
+  const ownerCall = calls.find(
+    ({ url, options }) =>
+      url === "https://api.resend.com/emails" &&
+      options.headers["Idempotency-Key"].startsWith("booking-owner-notification/"),
+  );
+  assert.ok(ownerCall);
+  const email = JSON.parse(ownerCall.options.body);
+  assert.match(email.text, /https:\/\/www\.notion\.so\/real-page/);
+  assert.match(email.text, /MYR-20260811-A1B2C3D4/);
 });
