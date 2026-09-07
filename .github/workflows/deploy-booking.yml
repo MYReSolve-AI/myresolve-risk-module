@@ -21,7 +21,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # wrangler 4 requires Node 22 or newer and refuses to start on 20.
+          node-version: 22
       # The Worker has no dependencies to install and no build step: wrangler
       # uploads src/index.mjs directly. Run the same checks the repo uses so a
       # broken Worker is never uploaded.
