@@ -27,6 +27,11 @@ jobs:
       - name: Install web dependencies
         run: npm install --prefix apps/web
       - name: Build static site + worker
+        env:
+          # Baked into the static export at build time. Without it the contact
+          # form renders its "Online booking is being configured" notice with a
+          # disabled submit button. See docs/BOOKING_TO_NOTION.md.
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
         run: npm run sites:build
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
