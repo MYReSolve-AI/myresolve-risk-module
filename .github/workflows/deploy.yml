@@ -27,7 +27,9 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Matches deploy-booking.yml. Node 20 is deprecated on the runners,
+          # and wrangler 4 requires 22 or newer.
+          node-version: 22
       - name: Install web dependencies
         run: npm install --prefix apps/web
       - name: Build static site + worker
@@ -94,3 +96,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Pinned to match deploy-booking.yml. The action otherwise installs
+          # 3.90.0, which the runner warns is out of date.
+          wranglerVersion: "4.129.0"
