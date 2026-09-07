@@ -36,14 +36,12 @@ jobs:
           # form renders its "Online booking is being configured" notice with a
           # disabled submit button. See docs/BOOKING_TO_NOTION.md.
           NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
-          # Sanity landing-page content. Project ID and dataset name are not
-          # secret, so they are repository variables rather than secrets.
-          SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID }}
-          SANITY_DATASET: ${{ vars.SANITY_DATASET }}
-          # getLandingPageContent() currently requires all three values before
-          # it will query Sanity at all; without a token it serves the built-in
-          # fallback content. Wired up here so that adding the secret is
-          # sufficient, but see the PR description for the alternative.
+          # Sanity landing-page content. Neither value is secret, and the
+          # production dataset is public, so they are plain literals here.
+          SANITY_PROJECT_ID: 2pk2iagn
+          SANITY_DATASET: production
+          # Optional. The public dataset needs no token; set this secret only
+          # if the dataset is ever made private.
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
         run: npm run sites:build
       # Reports what actually got baked into the artifact about to be uploaded.
@@ -75,12 +73,22 @@ jobs:
           fi
           echo "== Landing page =="
           # Marker string from content/landing-page-v2.json, the built-in
-          # fallback served whenever the Sanity config is incomplete.
+          # fallback served whenever Sanity is unconfigured or unreachable.
           if grep -q "Transform Your Business with MYReSolve" "$home"; then
             echo "  Content:    built-in fallback (Sanity NOT in use)"
           else
             echo "  Content:    fetched from Sanity"
           fi
+          # Print the rendered headline so the source of the content is visible
+          # rather than inferred from a marker string. The <h1> wraps its text
+          # in <span>s, so read its aria-label, which carries the plain text.
+          headline=$(grep -o '<h1[^>]*aria-label="[^"]*"' "$home" | head -1 \
+            | sed -e 's/.*aria-label="//' -e 's/"$//')
+          if [ -z "$headline" ]; then
+            headline=$(grep -o '<h1.*</h1>' "$home" | head -1 \
+              | sed -e 's/<!--[^>]*-->//g' -e 's/<[^>]*>//g')
+          fi
+          echo "  Headline:   ${headline:-<none found>}"
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:

@@ -35,8 +35,11 @@ function sanityConfiguration() {
   const dataset = process.env.SANITY_DATASET?.trim();
   const token = process.env.SANITY_API_READ_TOKEN?.trim();
 
-  if (!projectId || !dataset || !token) return null;
-  return { projectId, dataset, token };
+  // The production dataset is public, so a token is optional: without one the
+  // client reads published content unauthenticated. Supplying a token still
+  // works and is required if the dataset is ever made private.
+  if (!projectId || !dataset) return null;
+  return token ? { projectId, dataset, token } : { projectId, dataset };
 }
 
 async function fetchValidatedPublishedContent(): Promise<LandingPageContent> {
