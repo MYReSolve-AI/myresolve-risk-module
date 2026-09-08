@@ -6,6 +6,20 @@ import { BOOK_PAGE_HREF } from "@/src/features/book/bookContent";
 import { LandingPage } from "./LandingPage";
 import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
+/**
+ * The landing page must not offer meeting-booking routes (Calendly and the
+ * like). /book is the marketing page for the paid book, so it is allowed —
+ * but by exact match only, so /booking or /book-a-call is still rejected.
+ * Both the sweep over rendered links and the negative cases below use this
+ * one function, so the allowance cannot drift between them.
+ */
+const PAID_BOOK_PAGES: readonly string[] = [BOOK_PAGE_HREF];
+
+function isMeetingBookingHref(href: string): boolean {
+  if (PAID_BOOK_PAGES.includes(href)) return false;
+  return /book|calendly|schedule/i.test(href);
+}
+
 describe("Landing Page V2", () => {
   it("renders validated publisher wording without allowing route changes", () => {
     const content = structuredClone(LANDING_PAGE_FALLBACK);
@@ -171,6 +185,24 @@ describe("Landing Page V2", () => {
     expect(screen.queryByText(/Executive Health Score/i)).not.toBeInTheDocument();
   });
 
+  it("only allows the paid-book page past the meeting-link guard", () => {
+    // Exact match, so a longer href that merely starts with it is rejected.
+    expect(isMeetingBookingHref(BOOK_PAGE_HREF)).toBe(false);
+
+    for (const href of [
+      "/booking",
+      "/book-a-call",
+      "/book-demo",
+      "/books",
+      "/book/",
+      "/playbook",
+      "/schedule",
+      "https://calendly.com/rob-pierce",
+    ]) {
+      expect(isMeetingBookingHref(href)).toBe(true);
+    }
+  });
+
   it("does not expose booking links, cloud-future wording or migration shortcuts", () => {
     render(<LandingPage />);
 
@@ -178,10 +210,7 @@ describe("Landing Page V2", () => {
     for (const link of links) {
       const href = link.getAttribute("href") ?? "";
       const text = link.textContent?.toLowerCase() ?? "";
-      // /book is the marketing page for the paid book, not a meeting booking route.
-      if (href !== BOOK_PAGE_HREF) {
-        expect(href).not.toMatch(/book|calendly|schedule/i);
-      }
+      expect(isMeetingBookingHref(href)).toBe(false);
       expect(text).not.toMatch(/book a|schedule a|book demo|book a call/);
     }
 

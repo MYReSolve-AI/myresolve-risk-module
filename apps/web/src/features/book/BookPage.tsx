@@ -9,6 +9,10 @@ type BuyButtonProps = {
   label: string;
 };
 
+/**
+ * Every buy action goes to the Payhip checkout in a new tab. There is no
+ * custom checkout: Payhip handles payment and delivery.
+ */
 function BuyButton({ className, testId, label }: BuyButtonProps) {
   return (
     <a
@@ -25,11 +29,13 @@ function BuyButton({ className, testId, label }: BuyButtonProps) {
 
 export function BookPage() {
   const {
+    nav,
     hero,
     purchase,
     problem,
     behaviours,
     audience,
+    series,
     author,
     finalCta,
     footer,
@@ -48,28 +54,32 @@ export function BookPage() {
           </Link>
           <nav className={styles.nav} aria-label="Page">
             <a href="#behaviours" className={styles.navLink}>
-              The behaviours
+              {nav.behaviours}
             </a>
-            <a href="#audience" className={styles.navLink}>
-              Who it is for
+            <a href="#who" className={styles.navLink}>
+              {nav.audience}
             </a>
             <a href="#author" className={styles.navLink}>
-              The author
+              {nav.author}
             </a>
-            <BuyButton
+            <a
+              href="#series"
               className={styles.ctaCompact}
-              testId="book-header-cta"
-              label={purchase.buttonLabel}
-            />
+              data-testid="book-header-series"
+            >
+              {nav.seriesButton}
+            </a>
           </nav>
         </div>
       </header>
 
       <main id="main-content">
-        <section className={styles.hero} aria-labelledby="book-headline">
+        <section id="top" className={styles.hero} aria-labelledby="book-headline">
           <div className={styles.heroInner}>
             <p className={styles.eyebrow} data-testid="book-eyebrow">
-              {hero.eyebrow}
+              {hero.eyebrowBefore}
+              <span className={styles.brandName}>{hero.eyebrowBrand}</span>
+              {hero.eyebrowAfter}
             </p>
             <h1
               id="book-headline"
@@ -96,37 +106,46 @@ export function BookPage() {
               <p className={styles.price} data-testid="book-price">
                 {purchase.price}
               </p>
+              <a
+                href="#series"
+                className={styles.ctaGhost}
+                data-testid="book-hero-series-link"
+              >
+                {hero.seriesLinkLabel}
+              </a>
             </div>
             <p className={styles.priceNote}>{purchase.priceNote}</p>
-            <p className={styles.heroTag}>{hero.supportingLine}</p>
           </div>
         </section>
 
         <section
-          className={styles.section}
+          className={`${styles.section} ${styles.sectionContrast}`}
           aria-labelledby="book-problem-heading"
           data-testid="book-problem"
         >
           <div className={styles.sectionInner}>
-            <div className={styles.sectionIntro}>
-              <h2 id="book-problem-heading" className={styles.sectionTitle}>
-                {problem.heading}
-              </h2>
-              <p className={styles.sectionLead}>{problem.intro}</p>
-            </div>
+            <h2 id="book-problem-heading" className={styles.eyebrowHeading}>
+              {problem.eyebrow}
+            </h2>
+            <blockquote className={styles.quote}>
+              “{problem.openingQuote}”
+            </blockquote>
             <p className={styles.sectionBody}>{problem.body}</p>
-            <p className={styles.pull}>{problem.pullStatement}</p>
+            <blockquote className={styles.quote}>
+              “{problem.pullStatement}”
+            </blockquote>
           </div>
         </section>
 
         <section
           id="behaviours"
-          className={`${styles.section} ${styles.sectionContrast}`}
+          className={styles.section}
           aria-labelledby="book-behaviours-heading"
           data-testid="book-behaviours"
         >
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
+              <p className={styles.eyebrow}>{behaviours.eyebrow}</p>
               <h2 id="book-behaviours-heading" className={styles.sectionTitle}>
                 {behaviours.heading}
               </h2>
@@ -147,13 +166,14 @@ export function BookPage() {
         </section>
 
         <section
-          id="audience"
-          className={styles.section}
+          id="who"
+          className={`${styles.section} ${styles.sectionContrast}`}
           aria-labelledby="book-audience-heading"
           data-testid="book-audience"
         >
           <div className={styles.sectionInner}>
             <div className={styles.sectionIntro}>
+              <p className={styles.eyebrow}>{audience.eyebrow}</p>
               <h2 id="book-audience-heading" className={styles.sectionTitle}>
                 {audience.heading}
               </h2>
@@ -171,35 +191,102 @@ export function BookPage() {
         </section>
 
         <section
+          id="series"
+          className={styles.section}
+          aria-labelledby="book-series-heading"
+          data-testid="book-series"
+        >
+          <div className={styles.sectionInner}>
+            <div className={styles.sectionIntro}>
+              <p className={styles.eyebrow} data-testid="book-series-eyebrow">
+                {series.eyebrowBefore}
+                <span className={styles.brandName}>{series.eyebrowBrand}</span>
+                {series.eyebrowAfter}
+              </p>
+              <h2 id="book-series-heading" className={styles.sectionTitle}>
+                {series.heading}
+              </h2>
+              <p className={styles.sectionLead}>{series.intro}</p>
+            </div>
+            <ol className={styles.series}>
+              {series.items.map((book) => (
+                <li
+                  className={`${styles.seriesItem} ${book.live ? styles.seriesItemLive : ""}`}
+                  key={book.number}
+                >
+                  <p className={styles.seriesNumber} aria-hidden="true">
+                    {book.number}
+                  </p>
+                  <div>
+                    <h3 className={styles.seriesTitle}>
+                      {book.live ? (
+                        <a
+                          href="#top"
+                          className={styles.seriesTitleLink}
+                          data-testid={`book-series-${book.number}-link`}
+                        >
+                          {book.title}
+                        </a>
+                      ) : (
+                        book.title
+                      )}
+                    </h3>
+                    <p className={styles.seriesLine}>{book.line}</p>
+                  </div>
+                  {book.live ? (
+                    <BuyButton
+                      className={`${styles.tag} ${styles.tagLive}`}
+                      testId={`book-series-${book.number}-tag`}
+                      label={series.buyTag}
+                    />
+                  ) : (
+                    <p
+                      className={styles.tag}
+                      data-testid={`book-series-${book.number}-tag`}
+                    >
+                      {series.comingTag}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section
           id="author"
           className={`${styles.section} ${styles.sectionContrast}`}
           aria-labelledby="book-author-heading"
           data-testid="book-author"
         >
-          <div className={styles.authorInner}>
-            <div className={styles.authorPortraitWrap}>
-              <Image
-                src="/images/rob-pierce-founder.png"
-                alt="Rob Pierce, founder of MYReSolve"
-                width={1024}
-                height={1024}
-                sizes="(max-width: 640px) 180px, 240px"
-                unoptimized
-                className={styles.authorPortrait}
-              />
-            </div>
-            <div className={styles.authorCopy}>
+          <div className={styles.sectionInner}>
+            <div className={styles.sectionIntro}>
               <p className={styles.eyebrow}>{author.eyebrow}</p>
               <h2 id="book-author-heading" className={styles.sectionTitle}>
                 {author.heading}
               </h2>
-              <p className={styles.authorBody}>{author.body1}</p>
-              <p className={styles.authorBody}>{author.body2}</p>
-              <p className={styles.authorName}>{author.name}</p>
-              <p className={styles.authorRole}>{author.role}</p>
-              <p className={styles.authorSignOff} data-testid="book-sign-off">
-                {author.signOff}
-              </p>
+            </div>
+            <div className={styles.authorInner}>
+              <div className={styles.authorPortraitWrap}>
+                <Image
+                  src="/images/rob-pierce-founder.png"
+                  alt="Rob Pierce, founder of MYReSolve"
+                  width={1024}
+                  height={1024}
+                  sizes="(max-width: 640px) 180px, 240px"
+                  unoptimized
+                  className={styles.authorPortrait}
+                />
+              </div>
+              <div className={styles.authorCopy}>
+                <p className={styles.authorBody}>{author.body1}</p>
+                <p className={styles.authorBody}>{author.body2}</p>
+                <p className={styles.authorName}>{author.name}</p>
+                <p className={styles.authorRole}>{author.role}</p>
+                <p className={styles.authorSignOff} data-testid="book-sign-off">
+                  {author.signOff}
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -208,23 +295,26 @@ export function BookPage() {
           className={styles.finalCta}
           aria-labelledby="book-final-cta-heading"
         >
-          <div className={styles.sectionInnerNarrow}>
-            <div className={styles.sectionIntro}>
-              <h2 id="book-final-cta-heading" className={styles.finalTitle}>
-                {finalCta.heading}
-              </h2>
-              <p className={styles.finalCopy}>{finalCta.body}</p>
+          <div className={styles.finalInner}>
+            <h2 id="book-final-cta-heading" className={styles.finalTitle}>
+              {finalCta.heading}
+            </h2>
+            <p className={styles.finalCopy}>{finalCta.body}</p>
+            <div className={styles.finalActions}>
+              <BuyButton
+                className={styles.ctaPrimaryLight}
+                testId="book-final-cta"
+                label={finalCta.primaryLabel}
+              />
+              <Link
+                href={finalCta.secondaryHref}
+                className={styles.ctaGhostLight}
+                data-testid="book-final-assessment"
+              >
+                {finalCta.secondaryLabel}
+              </Link>
             </div>
-            <BuyButton
-              className={styles.ctaPrimary}
-              testId="book-final-cta"
-              label={purchase.buttonLabel}
-            />
-            <p className={styles.finalPrice}>
-              {purchase.price}
-              <span aria-hidden="true"> · </span>
-              {purchase.priceNote}
-            </p>
+            <p className={styles.finalPrice}>{purchase.priceNote}</p>
           </div>
         </section>
       </main>
