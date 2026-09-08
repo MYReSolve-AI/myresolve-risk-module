@@ -364,6 +364,17 @@ test("confirmation email escapes the name and excludes submitted enquiry details
   assert.match(email.text, /confidential assessment, financial or company information/);
 });
 
+test("confirmation email replies to the business address when RESEND_REPLY_TO is unset", () => {
+  const { RESEND_REPLY_TO, ...withoutReplyTo } = env();
+  const email = confirmationEmail(
+    validPayload(),
+    "MYR-20260812-12345678",
+    withoutReplyTo,
+  );
+
+  assert.equal(email.reply_to, "hello@myresolve.uk");
+});
+
 test("confirmation email applies the approved MYReSolve brand without external content", () => {
   const email = confirmationEmail(
     validPayload(),
