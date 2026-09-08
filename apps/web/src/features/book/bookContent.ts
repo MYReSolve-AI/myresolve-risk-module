@@ -95,6 +95,8 @@ export const BOOK_PAGE_CONTENT = {
     heading:
       "Create the perfect flywheel of success, driving culture at every interaction.",
     body: "Seven behaviours, a shared language and a starting point your whole team can use from Monday morning.",
+    seriesLead: "Book One of the MYReSolve Operating Playbook.",
+    seriesLinkLabel: "See the series.",
   },
   footer: {
     description:

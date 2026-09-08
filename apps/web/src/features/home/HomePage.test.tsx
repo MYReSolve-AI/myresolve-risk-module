@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
 import { BOOK_PAGE_HREF } from "@/src/features/book/bookContent";
+import { PLAYBOOK_PAGE_HREF } from "@/src/features/playbook/playbookContent";
 import { LandingPage } from "./LandingPage";
 import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
@@ -178,8 +179,9 @@ describe("Landing Page V2", () => {
     for (const link of links) {
       const href = link.getAttribute("href") ?? "";
       const text = link.textContent?.toLowerCase() ?? "";
-      // /book is the marketing page for the paid book, not a meeting booking route.
-      if (href !== BOOK_PAGE_HREF) {
+      // /book and /playbook are marketing pages for the paid books, not
+      // meeting booking routes. Every other "book" href is still rejected.
+      if (href !== BOOK_PAGE_HREF && href !== PLAYBOOK_PAGE_HREF) {
         expect(href).not.toMatch(/book|calendly|schedule/i);
       }
       expect(text).not.toMatch(/book a|schedule a|book demo|book a call/);

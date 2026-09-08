@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PLAYBOOK_PAGE_HREF } from "@/src/features/playbook/playbookContent";
 import { BOOK_PAGE_CONTENT, BOOK_PURCHASE_URL } from "./bookContent";
 import styles from "./BookPage.module.css";
 
@@ -224,6 +225,10 @@ export function BookPage() {
               {purchase.price}
               <span aria-hidden="true"> · </span>
               {purchase.priceNote}
+            </p>
+            <p className={styles.seriesNote} data-testid="book-series-note">
+              {finalCta.seriesLead}{" "}
+              <Link href={PLAYBOOK_PAGE_HREF}>{finalCta.seriesLinkLabel}</Link>
             </p>
           </div>
         </section>

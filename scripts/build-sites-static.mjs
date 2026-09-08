@@ -16,6 +16,7 @@ const worker = `const HTML_ROUTES = new Set([
   "/contact",
   "/dashboard",
   "/organisation-profile",
+  "/playbook",
 ]);
 
 function assetRequest(request, pathname) {
