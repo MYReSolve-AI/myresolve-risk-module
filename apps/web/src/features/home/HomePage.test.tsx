@@ -7,6 +7,20 @@ import { PLAYBOOK_PAGE_HREF } from "@/src/features/playbook/playbookContent";
 import { LandingPage } from "./LandingPage";
 import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
+/**
+ * The landing page must not offer meeting-booking routes (Calendly and the
+ * like). /book and /playbook are marketing pages for the paid books, so they
+ * are allowed — but by exact match only, so /booking or /book-a-call is still
+ * rejected. Both the sweep over rendered links and the negative cases below
+ * use this one function, so the allowance cannot drift between them.
+ */
+const PAID_BOOK_PAGES: readonly string[] = [BOOK_PAGE_HREF, PLAYBOOK_PAGE_HREF];
+
+function isMeetingBookingHref(href: string): boolean {
+  if (PAID_BOOK_PAGES.includes(href)) return false;
+  return /book|calendly|schedule/i.test(href);
+}
+
 describe("Landing Page V2", () => {
   it("renders validated publisher wording without allowing route changes", () => {
     const content = structuredClone(LANDING_PAGE_FALLBACK);
@@ -172,6 +186,25 @@ describe("Landing Page V2", () => {
     expect(screen.queryByText(/Executive Health Score/i)).not.toBeInTheDocument();
   });
 
+  it("only allows the two paid-book pages past the meeting-link guard", () => {
+    // Exact matches, so a longer href that merely starts with them is rejected.
+    expect(isMeetingBookingHref(BOOK_PAGE_HREF)).toBe(false);
+    expect(isMeetingBookingHref(PLAYBOOK_PAGE_HREF)).toBe(false);
+
+    for (const href of [
+      "/booking",
+      "/book-a-call",
+      "/book-demo",
+      "/books",
+      "/book/",
+      "/playbook-a-call",
+      "/schedule",
+      "https://calendly.com/rob-pierce",
+    ]) {
+      expect(isMeetingBookingHref(href)).toBe(true);
+    }
+  });
+
   it("does not expose booking links, cloud-future wording or migration shortcuts", () => {
     render(<LandingPage />);
 
@@ -179,11 +212,7 @@ describe("Landing Page V2", () => {
     for (const link of links) {
       const href = link.getAttribute("href") ?? "";
       const text = link.textContent?.toLowerCase() ?? "";
-      // /book and /playbook are marketing pages for the paid books, not
-      // meeting booking routes. Every other "book" href is still rejected.
-      if (href !== BOOK_PAGE_HREF && href !== PLAYBOOK_PAGE_HREF) {
-        expect(href).not.toMatch(/book|calendly|schedule/i);
-      }
+      expect(isMeetingBookingHref(href)).toBe(false);
       expect(text).not.toMatch(/book a|schedule a|book demo|book a call/);
     }
 
