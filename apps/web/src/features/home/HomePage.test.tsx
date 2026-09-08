@@ -69,7 +69,9 @@ describe("Landing Page V2", () => {
     expect(
       screen.getByRole("link", { name: "Why MYReSolve?" }),
     ).toHaveAttribute("href", "#why-myresolve");
-    expect(screen.getByRole("link", { name: "The book" })).toHaveAttribute(
+    expect(
+      screen.getByRole("link", { name: "The Playbook series" }),
+    ).toHaveAttribute(
       "href",
       BOOK_PAGE_HREF,
     );
