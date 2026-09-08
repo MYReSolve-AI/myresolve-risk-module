@@ -20,9 +20,11 @@ export const BOOK_PAGE_CONTENT = {
   },
   nav: {
     behaviours: "The behaviours",
-    series: "The series",
     audience: "Who it is for",
     author: "The author",
+    // The dark pill in the header is the "see the whole thing" action: it jumps
+    // to the series on this page. Buying is done by the three buy buttons.
+    seriesButton: "The Playbook series",
   },
   hero: {
     eyebrowBefore: "The ",

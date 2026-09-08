@@ -45,15 +45,16 @@ describe("Book page", () => {
     const payhipLinks = Array.from(
       container.querySelectorAll(`a[href="${BOOK_PURCHASE_URL}"]`),
     );
-    // Nav, hero, the Book 01 series tag and the closing band.
-    expect(payhipLinks).toHaveLength(4);
+    // Hero, the Book 01 series tag and the closing band. The header pill is
+    // not a buy action: it jumps to the series on this page.
+    expect(payhipLinks).toHaveLength(3);
     for (const link of payhipLinks) {
       expect(link).toHaveAttribute("target", "_blank");
       expect(link.getAttribute("rel")).toContain("noopener");
     }
 
     // Nothing else on the page points at Payhip by any other route.
-    expect(container.innerHTML.match(/payhip\.com/g)).toHaveLength(4);
+    expect(container.innerHTML.match(/payhip\.com/g)).toHaveLength(3);
   });
 
   it("resolves every in-page and outbound destination in the approved table", () => {
@@ -64,10 +65,6 @@ describe("Book page", () => {
       "href",
       "#behaviours",
     );
-    expect(screen.getByRole("link", { name: "The series" })).toHaveAttribute(
-      "href",
-      "#series",
-    );
     expect(screen.getByRole("link", { name: "Who it is for" })).toHaveAttribute(
       "href",
       "#who",
@@ -76,6 +73,14 @@ describe("Book page", () => {
       "href",
       "#author",
     );
+
+    // The dark nav pill jumps to the series; it is no longer a buy action.
+    const seriesButton = screen.getByTestId("book-header-series");
+    expect(seriesButton).toHaveTextContent("The Playbook series");
+    expect(seriesButton).toHaveAttribute("href", "#series");
+    expect(seriesButton).not.toHaveAttribute("target");
+    expect(screen.queryByTestId("book-header-cta")).not.toBeInTheDocument();
+    expect(screen.queryByText("The series")).not.toBeInTheDocument();
 
     // Hero "See the series" and the Book 01 title both stay on the page.
     expect(screen.getByTestId("book-hero-series-link")).toHaveAttribute(
@@ -89,7 +94,6 @@ describe("Book page", () => {
 
     // Buy actions and the assessment.
     for (const testId of [
-      "book-header-cta",
       "book-hero-cta",
       "book-series-01-tag",
       "book-final-cta",

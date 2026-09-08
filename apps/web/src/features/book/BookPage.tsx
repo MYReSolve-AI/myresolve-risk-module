@@ -56,20 +56,19 @@ export function BookPage() {
             <a href="#behaviours" className={styles.navLink}>
               {nav.behaviours}
             </a>
-            <a href="#series" className={styles.navLink}>
-              {nav.series}
-            </a>
             <a href="#who" className={styles.navLink}>
               {nav.audience}
             </a>
             <a href="#author" className={styles.navLink}>
               {nav.author}
             </a>
-            <BuyButton
+            <a
+              href="#series"
               className={styles.ctaCompact}
-              testId="book-header-cta"
-              label={purchase.buttonLabel}
-            />
+              data-testid="book-header-series"
+            >
+              {nav.seriesButton}
+            </a>
           </nav>
         </div>
       </header>
