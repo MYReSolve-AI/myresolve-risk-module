@@ -32,7 +32,7 @@ describe("Contact page", () => {
     const emailRob = screen.getByRole("link", { name: "Email Rob" });
     expect(emailRob).toHaveAttribute(
       "href",
-      "mailto:rob.myresolve@gmail.com?subject=MYReSolve%20enquiry",
+      "mailto:hello@myresolve.uk?subject=MYReSolve%20enquiry",
     );
     expect(screen.getAllByText("Email Rob")).toHaveLength(1);
     expect(screen.getByTestId("booking-form")).toBeInTheDocument();
