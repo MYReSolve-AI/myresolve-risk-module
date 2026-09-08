@@ -3,18 +3,17 @@ import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { ORGANISATION_PROFILE_PRIVACY_COPY } from "@/src/domain/organisationProfile";
 import { BOOK_PAGE_HREF } from "@/src/features/book/bookContent";
-import { PLAYBOOK_PAGE_HREF } from "@/src/features/playbook/playbookContent";
 import { LandingPage } from "./LandingPage";
 import { LANDING_PAGE_FALLBACK } from "./landingContent";
 
 /**
  * The landing page must not offer meeting-booking routes (Calendly and the
- * like). /book and /playbook are marketing pages for the paid books, so they
- * are allowed — but by exact match only, so /booking or /book-a-call is still
- * rejected. Both the sweep over rendered links and the negative cases below
- * use this one function, so the allowance cannot drift between them.
+ * like). /book is the marketing page for the paid book, so it is allowed —
+ * but by exact match only, so /booking or /book-a-call is still rejected.
+ * Both the sweep over rendered links and the negative cases below use this
+ * one function, so the allowance cannot drift between them.
  */
-const PAID_BOOK_PAGES: readonly string[] = [BOOK_PAGE_HREF, PLAYBOOK_PAGE_HREF];
+const PAID_BOOK_PAGES: readonly string[] = [BOOK_PAGE_HREF];
 
 function isMeetingBookingHref(href: string): boolean {
   if (PAID_BOOK_PAGES.includes(href)) return false;
@@ -186,10 +185,9 @@ describe("Landing Page V2", () => {
     expect(screen.queryByText(/Executive Health Score/i)).not.toBeInTheDocument();
   });
 
-  it("only allows the two paid-book pages past the meeting-link guard", () => {
-    // Exact matches, so a longer href that merely starts with them is rejected.
+  it("only allows the paid-book page past the meeting-link guard", () => {
+    // Exact match, so a longer href that merely starts with it is rejected.
     expect(isMeetingBookingHref(BOOK_PAGE_HREF)).toBe(false);
-    expect(isMeetingBookingHref(PLAYBOOK_PAGE_HREF)).toBe(false);
 
     for (const href of [
       "/booking",
@@ -197,7 +195,7 @@ describe("Landing Page V2", () => {
       "/book-demo",
       "/books",
       "/book/",
-      "/playbook-a-call",
+      "/playbook",
       "/schedule",
       "https://calendly.com/rob-pierce",
     ]) {

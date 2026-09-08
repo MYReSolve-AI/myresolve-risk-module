@@ -97,11 +97,18 @@
 
 .eyebrow {
   margin: 0 0 0.85rem;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 650;
-  letter-spacing: 0.01em;
-  color: var(--mr-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* Deeper gold than --mr-gold: small uppercase text needs the contrast. */
+  color: #8a611f;
   line-height: 1.4;
+}
+
+/* The brand name opts out so it always reads MYReSolve, never MYRESOLVE. */
+.brandName {
+  text-transform: none;
 }
 
 .headline {
@@ -200,14 +207,6 @@
   max-width: 30rem;
 }
 
-.heroTag {
-  margin: 1.15rem 0 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1.45;
-  color: var(--mr-ink);
-  max-width: 30rem;
-}
 
 .section {
   padding: 2.6rem 1.35rem;
@@ -221,15 +220,7 @@
 }
 
 .sectionInner,
-.sectionInnerNarrow {
-  max-width: 720px;
-  margin: 0 auto;
-}
 
-.sectionInnerNarrow {
-  max-width: 640px;
-  text-align: center;
-}
 
 .sectionTitle {
   margin: 0;
@@ -247,7 +238,11 @@
 
 .sectionTitle + .sectionLead,
 .finalTitle + .finalCopy {
-  margin-top: 14px;
+  margin: 14px 0 1.75rem;
+  max-width: 36rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: rgba(247, 243, 236, 0.88);
 }
 
 .sectionLead {
@@ -266,18 +261,6 @@
   max-width: 36rem;
 }
 
-.pull {
-  margin: 0;
-  padding: 0.9rem 0 0.15rem;
-  border-top: 2px solid var(--mr-amber);
-  font-family: var(--mr-font);
-  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  line-height: 1.3;
-  color: var(--mr-green-2);
-  max-width: 30rem;
-}
 
 .behaviours {
   margin: 0;
@@ -328,7 +311,7 @@
 
 .audience {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.35rem;
 }
 
@@ -419,13 +402,8 @@
 
 .finalCta {
   padding: 3.25rem 1.35rem 2.85rem;
-  background:
-    radial-gradient(
-      ellipse at bottom left,
-      rgba(23, 63, 53, 0.07),
-      transparent 50%
-    ),
-    rgba(243, 236, 225, 0.7);
+  background: var(--mr-green-2);
+  color: var(--mr-cream);
 }
 
 .finalTitle {
@@ -434,50 +412,24 @@
   font-size: clamp(1.65rem, 3vw, 2.15rem);
   font-weight: 650;
   letter-spacing: -0.03em;
-  color: var(--mr-green-2);
+  color: var(--mr-cream);
   line-height: 1.15;
 }
 
 .finalCopy {
-  margin: 0 auto;
-  max-width: 32rem;
+  margin: 14px 0 1.75rem;
+  max-width: 36rem;
   font-size: 1.05rem;
   line-height: 1.55;
-  color: var(--mr-ink);
+  color: rgba(247, 243, 236, 0.88);
 }
 
 .finalPrice {
-  margin: 1rem auto 0;
+  margin: 1rem 0 0;
   max-width: 30rem;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--mr-muted);
-}
-
-.seriesNote {
-  margin: 0.85rem auto 0;
-  max-width: 30rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--mr-muted);
-}
-
-.seriesNote a {
-  color: var(--mr-green);
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: rgba(198, 139, 53, 0.7);
-  text-underline-offset: 0.2em;
-}
-
-.seriesNote a:hover,
-.seriesNote a:focus-visible {
-  color: var(--mr-green-2);
-}
-
-.seriesNote a:focus-visible {
-  outline: 2px solid var(--mr-amber);
-  outline-offset: 3px;
+  color: rgba(247, 243, 236, 0.7);
 }
 
 .footer {
@@ -578,6 +530,231 @@
   }
 
   .finalCta {
-    padding: 2.5rem 1rem;
+  padding: 3.25rem 1.35rem 2.85rem;
+  background: var(--mr-green-2);
+  color: var(--mr-cream);
+}
+}
+
+/* --- Merged page: problem band, series list and closing actions (v2) --- */
+
+/* The "Most advice tells you what to do" line is an eyebrow-styled heading:
+   it labels the band and is still a real heading for assistive technology. */
+.eyebrowHeading {
+  margin: 0 0 1.15rem;
+  font-family: var(--mr-font-ui);
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a611f;
+  line-height: 1.4;
+}
+
+.quote {
+  margin: 0 0 1.25rem;
+  font-family: var(--mr-font);
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  font-style: italic;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--mr-green-2);
+  max-width: 30rem;
+}
+
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--mr-radius-sm);
+  border: 1.5px solid var(--mr-green);
+  color: var(--mr-green);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.ctaGhost:hover,
+.ctaGhost:focus-visible {
+  background: rgba(23, 63, 53, 0.06);
+  color: var(--mr-green-2);
+}
+
+.series {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(221, 201, 167, 0.7);
+}
+
+.seriesItem {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  gap: 0.35rem 1.15rem;
+  align-items: baseline;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid rgba(221, 201, 167, 0.7);
+}
+
+/* Book One is the one you can buy today, so it carries the pale gold ground. */
+.seriesItemLive {
+  background: #f0ddb9;
+  margin: 0 -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: var(--mr-radius-sm);
+}
+
+.seriesNumber {
+  margin: 0;
+  font-family: var(--mr-font);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--mr-gold);
+}
+
+.seriesItemLive .seriesNumber {
+  color: #8a611f;
+}
+
+.seriesTitle {
+  margin: 0;
+  font-family: var(--mr-font);
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--mr-green-2);
+}
+
+.seriesTitleLink {
+  border-bottom: 2px solid var(--mr-gold);
+}
+
+.seriesTitleLink:hover,
+.seriesTitleLink:focus-visible {
+  color: var(--mr-green);
+}
+
+.seriesLine {
+  margin: 0.3rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--mr-muted);
+  max-width: 44rem;
+}
+
+.seriesItemLive .seriesLine {
+  color: rgba(23, 63, 53, 0.85);
+}
+
+.tag {
+  margin: 0;
+  justify-self: start;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(221, 201, 167, 0.9);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--mr-muted);
+}
+
+.tagLive {
+  display: inline-flex;
+  align-items: center;
+  background: var(--mr-green);
+  border-color: var(--mr-green);
+  color: var(--mr-cream);
+}
+
+.tagLive:hover,
+.tagLive:focus-visible {
+  background: var(--mr-green-2);
+  border-color: var(--mr-green-2);
+}
+
+.seriesTitleLink:focus-visible,
+.tagLive:focus-visible,
+.ctaGhost:focus-visible,
+.ctaPrimaryLight:focus-visible,
+.ctaGhostLight:focus-visible {
+  outline: 2px solid var(--mr-amber);
+  outline-offset: 3px;
+}
+
+.finalInner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.finalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.ctaPrimaryLight {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--mr-radius-sm);
+  background: var(--mr-cream);
+  color: var(--mr-green-2);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.ctaPrimaryLight:hover,
+.ctaPrimaryLight:focus-visible {
+  background: var(--mr-surface);
+}
+
+.ctaGhostLight {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--mr-radius-sm);
+  border: 1.5px solid rgba(247, 243, 236, 0.7);
+  color: var(--mr-cream);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.ctaGhostLight:hover,
+.ctaGhostLight:focus-visible {
+  border-color: var(--mr-cream);
+  background: rgba(247, 243, 236, 0.1);
+}
+
+@media (max-width: 860px) {
+  .audience {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .seriesItem {
+    grid-template-columns: 2.5rem 1fr;
+  }
+
+  .tag {
+    grid-column: 2;
+    margin-top: 0.5rem;
+  }
+
+  .ctaGhost,
+  .ctaPrimaryLight,
+  .ctaGhostLight {
+    width: 100%;
   }
 }

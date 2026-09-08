@@ -16,7 +16,13 @@ const worker = `const HTML_ROUTES = new Set([
   "/contact",
   "/dashboard",
   "/organisation-profile",
-  "/playbook",
+]);
+
+// The series lived at /playbook briefly; it is part of /book now. Anything
+// already pointing at the old path is sent on permanently.
+const REDIRECTS = new Map([
+  ["/playbook", "/book"],
+  ["/playbook/", "/book"],
 ]);
 
 function assetRequest(request, pathname) {
@@ -29,6 +35,13 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     let pathname = url.pathname;
+
+    const redirect = REDIRECTS.get(pathname);
+    if (redirect) {
+      const target = new URL(request.url);
+      target.pathname = redirect;
+      return Response.redirect(target.toString(), 301);
+    }
 
     if (pathname === "/") pathname = "/index.html";
     else if (HTML_ROUTES.has(pathname)) pathname = pathname + ".html";
