@@ -282,7 +282,7 @@ describe("Landing Page V2", () => {
       screen.getByRole("link", { name: "Contact MYReSolve" }),
     ).toHaveAttribute("href", "/contact");
     expect(
-      screen.getByRole("link", { name: "rob.myresolve@gmail.com" }),
-    ).toHaveAttribute("href", "mailto:rob.myresolve@gmail.com");
+      screen.getByRole("link", { name: "hello@myresolve.uk" }),
+    ).toHaveAttribute("href", "mailto:hello@myresolve.uk");
   });
 });
