@@ -137,7 +137,7 @@ describe("Booking form", () => {
     );
     expect(screen.getByRole("link", { name: "Email Rob instead" })).toHaveAttribute(
       "href",
-      "mailto:rob.myresolve@gmail.com",
+      "mailto:hello@myresolve.uk",
     );
   });
 

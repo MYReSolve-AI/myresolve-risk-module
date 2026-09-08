@@ -162,7 +162,7 @@ function confirmationEmail({ name, email }, reference, env) {
   return {
     from: env.RESEND_FROM_EMAIL,
     to: [email],
-    reply_to: env.RESEND_REPLY_TO || "rob.myresolve@gmail.com",
+    reply_to: env.RESEND_REPLY_TO || "hello@myresolve.uk",
     subject: "We’ve received your MYReSolve conversation request",
     text: `Hi ${name},\n\nThank you for contacting MYReSolve. Your request has been received and Rob will review it before getting in touch.\n\nReference: ${reference}\n\nPlease do not reply with confidential assessment, financial or company information.\n\nBest,\nMYReSolve`,
     html: `<!doctype html>
@@ -439,7 +439,7 @@ export function createBookingHandler({
       return json(
         {
           ok: false,
-          message: "We couldn’t save your request. Please try again, or email rob.myresolve@gmail.com.",
+          message: "We couldn’t save your request. Please try again, or email hello@myresolve.uk.",
         },
         502,
         corsOrigin,

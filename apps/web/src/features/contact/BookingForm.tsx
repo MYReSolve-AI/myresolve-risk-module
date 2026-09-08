@@ -233,7 +233,7 @@ export function BookingForm({ apiUrl, turnstileSiteKey }: BookingFormProps) {
         {state.kind === "error" && (
           <p className={styles.errorMessage} role="alert">
             {state.message}{" "}
-            <a href="mailto:rob.myresolve@gmail.com">Email Rob instead</a>.
+            <a href="mailto:hello@myresolve.uk">Email Rob instead</a>.
           </p>
         )}
       </form>
