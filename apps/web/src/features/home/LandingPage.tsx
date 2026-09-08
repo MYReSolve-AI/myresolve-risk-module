@@ -54,7 +54,7 @@ export function LandingPage({ content = LANDING_PAGE_FALLBACK }: LandingPageProp
               Why MYReSolve?
             </a>
             <Link href={BOOK_PAGE_HREF} className={styles.navLink}>
-              The book
+              The Playbook series
             </Link>
             <Link href="/contact" className={styles.navLink}>
               Contact
