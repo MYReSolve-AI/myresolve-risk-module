@@ -1,22 +1,34 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BOOK_PAGE_CONTENT, BOOK_PURCHASE_URL } from "./bookContent";
+import {
+  BOOK_PAGE_CONTENT,
+  BOOK_PURCHASE_URL,
+  COMPLETE_SERIES_PURCHASE_URL,
+  SERIES_PURCHASE_URLS,
+} from "./bookContent";
 import styles from "./BookPage.module.css";
 
 type BuyButtonProps = {
   className: string;
   testId: string;
   label: string;
+  href?: string;
 };
 
 /**
- * Every buy action goes to the Payhip checkout in a new tab. There is no
- * custom checkout: Payhip handles payment and delivery.
+ * Every buy action goes to a Payhip checkout in a new tab. There is no
+ * custom checkout: Payhip handles payment and delivery. Book One is the
+ * default; the other books and the complete series pass their own link.
  */
-function BuyButton({ className, testId, label }: BuyButtonProps) {
+function BuyButton({
+  className,
+  testId,
+  label,
+  href = BOOK_PURCHASE_URL,
+}: BuyButtonProps) {
   return (
     <a
-      href={BOOK_PURCHASE_URL}
+      href={href}
       className={className}
       target="_blank"
       rel="noopener noreferrer"
@@ -211,7 +223,7 @@ export function BookPage() {
             <ol className={styles.series}>
               {series.items.map((book) => (
                 <li
-                  className={`${styles.seriesItem} ${book.live ? styles.seriesItemLive : ""}`}
+                  className={`${styles.seriesItem} ${book.number === "01" ? styles.seriesItemLive : ""}`}
                   key={book.number}
                 >
                   <p className={styles.seriesNumber} aria-hidden="true">
@@ -219,7 +231,7 @@ export function BookPage() {
                   </p>
                   <div>
                     <h3 className={styles.seriesTitle}>
-                      {book.live ? (
+                      {book.number === "01" ? (
                         <a
                           href="#top"
                           className={styles.seriesTitleLink}
@@ -238,6 +250,13 @@ export function BookPage() {
                       className={`${styles.tag} ${styles.tagLive}`}
                       testId={`book-series-${book.number}-tag`}
                       label={series.buyTag}
+                      href={
+                        book.number === "01"
+                          ? BOOK_PURCHASE_URL
+                          : SERIES_PURCHASE_URLS[
+                              book.number as keyof typeof SERIES_PURCHASE_URLS
+                            ]
+                      }
                     />
                   ) : (
                     <p
@@ -250,6 +269,20 @@ export function BookPage() {
                 </li>
               ))}
             </ol>
+            <div className={styles.seriesComplete} data-testid="book-series-complete">
+              <div>
+                <h3 className={styles.seriesCompleteTitle}>
+                  {series.complete.heading}
+                </h3>
+                <p className={styles.seriesCompleteBody}>{series.complete.body}</p>
+              </div>
+              <BuyButton
+                className={styles.ctaPrimary}
+                testId="book-series-complete-tag"
+                label={series.complete.buttonLabel}
+                href={COMPLETE_SERIES_PURCHASE_URL}
+              />
+            </div>
           </div>
         </section>
 

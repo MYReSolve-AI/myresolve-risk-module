@@ -598,7 +598,7 @@
   border-bottom: 1px solid rgba(221, 201, 167, 0.7);
 }
 
-/* Book One is the one you can buy today, so it carries the pale gold ground. */
+/* Book One is the foundation the rest stand on, so it keeps the pale gold ground. */
 .seriesItemLive {
   background: #f0ddb9;
   margin: 0 -1rem;
@@ -649,6 +649,36 @@
 
 .seriesItemLive .seriesLine {
   color: rgba(23, 63, 53, 0.85);
+}
+
+/* The complete-series offer sits under the twelve books, on the pale gold ground. */
+.seriesComplete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 1.5rem;
+  padding: 1.35rem 1.5rem;
+  background: #f0ddb9;
+  border-radius: var(--mr-radius-sm);
+}
+
+.seriesCompleteTitle {
+  margin: 0;
+  font-family: var(--mr-font);
+  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--mr-green-2);
+}
+
+.seriesCompleteBody {
+  margin: 0.3rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(23, 63, 53, 0.85);
+  max-width: 34rem;
 }
 
 .tag {
@@ -754,7 +784,8 @@
 
   .ctaGhost,
   .ctaPrimaryLight,
-  .ctaGhostLight {
+  .ctaGhostLight,
+  .seriesComplete .ctaPrimary {
     width: 100%;
   }
 }

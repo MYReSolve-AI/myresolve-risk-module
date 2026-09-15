@@ -2,7 +2,12 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { BookPage } from "./BookPage";
-import { BOOK_PAGE_CONTENT, BOOK_PURCHASE_URL } from "./bookContent";
+import {
+  BOOK_PAGE_CONTENT,
+  BOOK_PURCHASE_URL,
+  COMPLETE_SERIES_PURCHASE_URL,
+  SERIES_PURCHASE_URLS,
+} from "./bookContent";
 
 describe("Book page", () => {
   it("shows the approved hero with the gold italic headline accent", () => {
@@ -43,18 +48,23 @@ describe("Book page", () => {
     const { container } = render(<BookPage />);
 
     const payhipLinks = Array.from(
-      container.querySelectorAll(`a[href="${BOOK_PURCHASE_URL}"]`),
+      container.querySelectorAll('a[href^="https://payhip.com/b/"]'),
     );
-    // Hero, the Book 01 series tag and the closing band. The header pill is
-    // not a buy action: it jumps to the series on this page.
-    expect(payhipLinks).toHaveLength(3);
+    // Hero, twelve series tags, the complete-series button and the closing
+    // band. The header pill is not a buy action: it jumps to the series.
+    expect(payhipLinks).toHaveLength(15);
+    // Book One keeps its original link in the hero, its series tag and the
+    // closing band.
+    expect(
+      container.querySelectorAll(`a[href="${BOOK_PURCHASE_URL}"]`),
+    ).toHaveLength(3);
     for (const link of payhipLinks) {
       expect(link).toHaveAttribute("target", "_blank");
       expect(link.getAttribute("rel")).toContain("noopener");
     }
 
     // Nothing else on the page points at Payhip by any other route.
-    expect(container.innerHTML.match(/payhip\.com/g)).toHaveLength(3);
+    expect(container.innerHTML.match(/payhip\.com/g)).toHaveLength(15);
   });
 
   it("resolves every in-page and outbound destination in the approved table", () => {
@@ -170,7 +180,7 @@ describe("Book page", () => {
     expect(within(audience).queryByText("Leaders")).not.toBeInTheDocument();
   });
 
-  it("lists twelve books with Book One buyable and the rest marked Coming", () => {
+  it("lists twelve books, every one buyable, plus the complete series", () => {
     render(<BookPage />);
 
     const series = screen.getByTestId("book-series");
@@ -182,18 +192,33 @@ describe("Book page", () => {
     expect(screen.getByTestId("book-series-01-tag")).toHaveTextContent(
       "Buy now · £24",
     );
+    expect(screen.getByTestId("book-series-01-tag")).toHaveAttribute(
+      "href",
+      BOOK_PURCHASE_URL,
+    );
 
     for (const book of BOOK_PAGE_CONTENT.series.items.slice(1)) {
       expect(
         screen.queryByTestId(`book-series-${book.number}-link`),
       ).not.toBeInTheDocument();
-      expect(
-        screen.getByTestId(`book-series-${book.number}-tag`),
-      ).toHaveTextContent("Coming");
+      const tag = screen.getByTestId(`book-series-${book.number}-tag`);
+      expect(tag).toHaveTextContent("Buy now · £24");
+      expect(tag).toHaveAttribute(
+        "href",
+        SERIES_PURCHASE_URLS[book.number as keyof typeof SERIES_PURCHASE_URLS],
+      );
+      expect(tag).toHaveAttribute("target", "_blank");
     }
+    expect(within(series).queryByText("Coming")).not.toBeInTheDocument();
+    expect(within(series).getByText("Cost of failure")).toBeInTheDocument();
+    expect(within(series).queryByText("Cost to serve")).not.toBeInTheDocument();
+
+    const complete = screen.getByTestId("book-series-complete-tag");
+    expect(complete).toHaveTextContent("Buy the complete series · £149");
+    expect(complete).toHaveAttribute("href", COMPLETE_SERIES_PURCHASE_URL);
   });
 
-  it("shows no dates and no price other than £24", () => {
+  it("shows no dates and no prices other than £24, £149 and £288", () => {
     const { container } = render(<BookPage />);
     const text = container.textContent ?? "";
 
@@ -203,7 +228,11 @@ describe("Book page", () => {
       .map((element) => element.textContent ?? "");
     expect(priced.length).toBeGreaterThan(0);
     for (const value of priced) {
-      expect(value.match(/£\d+/g) ?? []).toEqual(["£24"]);
+      const prices = value.match(/£\d+/g) ?? [];
+      expect(prices.length).toBeGreaterThan(0);
+      for (const price of prices) {
+        expect(["£24", "£149", "£288"]).toContain(price);
+      }
     }
 
     expect(text).not.toMatch(
