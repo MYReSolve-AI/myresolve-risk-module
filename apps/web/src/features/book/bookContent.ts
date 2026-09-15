@@ -1,5 +1,26 @@
 export const BOOK_PURCHASE_URL = "https://payhip.com/b/bWv40";
 
+/**
+ * Payhip checkout links for Books Two to Twelve and the complete series.
+ * Series go-live, September 2026. Every book is £24; the complete series is
+ * £149. Payhip handles payment and delivery for all of them.
+ */
+export const SERIES_PURCHASE_URLS = {
+  "02": "https://payhip.com/b/epN2Q",
+  "03": "https://payhip.com/b/oGnz6",
+  "04": "https://payhip.com/b/pdabs",
+  "05": "https://payhip.com/b/ABhJn",
+  "06": "https://payhip.com/b/QszPX",
+  "07": "https://payhip.com/b/wPgUf",
+  "08": "https://payhip.com/b/Tca0f",
+  "09": "https://payhip.com/b/ntXmx",
+  "10": "https://payhip.com/b/kCm8A",
+  "11": "https://payhip.com/b/r1CTe",
+  "12": "https://payhip.com/b/7jMgC",
+} as const;
+
+export const COMPLETE_SERIES_PURCHASE_URL = "https://payhip.com/b/15bPX";
+
 export const BOOK_PAGE_HREF = "/book";
 
 /**
@@ -7,6 +28,10 @@ export const BOOK_PAGE_HREF = "/book";
  * on one page. Copy approved by Rob on 8 September 2026, verbatim from
  * 22_Task_Records / myresolve-book-merged.html. Do not reword without a new
  * approval record in 21_Website_Approvals.
+ *
+ * MYR-SERIES-GO-LIVE, September 2026: all twelve books are on sale. Every
+ * series item carries a buy button (£24), Book Nine is "Cost of failure", and
+ * the complete series is sold as one product (£149).
  *
  * The brand name is always "MYReSolve". Both eyebrows are uppercased in CSS,
  * so the name is rendered in its own element that opts out of text-transform.
@@ -111,9 +136,14 @@ export const BOOK_PAGE_CONTENT = {
     eyebrowAfter: " Operating Playbook",
     heading: "Twelve playbooks. Three lenses. One page a leader can act on.",
     intro:
-      "Short, practical playbooks on the things that decide whether a business runs well. Industry-agnostic, never generic. Each one opens with a pattern you will recognise from your own week, and ends with the two or three numbers that tell you whether it is working. Book One is out now. The rest are listed so you can see the shape of the series before you buy the first instalment.",
+      "Short, practical playbooks on the things that decide whether a business runs well. Industry-agnostic, never generic. Each one opens with a pattern you will recognise from your own week, and ends with the two or three numbers that tell you whether it is working. All twelve are out now: £24 each, or £149 for the complete series.",
     buyTag: "Buy now · £24",
     comingTag: "Coming",
+    complete: {
+      heading: "The complete series.",
+      body: "All twelve playbooks in one purchase, delivered together. Bought singly the set is £288.",
+      buttonLabel: "Buy the complete series · £149",
+    },
     items: [
       {
         number: "01",
@@ -125,67 +155,67 @@ export const BOOK_PAGE_CONTENT = {
         number: "02",
         title: "Escalations and complaints",
         line: "Why most complaints climb the chain, and how the seven behaviours stop them.",
-        live: false,
+        live: true,
       },
       {
         number: "03",
         title: "Recruiting and keeping frontline people",
         line: "Why the people you most want to keep are the ones who leave, and how the seven behaviours become a hiring standard.",
-        live: false,
+        live: true,
       },
       {
         number: "04",
         title: "Daily operating rhythm",
         line: "The few fixed points in a day and a week that let an operation run itself, and what happens when they slip.",
-        live: false,
+        live: true,
       },
       {
         number: "05",
         title: "Delivery performance",
         line: "What on time means to the customer, why it rarely matches the report, and how to close the gap.",
-        live: false,
+        live: true,
       },
       {
         number: "06",
         title: "Warehouse flow and capacity",
         line: "Where a building stops moving, how to see it before the customer does, and what capacity really means.",
-        live: false,
+        live: true,
       },
       {
         number: "07",
         title: "Aftersales and returns",
         line: "The moment after the sale that decides whether there is a second one.",
-        live: false,
+        live: true,
       },
       {
         number: "08",
         title: "Outsourced and third-party partners",
         line: "What to do when the customer sits in the gap between two rule books.",
-        live: false,
+        live: true,
       },
       {
         number: "09",
-        title: "Cost to serve",
-        line: "What each customer contact actually costs, and which ones you are paying for twice.",
-        live: false,
+        title: "Cost of failure",
+        line: "What every failure actually costs, why it never appears on the report, and which ones you are paying for twice.",
+        live: true,
       },
       {
         number: "10",
         title: "Peak planning",
         line: "Planning for the weeks that decide the year without breaking the people who run them.",
-        live: false,
+        live: true,
       },
       {
         number: "11",
         title: "Systems change without chaos",
         line: "How to change the system without losing the operation for a quarter.",
-        live: false,
+        live: true,
       },
       {
         number: "12",
         title: "Reporting that leaders act on",
         line: "One page, three lenses, the numbers that move. The book that ties the series together.",
-        live: false,
+        live: true,
       },
     ],
   },
