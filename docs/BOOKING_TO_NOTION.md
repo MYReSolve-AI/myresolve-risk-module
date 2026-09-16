@@ -152,3 +152,25 @@ Deployment remains a separate Product Owner decision.
 11. Approve production deployment separately.
 
 If the Worker is unavailable or its schema check fails, the form provides the existing direct-email route. There is no automatic email fallback or secondary data store.
+
+## The /kpis companion PDF endpoint (MYR-KPIS-PAGE)
+
+The same Worker answers `POST /kpis` for the free companion PDF, *The twenty
+numbers*, requested from `myresolve.uk/kpis`. Every other path remains the
+enquiry endpoint. The two share the allowed-origin list, the per-IP rate
+limiter, the honeypot, the Resend client and the Notion client.
+
+- Public request keys: `email` (required), `name` (optional),
+  `subscriptionInterest` (boolean), `website` (honeypot). No Turnstile widget
+  on this form; the honeypot and rate limiter are the only bot controls.
+- The PDF lives in the site at `/downloads/MYReSolve-The-Twenty-Numbers.pdf`
+  and is fetched from `SITE_ORIGIN` (default `https://myresolve.uk`) at send
+  time, then attached to the visitor's email. The page never links to it.
+- Order of work: fetch the PDF and check the tracker schema (fail closed on
+  either, nothing sent), send the PDF to the visitor (a failure here is the
+  visitor's failure state), create the tracker row with Source `KPI download`
+  and code `MYR-KPI-YYYYMMDD-XXXXXXXX`, then alert `hello@myresolve.uk` with
+  subject `KPI download: <email>`. Tracker or alert failures after the PDF has
+  gone are logged and flagged in the alert, never shown to the visitor.
+- The tracker's Source select must carry the option `KPI download` before
+  the endpoint can accept a submission; without it every request fails closed.

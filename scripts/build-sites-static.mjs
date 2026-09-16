@@ -15,6 +15,7 @@ const worker = `const HTML_ROUTES = new Set([
   "/book",
   "/contact",
   "/dashboard",
+  "/kpis",
   "/organisation-profile",
 ]);
 
