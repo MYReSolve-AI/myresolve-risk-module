@@ -1,11 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
+import worker, {
   bookingReference,
   confirmationEmail,
   createBookingHandler,
+  createKpiHandler,
+  kpiDeliveryEmail,
+  kpiNotionPayload,
+  kpiOwnerNotificationEmail,
+  kpiReference,
   notionPayload,
   ownerNotificationEmail,
+  routeRequest,
+  validateKpiPayload,
   validatePayload,
 } from "./index.mjs";
 
@@ -533,4 +540,340 @@ test("the owner notification links to the Notion page returned by the create cal
   const email = JSON.parse(ownerCall.options.body);
   assert.match(email.text, /https:\/\/www\.notion\.so\/real-page/);
   assert.match(email.text, /MYR-20260811-A1B2C3D4/);
+});
+
+// --- MYR-KPIS-PAGE: POST /kpis ----------------------------------------------
+
+const KPI_PDF_URL = "https://myresolve.uk/downloads/MYReSolve-The-Twenty-Numbers.pdf";
+const KPI_PDF_BYTES = new TextEncoder().encode("%PDF-1.4 twenty numbers");
+const KPI_PDF_BASE64 = Buffer.from(KPI_PDF_BYTES).toString("base64");
+const KPI_SUCCESS =
+  "Sent. Check your inbox for The twenty numbers. If it is not there in a few minutes, look in spam or email hello@myresolve.uk.";
+const KPI_FAILURE =
+  "Something went wrong. Email hello@myresolve.uk and we will send it by hand.";
+
+function kpiPayload(overrides = {}) {
+  return {
+    email: "sam@example.com",
+    name: "Sam Leader",
+    subscriptionInterest: false,
+    website: "",
+    ...overrides,
+  };
+}
+
+function kpiRequest(payload, headers = {}) {
+  return new Request("https://api.myresolve.uk/kpis", {
+    method: "POST",
+    headers: {
+      Origin: ORIGIN,
+      "Content-Type": "application/json",
+      "CF-Connecting-IP": "203.0.113.10",
+      ...headers,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+function kpiNotionSchema() {
+  const schema = notionSchema();
+  schema.properties.Source.select.options.push({ name: "KPI download" });
+  return schema;
+}
+
+// A fetch stand-in for the whole happy path. Each behaviour can be switched
+// off to exercise one failure at a time.
+function kpiFetch(calls, { pdf = true, notionPage = true, resend = true, schema = kpiNotionSchema } = {}) {
+  return async (url, options = {}) => {
+    calls.push({ url: String(url), options });
+    if (String(url) === KPI_PDF_URL) {
+      if (!pdf) return new Response("<!doctype html>not found", { status: 200, headers: { "Content-Type": "text/html" } });
+      return new Response(KPI_PDF_BYTES, { status: 200, headers: { "Content-Type": "application/pdf" } });
+    }
+    if (String(url).includes("/v1/databases/")) {
+      return Response.json({ data_sources: [{ id: "data-source-id" }] });
+    }
+    if (String(url).includes("/v1/data_sources/")) return Response.json(schema());
+    if (String(url).endsWith("/v1/pages")) {
+      if (!notionPage) return new Response("{}", { status: 500 });
+      return Response.json({ object: "page", id: "kpi-page-id", url: "https://www.notion.so/kpi-page-id" });
+    }
+    if (String(url) === "https://api.resend.com/emails") {
+      if (!resend) return new Response("{}", { status: 500 });
+      return Response.json({ id: "email-id" });
+    }
+    throw new Error(`Unexpected URL: ${url}`);
+  };
+}
+
+function kpiHandler(calls, options) {
+  return createKpiHandler({
+    fetchImpl: kpiFetch(calls, options),
+    now: () => new Date("2026-09-16T09:00:00.000Z"),
+    createReference: () => "MYR-KPI-20260916-A1B2C3D4",
+  });
+}
+
+test("KPI: a valid submission sends the PDF, creates the tracker row and alerts the owner", async () => {
+  const calls = [];
+  const response = await kpiHandler(calls)(kpiRequest(kpiPayload()), env());
+  assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), { ok: true, emailSent: true, message: KPI_SUCCESS });
+
+  // The PDF comes from the site origin, not from a copy inside the Worker.
+  assert.equal(calls.filter(({ url }) => url === KPI_PDF_URL).length, 1);
+
+  const emailCalls = calls.filter(({ url }) => url === "https://api.resend.com/emails");
+  assert.equal(emailCalls.length, 2);
+
+  const delivery = emailCalls.find(({ options }) =>
+    options.headers["Idempotency-Key"] === "kpi-delivery/MYR-KPI-20260916-A1B2C3D4",
+  );
+  assert.ok(delivery);
+  const deliveryEmail = JSON.parse(delivery.options.body);
+  assert.deepEqual(deliveryEmail.to, ["sam@example.com"]);
+  assert.equal(deliveryEmail.from, "MYReSolve <hello@myresolve.uk>");
+  assert.equal(deliveryEmail.reply_to, "hello@myresolve.uk");
+  assert.equal(deliveryEmail.subject, "The twenty numbers, from MYReSolve");
+  assert.deepEqual(deliveryEmail.attachments, [
+    { filename: "MYReSolve-The-Twenty-Numbers.pdf", content: KPI_PDF_BASE64 },
+  ]);
+  assert.match(deliveryEmail.text, /^Here is The twenty numbers\. Pick three, put them on the wall and in front of the board on the same day, and add the next one next month\./);
+  assert.match(deliveryEmail.text, /the Structured Executive Assessment is free at myresolve\.uk\/organisation-profile\./);
+  assert.match(deliveryEmail.text, /\nRob$/);
+  assert.doesNotMatch(deliveryEmail.text + deliveryEmail.html, /Sam Leader/);
+
+  const pageCalls = calls.filter(({ url }) => url.endsWith("/v1/pages"));
+  assert.equal(pageCalls.length, 1);
+  const page = JSON.parse(pageCalls[0].options.body);
+  assert.deepEqual(
+    page,
+    kpiNotionPayload({ ...kpiPayload(), code: "MYR-KPI-20260916-A1B2C3D4" }, "data-source-id", "2026-09-16"),
+  );
+  assert.equal(page.properties.Code.title[0].text.content, "MYR-KPI-20260916-A1B2C3D4");
+  assert.equal(page.properties["Contact name"].rich_text[0].text.content, "Sam Leader");
+  assert.equal(page.properties.Email.email, "sam@example.com");
+  assert.equal(page.properties.Source.select.name, "KPI download");
+  assert.equal(page.properties.Status.select.name, "New");
+  assert.equal(page.properties.Segment.rich_text[0].text.content, "Twenty numbers download");
+  assert.equal(page.properties["Their question"].rich_text[0].text.content, "Requested The twenty numbers PDF");
+  assert.equal(page.properties["Booked on"].date.start, "2026-09-16");
+  assert.equal("Company size" in page.properties, false);
+
+  const owner = emailCalls.find(({ options }) =>
+    options.headers["Idempotency-Key"] === "kpi-owner-notification/MYR-KPI-20260916-A1B2C3D4",
+  );
+  assert.ok(owner);
+  const ownerEmail = JSON.parse(owner.options.body);
+  assert.deepEqual(ownerEmail.to, ["hello@myresolve.uk"]);
+  assert.equal(ownerEmail.reply_to, "sam@example.com");
+  assert.equal(ownerEmail.subject, "KPI download: sam@example.com");
+  assert.match(ownerEmail.text, /https:\/\/www\.notion\.so\/kpi-page-id/);
+  assert.match(ownerEmail.text, /Subscription:\s+not ticked/);
+
+  // Delivery goes first, then the tracker row, then the owner alert.
+  const order = calls.map(({ url, options }) =>
+    url === "https://api.resend.com/emails" ? options.headers["Idempotency-Key"].split("/")[0] : url,
+  );
+  assert.ok(order.indexOf("kpi-delivery") < order.findIndex((u) => u.endsWith("/v1/pages")));
+  assert.ok(order.findIndex((u) => u.endsWith("/v1/pages")) < order.indexOf("kpi-owner-notification"));
+});
+
+test("KPI: ticking the subscription box is recorded in the segment, the question and the alert subject", async () => {
+  const calls = [];
+  const response = await kpiHandler(calls)(
+    kpiRequest(kpiPayload({ subscriptionInterest: true })),
+    env(),
+  );
+  assert.equal(response.status, 201);
+
+  const page = JSON.parse(calls.find(({ url }) => url.endsWith("/v1/pages")).options.body);
+  assert.equal(
+    page.properties.Segment.rich_text[0].text.content,
+    "Twenty numbers download · subscription interest",
+  );
+  assert.equal(
+    page.properties["Their question"].rich_text[0].text.content,
+    "Requested The twenty numbers PDF and asked to hear about the subscription",
+  );
+
+  const owner = JSON.parse(
+    calls.find(({ options }) => options.headers?.["Idempotency-Key"]?.startsWith("kpi-owner-notification/")).options.body,
+  );
+  assert.equal(owner.subject, "KPI download: sam@example.com (subscription interest)");
+  assert.match(owner.text, /asked to hear about the subscription/);
+});
+
+test("KPI: a blank name falls back to the email as the contact name", () => {
+  const page = kpiNotionPayload(
+    { ...kpiPayload({ name: "" }), code: "MYR-KPI-20260916-A1B2C3D4" },
+    "data-source-id",
+    "2026-09-16",
+  );
+  assert.equal(page.properties["Contact name"].rich_text[0].text.content, "sam@example.com");
+});
+
+test("KPI: the honeypot returns a fake success without any external call", async () => {
+  let externalCalls = 0;
+  const handle = createKpiHandler({
+    fetchImpl: async () => {
+      externalCalls += 1;
+      throw new Error("No external call expected");
+    },
+  });
+  const response = await handle(kpiRequest(kpiPayload({ website: "spam.example" })), env());
+  assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), { ok: true, emailSent: true, message: KPI_SUCCESS });
+  assert.equal(externalCalls, 0);
+});
+
+test("KPI: the rate limiter runs before any external call", async () => {
+  let externalCalls = 0;
+  const handle = createKpiHandler({
+    fetchImpl: async () => {
+      externalCalls += 1;
+      throw new Error("No external call expected");
+    },
+  });
+  const response = await handle(
+    kpiRequest(kpiPayload()),
+    env({ BOOKING_RATE_LIMITER: { limit: async () => ({ success: false }) } }),
+  );
+  assert.equal(response.status, 429);
+  assert.equal(externalCalls, 0);
+});
+
+test("KPI: a malformed or missing email is rejected with 400 before any external call", async () => {
+  let externalCalls = 0;
+  const handle = createKpiHandler({
+    fetchImpl: async () => {
+      externalCalls += 1;
+      throw new Error("No external call expected");
+    },
+  });
+  for (const email of ["not-an-email", "", "   "]) {
+    const response = await handle(kpiRequest(kpiPayload({ email })), env());
+    assert.equal(response.status, 400);
+    assert.equal((await response.json()).ok, false);
+  }
+  const notBoolean = await handle(kpiRequest(kpiPayload({ subscriptionInterest: "yes" })), env());
+  assert.equal(notBoolean.status, 400);
+  assert.equal(externalCalls, 0);
+});
+
+test("KPI: validation caps field lengths and normalises the name to one line", () => {
+  assert.equal(validateKpiPayload(kpiPayload({ name: "a".repeat(101) })).ok, false);
+  assert.equal(validateKpiPayload(kpiPayload({ email: "a".repeat(250) + "@x.uk" })).ok, false);
+  const result = validateKpiPayload(kpiPayload({ name: "Sam\nLeader" }));
+  assert.equal(result.ok, true);
+  assert.equal(result.values.name, "Sam Leader");
+  assert.equal(result.values.subscriptionInterest, false);
+  const bare = validateKpiPayload({ email: "sam@example.com" });
+  assert.equal(bare.ok, true);
+  assert.equal(bare.values.name, "");
+  assert.equal(bare.values.website, "");
+});
+
+test("KPI: does not require the Turnstile secret, but does require the rest of the configuration", async () => {
+  const calls = [];
+  const handle = kpiHandler(calls);
+  const withoutTurnstile = await handle(
+    kpiRequest(kpiPayload()),
+    env({ TURNSTILE_SECRET_KEY: undefined }),
+  );
+  assert.equal(withoutTurnstile.status, 201);
+
+  const withoutResend = await handle(kpiRequest(kpiPayload()), env({ RESEND_API_KEY: "" }));
+  assert.equal(withoutResend.status, 503);
+  assert.equal((await withoutResend.json()).message, KPI_FAILURE);
+});
+
+test("KPI: a missing 'KPI download' Source option fails closed before anything is sent", async () => {
+  const calls = [];
+  const handle = kpiHandler(calls, { schema: notionSchema });
+  const response = await handle(kpiRequest(kpiPayload()), env());
+  assert.equal(response.status, 502);
+  assert.deepEqual(await response.json(), { ok: false, message: KPI_FAILURE });
+  assert.equal(calls.filter(({ url }) => url === "https://api.resend.com/emails").length, 0);
+  assert.equal(calls.filter(({ url }) => url.endsWith("/v1/pages")).length, 0);
+});
+
+test("KPI: an unreadable PDF fails closed before anything is sent", async () => {
+  const calls = [];
+  const handle = kpiHandler(calls, { pdf: false });
+  const response = await handle(kpiRequest(kpiPayload()), env());
+  assert.equal(response.status, 502);
+  assert.deepEqual(await response.json(), { ok: false, message: KPI_FAILURE });
+  assert.equal(calls.filter(({ url }) => url === "https://api.resend.com/emails").length, 0);
+  assert.equal(calls.filter(({ url }) => url.endsWith("/v1/pages")).length, 0);
+});
+
+test("KPI: a failed delivery email is the visitor's failure state and creates no tracker row", async () => {
+  const calls = [];
+  const handle = kpiHandler(calls, { resend: false });
+  const response = await handle(kpiRequest(kpiPayload()), env());
+  assert.equal(response.status, 502);
+  assert.deepEqual(await response.json(), { ok: false, message: KPI_FAILURE });
+  assert.equal(calls.filter(({ url }) => url === "https://api.resend.com/emails").length, 1);
+  assert.equal(calls.filter(({ url }) => url.endsWith("/v1/pages")).length, 0);
+});
+
+test("KPI: a tracker failure after the PDF has gone still succeeds and is flagged in the owner alert", async () => {
+  const calls = [];
+  const handle = kpiHandler(calls, { notionPage: false });
+  const response = await handle(kpiRequest(kpiPayload()), env());
+  assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), { ok: true, emailSent: true, message: KPI_SUCCESS });
+  const owner = JSON.parse(
+    calls.find(({ options }) => options.headers?.["Idempotency-Key"]?.startsWith("kpi-owner-notification/")).options.body,
+  );
+  assert.match(owner.text, /NOT CREATED/);
+});
+
+test("KPI: references are generated internally with the MYR-KPI prefix", () => {
+  const reference = kpiReference(new Date("2026-09-16T09:00:00.000Z"), "12345678-90ab-cdef-1234-567890abcdef");
+  assert.equal(reference, "MYR-KPI-20260916-12345678");
+  assert.match(kpiReference(new Date()), /^MYR-KPI-\d{8}-[0-9A-F]{8}$/);
+  assert.match(bookingReference(new Date()), /^MYR-\d{8}-[0-9A-F]{8}$/);
+});
+
+test("KPI: the delivery email carries the approved subject, reply-to and attachment and no personal data", () => {
+  const email = kpiDeliveryEmail({ email: "sam@example.com" }, KPI_PDF_BASE64, env());
+  assert.deepEqual(Object.keys(email).sort(), ["attachments", "from", "html", "reply_to", "subject", "text", "to"]);
+  assert.equal(email.reply_to, "hello@myresolve.uk");
+  assert.equal(email.attachments[0].filename, "MYReSolve-The-Twenty-Numbers.pdf");
+  assert.doesNotMatch(email.html, /MYRESOLVE|Myresolve/);
+  assert.match(email.html, /MYReSolve/);
+});
+
+test("KPI: the owner alert keeps the subject on one line and labels a blank name", () => {
+  const email = kpiOwnerNotificationEmail(
+    { ...kpiPayload({ name: "" }), email: "sam@example.com" },
+    "MYR-KPI-20260916-A1B2C3D4",
+    "",
+    true,
+    env(),
+  );
+  assert.equal(email.subject, "KPI download: sam@example.com");
+  assert.match(email.text, /Name:\s+\(not given\)/);
+  assert.match(email.text, /link unavailable/);
+});
+
+test("routing sends /kpis to the KPI handler and everything else to the enquiry handler", () => {
+  const handlers = { booking: () => "booking", kpi: () => "kpi" };
+  assert.equal(routeRequest(new Request("https://api.myresolve.uk/kpis"), handlers)(), "kpi");
+  assert.equal(routeRequest(new Request("https://api.myresolve.uk/booking"), handlers)(), "booking");
+  assert.equal(routeRequest(new Request("https://api.myresolve.uk/"), handlers)(), "booking");
+  assert.equal(routeRequest(new Request("https://api.myresolve.uk/kpis/extra"), handlers)(), "booking");
+});
+
+test("the default export answers a /kpis preflight with CORS headers like the enquiry endpoint", async () => {
+  const preflight = new Request("https://api.myresolve.uk/kpis", {
+    method: "OPTIONS",
+    headers: { Origin: ORIGIN },
+  });
+  const response = await worker.fetch(preflight, env());
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("Access-Control-Allow-Origin"), ORIGIN);
+  assert.equal(response.headers.get("Access-Control-Allow-Methods"), "POST, OPTIONS");
 });

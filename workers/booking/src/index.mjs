@@ -2,6 +2,27 @@ const NOTION_VERSION = "2026-03-11";
 const RESEND_EMAILS_URL = "https://api.resend.com/emails";
 const OWNER_NOTIFICATION_EMAIL = "hello@myresolve.uk";
 const MAX_BODY_BYTES = 12_000;
+const BOOKING_UNAVAILABLE_MESSAGE =
+  "Booking is temporarily unavailable. Please try again later.";
+
+// MYR-KPIS-PAGE: the free companion PDF given away at /kpis. The file ships
+// with the static site, so the Worker fetches it from the site origin at send
+// time rather than carrying a copy of its own. Copy approved in the task brief.
+const KPI_PDF_FILENAME = "MYReSolve-The-Twenty-Numbers.pdf";
+const KPI_PDF_PATH = `/downloads/${KPI_PDF_FILENAME}`;
+const DEFAULT_SITE_ORIGIN = "https://myresolve.uk";
+const KPI_SOURCE = "KPI download";
+const KPI_SEGMENT = "Twenty numbers download";
+const KPI_QUESTION = "Requested The twenty numbers PDF";
+const KPI_SUCCESS_MESSAGE =
+  "Sent. Check your inbox for The twenty numbers. If it is not there in a few minutes, look in spam or email hello@myresolve.uk.";
+const KPI_FAILURE_MESSAGE =
+  "Something went wrong. Email hello@myresolve.uk and we will send it by hand.";
+const KPI_FIELD_LIMITS = {
+  name: 100,
+  email: 254,
+  website: 200,
+};
 const ALLOWED_COMPANY_SIZES = new Set([
   "Just me / <10",
   "10-49",
@@ -114,10 +135,14 @@ function notionText(content) {
   return { rich_text: content ? [{ type: "text", text: { content } }] : [] };
 }
 
-function bookingReference(date, uuid = crypto.randomUUID()) {
+function bookingReference(date, uuid = crypto.randomUUID(), prefix = "MYR") {
   const day = date.toISOString().slice(0, 10).replaceAll("-", "");
   const suffix = uuid.replaceAll("-", "").slice(0, 8).toUpperCase();
-  return `MYR-${day}-${suffix}`;
+  return `${prefix}-${day}-${suffix}`;
+}
+
+function kpiReference(date, uuid) {
+  return bookingReference(date, uuid, "MYR-KPI");
 }
 
 function notionPayload(values, dataSourceId, date) {
@@ -251,11 +276,11 @@ function ownerNotificationEmail(values, reference, notionPageUrl, env) {
   };
 }
 
-export function createBookingHandler({
-  fetchImpl = fetch,
-  now = () => new Date(),
-  createReference = bookingReference,
-} = {}) {
+// Shared Notion lookup: resolves the tracker's single data source and checks
+// its schema before any page is written. Each handler keeps its own cache and
+// its own list of Source options, so the enquiry endpoint keeps working even
+// while a newer option is still being added to the tracker.
+function createNotionResolver(fetchImpl, requiredSourceOptions) {
   let cachedDataSource;
 
   function validateNotionSchema(dataSource) {
@@ -270,7 +295,7 @@ export function createBookingHandler({
     }
     const expectedOptions = {
       "Company size": [...ALLOWED_COMPANY_SIZES],
-      Source: ["Assessment", "Referral", "Outreach", "Other"],
+      Source: requiredSourceOptions,
       Status: ["New", "Contacted", "Scheduled", "Interviewed", "Decided"],
     };
     for (const [name, options] of Object.entries(expectedOptions)) {
@@ -283,7 +308,7 @@ export function createBookingHandler({
     }
   }
 
-  async function resolveDataSourceId(env) {
+  return async function resolveDataSourceId(env) {
     if (cachedDataSource?.databaseId === env.NOTION_DATABASE_ID) {
       return cachedDataSource.id;
     }
@@ -307,7 +332,232 @@ export function createBookingHandler({
     validateNotionSchema(await schemaResponse.json());
     cachedDataSource = { databaseId: env.NOTION_DATABASE_ID, id: dataSourceId };
     return dataSourceId;
+  };
+}
+
+// Everything both endpoints do before they look at the form: CORS, method and
+// content-type checks, the server-configuration guard, the shared per-IP rate
+// limiter and the body-size cap. Returns either a finished Response or the
+// parsed JSON body with the CORS origin and client IP the handler needs.
+async function readSubmission(request, env, { requiredEnv, unavailableMessage }) {
+  const origin = request.headers.get("Origin") ?? "";
+  const origins = allowedOrigins(env);
+  const corsOrigin = origins.has(origin) ? origin : "";
+
+  if (request.method === "OPTIONS") {
+    if (!corsOrigin) return { response: json({ ok: false }, 403, "") };
+    const response = new Response(null, { status: 204 });
+    response.headers.set("Access-Control-Allow-Origin", corsOrigin);
+    response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    response.headers.set("Access-Control-Max-Age", "86400");
+    response.headers.set("Vary", "Origin");
+    return { response };
   }
+
+  if (request.method !== "POST") return { response: json({ ok: false }, 405, corsOrigin) };
+  if (!corsOrigin) {
+    return { response: json({ ok: false, message: "Request origin not allowed." }, 403, "") };
+  }
+  if (request.headers.get("Content-Type")?.split(";", 1)[0] !== "application/json") {
+    return { response: json({ ok: false, message: "Expected JSON form data." }, 415, corsOrigin) };
+  }
+  if (requiredEnv.some((key) => !env[key])) {
+    console.error("Booking Worker is missing required server configuration");
+    return { response: json({ ok: false, message: unavailableMessage }, 503, corsOrigin) };
+  }
+
+  const remoteIp = request.headers.get("CF-Connecting-IP") ?? "unknown";
+  let rateLimit;
+  try {
+    rateLimit = await env.BOOKING_RATE_LIMITER.limit({ key: remoteIp });
+  } catch {
+    console.error("Booking rate limiter was unavailable");
+    return { response: json({ ok: false, message: unavailableMessage }, 503, corsOrigin) };
+  }
+  if (!rateLimit.success) {
+    return {
+      response: json(
+        { ok: false, message: "Too many attempts. Please wait a minute and try again." },
+        429,
+        corsOrigin,
+      ),
+    };
+  }
+
+  const contentLength = Number(request.headers.get("Content-Length") ?? 0);
+  if (contentLength > MAX_BODY_BYTES) {
+    return { response: json({ ok: false, message: "The form submission is too large." }, 413, corsOrigin) };
+  }
+  const rawBody = await request.text();
+  if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) {
+    return { response: json({ ok: false, message: "The form submission is too large." }, 413, corsOrigin) };
+  }
+
+  let raw;
+  try {
+    raw = JSON.parse(rawBody);
+  } catch {
+    return { response: json({ ok: false, message: "The form data was not valid." }, 400, corsOrigin) };
+  }
+
+  return { corsOrigin, remoteIp, raw };
+}
+
+// --- MYR-KPIS-PAGE: the /kpis endpoint --------------------------------------
+
+function validateKpiPayload(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return { ok: false, message: "The form data was not valid." };
+  }
+
+  const values = {};
+  for (const [field, limit] of Object.entries(KPI_FIELD_LIMITS)) {
+    const cleaned = cleanText(raw[field] ?? "");
+    if (cleaned === null || cleaned.length > limit) {
+      return { ok: false, message: "One or more fields are too long or invalid." };
+    }
+    values[field] = cleaned;
+  }
+  // The name is optional but it reaches an email subject line and a Notion
+  // title-style field, so it is always a single line.
+  values.name = singleLine(values.name);
+
+  const interest = raw.subscriptionInterest ?? false;
+  if (typeof interest !== "boolean") {
+    return { ok: false, message: "The form data was not valid." };
+  }
+  values.subscriptionInterest = interest;
+
+  if (!values.email) {
+    return { ok: false, message: "Please enter your work email." };
+  }
+  if (!EMAIL_PATTERN.test(values.email)) {
+    return { ok: false, message: "Please enter a valid email address." };
+  }
+
+  return { ok: true, values };
+}
+
+function kpiNotionPayload(values, dataSourceId, date) {
+  const interest = values.subscriptionInterest;
+  return {
+    parent: { type: "data_source_id", data_source_id: dataSourceId },
+    properties: {
+      Code: { title: [{ type: "text", text: { content: values.code } }] },
+      "Contact name": notionText(values.name || values.email),
+      Email: { email: values.email },
+      Segment: notionText(
+        interest ? `${KPI_SEGMENT} · subscription interest` : KPI_SEGMENT,
+      ),
+      "Their question": notionText(
+        interest
+          ? `${KPI_QUESTION} and asked to hear about the subscription`
+          : KPI_QUESTION,
+      ),
+      Source: { select: { name: KPI_SOURCE } },
+      Status: { select: { name: "New" } },
+      "Booked on": { date: { start: date } },
+    },
+  };
+}
+
+// Workers have no Buffer without nodejs_compat; btoa on a binary string is
+// the portable route. Chunked so a large file never hits the argument limit.
+function base64FromBytes(bytes) {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunk));
+  }
+  return btoa(binary);
+}
+
+// Two lines in Rob's voice, approved verbatim in the task brief, plus the PDF.
+// The visitor's name is deliberately not used: the note reads the same for
+// everyone and nothing they typed is echoed back into an email.
+function kpiDeliveryEmail({ email }, pdfBase64, env) {
+  return {
+    from: env.RESEND_FROM_EMAIL,
+    to: [email],
+    reply_to: OWNER_NOTIFICATION_EMAIL,
+    subject: "The twenty numbers, from MYReSolve",
+    text: `Here is The twenty numbers. Pick three, put them on the wall and in front of the board on the same day, and add the next one next month.\n\nIf you would rather see what your operation shows today, the Structured Executive Assessment is free at myresolve.uk/organisation-profile.\n\nRob`,
+    html: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The twenty numbers, from MYReSolve</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f7f3ec;color:#1e2825;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">The twenty numbers is attached.</div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#f7f3ec;border-collapse:collapse;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;background:#fffcf7;border:1px solid #ddc9a7;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;">
+            <tr>
+              <td style="padding:28px 32px;background:#173f35;border-bottom:4px solid #c68b35;">
+                <p style="margin:0;color:#fffcf7;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:0.2px;">MYReSolve</p>
+                <p style="margin:8px 0 0;color:#f7f3ec;font-size:14px;line-height:1.5;">Operating Playbook &middot; Companion</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <h1 style="margin:0 0 16px;color:#0f2e27;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:700;">The twenty numbers</h1>
+                <p style="margin:0 0 20px;font-size:16px;line-height:1.6;">Here is The twenty numbers. Pick three, put them on the wall and in front of the board on the same day, and add the next one next month.</p>
+                <p style="margin:0 0 24px;font-size:16px;line-height:1.6;">If you would rather see what your operation shows today, the Structured Executive Assessment is free at <a href="https://myresolve.uk/organisation-profile" style="color:#173f35;font-weight:700;">myresolve.uk/organisation-profile</a>.</p>
+                <p style="margin:0;color:#1e2825;font-size:16px;line-height:1.6;">Rob</p>
+                <p style="margin:24px 0 0;padding-top:20px;border-top:1px solid #ddc9a7;color:#66716d;font-size:14px;line-height:1.6;">The PDF is attached to this email. Reply to reach MYReSolve at hello@myresolve.uk.</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`,
+    attachments: [{ filename: KPI_PDF_FILENAME, content: pdfBase64 }],
+  };
+}
+
+function kpiOwnerNotificationEmail(values, reference, notionPageUrl, trackerStored, env) {
+  const interest = values.subscriptionInterest;
+  const text = [
+    "Someone has requested The twenty numbers PDF through myresolve.uk/kpis.",
+    "",
+    `Reference:     ${reference}`,
+    `Name:          ${values.name || "(not given)"}`,
+    `Email:         ${values.email}`,
+    `Subscription:  ${interest ? "asked to hear about the subscription" : "not ticked"}`,
+    "",
+    trackerStored
+      ? `Notion page:   ${notionPageUrl || "(link unavailable - open the consultation tracker)"}`
+      : "Notion page:   NOT CREATED - the tracker row failed, please add it by hand.",
+    "",
+    `Reply to this email to respond directly to ${values.email}.`,
+  ].join("\n");
+
+  return {
+    from: env.RESEND_FROM_EMAIL,
+    to: [OWNER_NOTIFICATION_EMAIL],
+    reply_to: values.email,
+    subject: `KPI download: ${singleLine(values.email)}${interest ? " (subscription interest)" : ""}`,
+    text,
+  };
+}
+
+export function createBookingHandler({
+  fetchImpl = fetch,
+  now = () => new Date(),
+  createReference = bookingReference,
+} = {}) {
+  const resolveDataSourceId = createNotionResolver(fetchImpl, [
+    "Assessment",
+    "Referral",
+    "Outreach",
+    "Other",
+  ]);
 
   async function verifyTurnstile(token, secret, remoteIp, hostnames) {
     const body = new FormData();
@@ -328,65 +578,19 @@ export function createBookingHandler({
   }
 
   return async function handle(request, env) {
-    const origin = request.headers.get("Origin") ?? "";
-    const origins = allowedOrigins(env);
-    const corsOrigin = origins.has(origin) ? origin : "";
-
-    if (request.method === "OPTIONS") {
-      if (!corsOrigin) return json({ ok: false }, 403, "");
-      const response = new Response(null, { status: 204 });
-      response.headers.set("Access-Control-Allow-Origin", corsOrigin);
-      response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-      response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-      response.headers.set("Access-Control-Max-Age", "86400");
-      response.headers.set("Vary", "Origin");
-      return response;
-    }
-
-    if (request.method !== "POST") return json({ ok: false }, 405, corsOrigin);
-    if (!corsOrigin) return json({ ok: false, message: "Request origin not allowed." }, 403, "");
-    if (request.headers.get("Content-Type")?.split(";", 1)[0] !== "application/json") {
-      return json({ ok: false, message: "Expected JSON form data." }, 415, corsOrigin);
-    }
-    if (
-      !env.NOTION_TOKEN ||
-      !env.NOTION_DATABASE_ID ||
-      !env.TURNSTILE_SECRET_KEY ||
-      !env.RESEND_API_KEY ||
-      !env.RESEND_FROM_EMAIL ||
-      !env.BOOKING_RATE_LIMITER
-    ) {
-      console.error("Booking Worker is missing required server configuration");
-      return json({ ok: false, message: "Booking is temporarily unavailable. Please try again later." }, 503, corsOrigin);
-    }
-
-    const remoteIp = request.headers.get("CF-Connecting-IP") ?? "unknown";
-    let rateLimit;
-    try {
-      rateLimit = await env.BOOKING_RATE_LIMITER.limit({ key: remoteIp });
-    } catch {
-      console.error("Booking rate limiter was unavailable");
-      return json({ ok: false, message: "Booking is temporarily unavailable. Please try again later." }, 503, corsOrigin);
-    }
-    if (!rateLimit.success) {
-      return json({ ok: false, message: "Too many attempts. Please wait a minute and try again." }, 429, corsOrigin);
-    }
-
-    const contentLength = Number(request.headers.get("Content-Length") ?? 0);
-    if (contentLength > MAX_BODY_BYTES) {
-      return json({ ok: false, message: "The form submission is too large." }, 413, corsOrigin);
-    }
-    const rawBody = await request.text();
-    if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) {
-      return json({ ok: false, message: "The form submission is too large." }, 413, corsOrigin);
-    }
-
-    let raw;
-    try {
-      raw = JSON.parse(rawBody);
-    } catch {
-      return json({ ok: false, message: "The form data was not valid." }, 400, corsOrigin);
-    }
+    const submission = await readSubmission(request, env, {
+      requiredEnv: [
+        "NOTION_TOKEN",
+        "NOTION_DATABASE_ID",
+        "TURNSTILE_SECRET_KEY",
+        "RESEND_API_KEY",
+        "RESEND_FROM_EMAIL",
+        "BOOKING_RATE_LIMITER",
+      ],
+      unavailableMessage: BOOKING_UNAVAILABLE_MESSAGE,
+    });
+    if (submission.response) return submission.response;
+    const { corsOrigin, remoteIp, raw } = submission;
 
     const validation = validatePayload(raw);
     if (!validation.ok) return json({ ok: false, message: validation.message }, 400, corsOrigin);
@@ -523,18 +727,158 @@ export function createBookingHandler({
   };
 }
 
-const handle = createBookingHandler();
+export function createKpiHandler({
+  fetchImpl = fetch,
+  now = () => new Date(),
+  createReference = kpiReference,
+} = {}) {
+  const resolveDataSourceId = createNotionResolver(fetchImpl, [KPI_SOURCE]);
+
+  async function loadPdf(env) {
+    const url = `${env.SITE_ORIGIN || DEFAULT_SITE_ORIGIN}${KPI_PDF_PATH}`;
+    const response = await fetchImpl(url);
+    if (!response.ok) throw new Error(`PDF fetch failed (${response.status})`);
+    // The site Worker answers unknown paths with the 404 page and a 200, so
+    // the content type is the only reliable sign the file itself came back.
+    const type = response.headers.get("Content-Type") ?? "";
+    if (!type.startsWith("application/pdf")) {
+      throw new Error("PDF fetch returned something that is not a PDF");
+    }
+    return base64FromBytes(new Uint8Array(await response.arrayBuffer()));
+  }
+
+  function resendHeaders(env, idempotencyKey) {
+    return {
+      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": idempotencyKey,
+      "User-Agent": "MYReSolve-Booking/1.0",
+    };
+  }
+
+  return async function handle(request, env) {
+    const submission = await readSubmission(request, env, {
+      requiredEnv: [
+        "NOTION_TOKEN",
+        "NOTION_DATABASE_ID",
+        "RESEND_API_KEY",
+        "RESEND_FROM_EMAIL",
+        "BOOKING_RATE_LIMITER",
+      ],
+      unavailableMessage: KPI_FAILURE_MESSAGE,
+    });
+    if (submission.response) return submission.response;
+    const { corsOrigin, raw } = submission;
+
+    const validation = validateKpiPayload(raw);
+    if (!validation.ok) return json({ ok: false, message: validation.message }, 400, corsOrigin);
+    const values = validation.values;
+
+    // Silently accept honeypot submissions without contacting third parties.
+    if (values.website) {
+      return json({ ok: true, emailSent: true, message: KPI_SUCCESS_MESSAGE }, 201, corsOrigin);
+    }
+
+    // Fail closed before anything is sent: the tracker must be reachable and
+    // carry the "KPI download" Source option, and the PDF must be fetchable.
+    // Otherwise the visitor gets the by-hand message and nothing goes out.
+    let dataSourceId;
+    let pdfBase64;
+    try {
+      dataSourceId = await resolveDataSourceId(env);
+      pdfBase64 = await loadPdf(env);
+    } catch (error) {
+      // Never log form values or response bodies.
+      console.error("KPI download could not be prepared", error instanceof Error ? error.message : "unknown error");
+      return json({ ok: false, message: KPI_FAILURE_MESSAGE }, 502, corsOrigin);
+    }
+
+    const bookedAt = now();
+    const date = bookedAt.toISOString().slice(0, 10);
+    const code = createReference(bookedAt);
+
+    // 1. The PDF to the visitor. This is the outcome the page promises, so a
+    //    failure here is the visitor's failure state and stops everything else.
+    try {
+      const deliveryResponse = await fetchImpl(RESEND_EMAILS_URL, {
+        method: "POST",
+        headers: resendHeaders(env, `kpi-delivery/${code}`),
+        body: JSON.stringify(kpiDeliveryEmail({ email: values.email }, pdfBase64, env)),
+      });
+      if (!deliveryResponse.ok) {
+        throw new Error(`Resend API returned ${deliveryResponse.status}`);
+      }
+    } catch (error) {
+      // Never log recipient details.
+      console.error("KPI download email could not be sent", error instanceof Error ? error.message : "unknown error");
+      return json({ ok: false, message: KPI_FAILURE_MESSAGE }, 502, corsOrigin);
+    }
+
+    // 2. The tracker row. The PDF has gone, so this must never change the
+    //    visitor's outcome; the owner alert says when it fails.
+    let notionPageUrl = "";
+    let trackerStored = false;
+    try {
+      const response = await fetchImpl("https://api.notion.com/v1/pages", {
+        method: "POST",
+        headers: notionHeaders(env.NOTION_TOKEN),
+        body: JSON.stringify(kpiNotionPayload({ ...values, code }, dataSourceId, date)),
+      });
+      if (!response.ok) throw new Error(`Notion page creation failed (${response.status})`);
+      trackerStored = true;
+      const page = await response.json().catch(() => null);
+      if (typeof page?.url === "string") notionPageUrl = page.url;
+    } catch (error) {
+      console.error("KPI download could not be stored", error instanceof Error ? error.message : "unknown error");
+    }
+
+    // 3. The owner alert. Logged and swallowed on failure, as for enquiries.
+    try {
+      const ownerResponse = await fetchImpl(RESEND_EMAILS_URL, {
+        method: "POST",
+        headers: resendHeaders(env, `kpi-owner-notification/${code}`),
+        body: JSON.stringify(
+          kpiOwnerNotificationEmail(values, code, notionPageUrl, trackerStored, env),
+        ),
+      });
+      if (!ownerResponse.ok) {
+        throw new Error(`Resend API returned ${ownerResponse.status}`);
+      }
+    } catch (error) {
+      console.error("KPI download owner notification could not be sent", error instanceof Error ? error.message : "unknown error");
+    }
+
+    return json({ ok: true, emailSent: true, message: KPI_SUCCESS_MESSAGE }, 201, corsOrigin);
+  };
+}
+
+// The Worker answers on one custom domain. /kpis is the companion PDF
+// give-away; every other path is the enquiry endpoint, as it always was.
+export function routeRequest(request, handlers) {
+  const { pathname } = new URL(request.url);
+  return pathname === "/kpis" ? handlers.kpi : handlers.booking;
+}
+
+const handlers = {
+  booking: createBookingHandler(),
+  kpi: createKpiHandler(),
+};
 
 export default {
   fetch(request, env) {
-    return handle(request, env);
+    return routeRequest(request, handlers)(request, env);
   },
 };
 
 export {
   bookingReference,
   confirmationEmail,
+  kpiDeliveryEmail,
+  kpiNotionPayload,
+  kpiOwnerNotificationEmail,
+  kpiReference,
   notionPayload,
   ownerNotificationEmail,
+  validateKpiPayload,
   validatePayload,
 };
