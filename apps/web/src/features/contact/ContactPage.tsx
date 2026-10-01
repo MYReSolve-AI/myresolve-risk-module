@@ -113,6 +113,7 @@ export function ContactPage() {
 
       <footer className={styles.footer}>
         <p>MYReSolve gives leaders the clarity to make better decisions.</p>
+        <p style={{ fontSize: "0.8rem", color: "#5a6b63", marginTop: "0.75rem" }}>MYReSolve Solutions Ltd &middot; Registered in England &amp; Wales No. 14964950 &middot; VAT No. GB 528 1593 76</p>p>
       </footer>
 
       <a
