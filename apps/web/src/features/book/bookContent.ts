@@ -1,9 +1,9 @@
 export const BOOK_PURCHASE_URL = "https://payhip.com/b/bWv40";
 
 /**
- * Payhip checkout links for Books Two to Twelve and the complete series.
- * Series go-live, September 2026. Every book is £24; the complete series is
- * £149. Payhip handles payment and delivery for all of them.
+ * Payhip checkout links for Books Two to Twelve.
+ * Series go-live, September 2026. Every book is £24. Payhip handles payment
+ * and delivery for all of them.
  */
 export const SERIES_PURCHASE_URLS = {
   "02": "https://payhip.com/b/epN2Q",
@@ -19,8 +19,6 @@ export const SERIES_PURCHASE_URLS = {
   "12": "https://payhip.com/b/7jMgC",
 } as const;
 
-export const COMPLETE_SERIES_PURCHASE_URL = "https://payhip.com/b/15bPX";
-
 export const BOOK_PAGE_HREF = "/book";
 
 /**
@@ -30,8 +28,10 @@ export const BOOK_PAGE_HREF = "/book";
  * approval record in 21_Website_Approvals.
  *
  * MYR-SERIES-GO-LIVE, September 2026: all twelve books are on sale. Every
- * series item carries a buy button (£24), Book Nine is "Cost of failure", and
- * the complete series is sold as one product (£149).
+ * series item carries a buy button (£24) and Book Nine is "Cost of failure".
+ *
+ * MYR-SERIES-OFFER-REMOVE, October 2026: the £149 complete-series offer is
+ * withdrawn from the site; the twelve books are sold as one volume on Amazon.
  *
  * The brand name is always "MYReSolve". Both eyebrows are uppercased in CSS,
  * so the name is rendered in its own element that opts out of text-transform.
@@ -136,14 +136,9 @@ export const BOOK_PAGE_CONTENT = {
     eyebrowAfter: " Operating Playbook",
     heading: "Twelve playbooks. Three lenses. One page a leader can act on.",
     intro:
-      "Short, practical playbooks on the things that decide whether a business runs well. Industry-agnostic, never generic. Each one opens with a pattern you will recognise from your own week, and ends with the two or three numbers that tell you whether it is working. All twelve are out now: £24 each, or £149 for the complete series.",
+      "Short, practical playbooks on the things that decide whether a business runs well. Industry-agnostic, never generic. Each one opens with a pattern you will recognise from your own week, and ends with the two or three numbers that tell you whether it is working. All twelve are out now: £24 each.",
     buyTag: "Buy now · £24",
     comingTag: "Coming",
-    complete: {
-      heading: "The complete series.",
-      body: "All twelve playbooks in one purchase, delivered together. Bought singly the set is £288.",
-      buttonLabel: "Buy the complete series · £149",
-    },
     items: [
       {
         number: "01",
