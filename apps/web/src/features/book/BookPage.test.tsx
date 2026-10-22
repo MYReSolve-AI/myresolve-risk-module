@@ -5,7 +5,6 @@ import { BookPage } from "./BookPage";
 import {
   BOOK_PAGE_CONTENT,
   BOOK_PURCHASE_URL,
-  COMPLETE_SERIES_PURCHASE_URL,
   SERIES_PURCHASE_URLS,
 } from "./bookContent";
 
@@ -50,9 +49,9 @@ describe("Book page", () => {
     const payhipLinks = Array.from(
       container.querySelectorAll('a[href^="https://payhip.com/b/"]'),
     );
-    // Hero, twelve series tags, the complete-series button and the closing
-    // band. The header pill is not a buy action: it jumps to the series.
-    expect(payhipLinks).toHaveLength(15);
+    // Hero, twelve series tags and the closing band. The header pill is not
+    // a buy action: it jumps to the series.
+    expect(payhipLinks).toHaveLength(14);
     // Book One keeps its original link in the hero, its series tag and the
     // closing band.
     expect(
@@ -180,7 +179,7 @@ describe("Book page", () => {
     expect(within(audience).queryByText("Leaders")).not.toBeInTheDocument();
   });
 
-  it("lists twelve books, every one buyable, plus the complete series", () => {
+  it("lists twelve books, every one buyable, and no complete-series offer", () => {
     render(<BookPage />);
 
     const series = screen.getByTestId("book-series");
@@ -213,12 +212,14 @@ describe("Book page", () => {
     expect(within(series).getByText("Cost of failure")).toBeInTheDocument();
     expect(within(series).queryByText("Cost to serve")).not.toBeInTheDocument();
 
-    const complete = screen.getByTestId("book-series-complete-tag");
-    expect(complete).toHaveTextContent("Buy the complete series · £149");
-    expect(complete).toHaveAttribute("href", COMPLETE_SERIES_PURCHASE_URL);
+    expect(screen.queryByTestId("book-series-complete")).not.toBeInTheDocument();
+    expect(
+      document.querySelector('a[href="https://payhip.com/b/15bPX"]'),
+    ).toBeNull();
+    expect(within(series).queryByText(/complete series/i)).not.toBeInTheDocument();
   });
 
-  it("shows no dates and no prices other than £24, £149 and £288", () => {
+  it("shows no dates and no price other than £24", () => {
     const { container } = render(<BookPage />);
     const text = container.textContent ?? "";
 
@@ -231,7 +232,7 @@ describe("Book page", () => {
       const prices = value.match(/£\d+/g) ?? [];
       expect(prices.length).toBeGreaterThan(0);
       for (const price of prices) {
-        expect(["£24", "£149", "£288"]).toContain(price);
+        expect(price).toBe("£24");
       }
     }
 

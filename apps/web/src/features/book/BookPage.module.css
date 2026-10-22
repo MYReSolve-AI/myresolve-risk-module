@@ -651,36 +651,6 @@
   color: rgba(23, 63, 53, 0.85);
 }
 
-/* The complete-series offer sits under the twelve books, on the pale gold ground. */
-.seriesComplete {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  margin-top: 1.5rem;
-  padding: 1.35rem 1.5rem;
-  background: #f0ddb9;
-  border-radius: var(--mr-radius-sm);
-}
-
-.seriesCompleteTitle {
-  margin: 0;
-  font-family: var(--mr-font);
-  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  color: var(--mr-green-2);
-}
-
-.seriesCompleteBody {
-  margin: 0.3rem 0 0;
-  font-size: 0.98rem;
-  line-height: 1.5;
-  color: rgba(23, 63, 53, 0.85);
-  max-width: 34rem;
-}
-
 .tag {
   margin: 0;
   justify-self: start;
@@ -784,8 +754,7 @@
 
   .ctaGhost,
   .ctaPrimaryLight,
-  .ctaGhostLight,
-  .seriesComplete .ctaPrimary {
+  .ctaGhostLight {
     width: 100%;
   }
 }

@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
   BOOK_PAGE_CONTENT,
   BOOK_PURCHASE_URL,
-  COMPLETE_SERIES_PURCHASE_URL,
   SERIES_PURCHASE_URLS,
 } from "./bookContent";
 import styles from "./BookPage.module.css";
@@ -18,7 +17,7 @@ type BuyButtonProps = {
 /**
  * Every buy action goes to a Payhip checkout in a new tab. There is no
  * custom checkout: Payhip handles payment and delivery. Book One is the
- * default; the other books and the complete series pass their own link.
+ * default; the other books pass their own link.
  */
 function BuyButton({
   className,
@@ -269,20 +268,6 @@ export function BookPage() {
                 </li>
               ))}
             </ol>
-            <div className={styles.seriesComplete} data-testid="book-series-complete">
-              <div>
-                <h3 className={styles.seriesCompleteTitle}>
-                  {series.complete.heading}
-                </h3>
-                <p className={styles.seriesCompleteBody}>{series.complete.body}</p>
-              </div>
-              <BuyButton
-                className={styles.ctaPrimary}
-                testId="book-series-complete-tag"
-                label={series.complete.buttonLabel}
-                href={COMPLETE_SERIES_PURCHASE_URL}
-              />
-            </div>
           </div>
         </section>
 
