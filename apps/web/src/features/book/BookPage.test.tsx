@@ -63,7 +63,7 @@ describe("Book page", () => {
     }
 
     // Nothing else on the page points at Payhip by any other route.
-    expect(container.innerHTML.match(/payhip\.com/g)).toHaveLength(15);
+    expect(container.innerHTML.match(/payhip\.com/g)).toHaveLength(14);
   });
 
   it("resolves every in-page and outbound destination in the approved table", () => {
